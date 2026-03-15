@@ -1,3 +1,209 @@
+// "use client";
+// import { useState, useRef, useEffect } from "react";
+// import Image from "next/image";
+// import Link from "next/link";
+// import gsap from "gsap";
+// import {
+//   FaMapMarkerAlt,
+//   FaEnvelope,
+//   FaFacebookF,
+//   FaInstagram,
+//   FaLinkedinIn,
+// } from "react-icons/fa";
+// import { FaXTwitter } from "react-icons/fa6";
+// import { HiOutlineMenu, HiOutlineX } from "react-icons/hi";
+
+// export default function Navbar() {
+//   const [isMenuOpen, setIsMenuOpen] = useState(false);
+//   const [isScrolled, setIsScrolled] = useState(false);
+//   const menuRef = useRef(null);
+//   const navRef = useRef(null);
+
+//   useEffect(() => {
+//     const handleScroll = () => {
+//       setIsScrolled(window.scrollY > 100);
+//     };
+//     window.addEventListener("scroll", handleScroll);
+//     return () => window.removeEventListener("scroll", handleScroll);
+//   }, []);
+
+//   useEffect(() => {
+//     if (!navRef.current) return;
+
+//     const topbarHeight = 60;
+
+//     const handleAnimation = () => {
+//       const isMobileOrTablet = window.innerWidth < 1024;
+
+//       if (isMobileOrTablet) {
+//         gsap.set(navRef.current, { y: 0 });
+//       } else {
+//         gsap.to(navRef.current, {
+//           y: isScrolled ? 0 : topbarHeight,
+//           duration: 0.2,
+//           ease: "power3.inOut",
+//         });
+//       }
+//     };
+
+//     handleAnimation();
+//     window.addEventListener("resize", handleAnimation);
+
+//     return () => {
+//       window.removeEventListener("resize", handleAnimation);
+//     };
+//   }, [isScrolled]);
+
+//   useEffect(() => {
+//     const menu = menuRef.current;
+//     const items = menu?.querySelectorAll("li");
+
+//     if (isMenuOpen) {
+//       gsap.to(menu, {
+//         width: "100vw",
+//         height: "100vh",
+//         opacity: 1,
+//         duration: 1,
+//         ease: "power4.out",
+//       });
+//       gsap.fromTo(
+//         items,
+//         { x: "-100%", opacity: 0 },
+//         {
+//           x: "0%",
+//           opacity: 1,
+//           duration: 0.6,
+//           stagger: 0.1,
+//           ease: "power4.out",
+//         },
+//       );
+//     } else {
+//       gsap.to(menu, {
+//         width: 0,
+//         height: 0,
+//         opacity: 0,
+//         duration: 0.6,
+//         ease: "power4.inOut",
+//       });
+//     }
+//   }, [isMenuOpen]);
+
+//   const menuItems = [
+//     { name: "Home", path: "/" },
+//     { name: "About", path: "/about" },
+//     { name: "Blogs", path: "/blogs" },
+//     { name: "Services", path: "/services" },
+//   ];
+
+//   const isTransparent = !isScrolled;
+
+//   const textColor = isTransparent ? "text-white" : "text-secondary";
+
+//   const navbarClasses = isScrolled ? "bg-white border" : "bg-white";
+
+//   const topbarRef = useRef(null);
+
+//   useEffect(() => {
+//     if (!topbarRef.current) return;
+
+//     if (isScrolled) {
+//       gsap.to(topbarRef.current, {
+//         y: "-100%",
+//         duration: 0.3,
+//         ease: "power3.inOut",
+//       });
+//     } else {
+//       gsap.to(topbarRef.current, {
+//         y: "0%",
+//         duration: 0.3,
+//         ease: "power3.inOut",
+//       });
+//     }
+//   }, [isScrolled]);
+
+//   return (
+//     <header className="w-full">
+//       <div className="hidden lg:block fixed top-0 left-0 w-full z-50 bg-primary text-white py-6">
+//         <div className="custom-container mx-auto flex flex-col sm:flex-row justify-between items-center gap-2 px-4">
+//           <div className="flex flex-col sm:flex-row sm:gap-6 gap-2 text-center sm:text-left">
+//             <p className="flex items-center gap-2 justify-center font-normal">
+//               <FaMapMarkerAlt className="text-primary shrink-0" />
+//               <span>
+//                 Printers Building, 12-14th Floor, 5 Rajuk Avenue, Motijheel,
+//                 Dhaka
+//               </span>
+//             </p>
+//             <p className="flex items-center gap-2 justify-center font-normal">
+//               <FaEnvelope className="text-primary shrink-0" />
+//               <span>hrbplho@gmail.com</span>
+//             </p>
+//           </div>
+
+//           <div className="flex gap-4 text-white z-50">
+//             <Link href="https://facebook.com" target="_blank">
+//               <FaFacebookF className="hover:text-secondary cursor-pointer w-5 h-5 transition-all transform duration-500" />
+//             </Link>
+//             <Link href="https://twitter.com" target="_blank">
+//               <FaXTwitter className="hover:text-secondary cursor-pointer w-5 h-5 transition-all transform duration-500" />
+//             </Link>
+//             <Link href="https://linkedin.com" target="_blank">
+//               <FaLinkedinIn className="hover:text-secondary cursor-pointer w-5 h-5 transition-all transform duration-500" />
+//             </Link>
+//             <Link href="https://instagram.com" target="_blank">
+//               <FaInstagram className="hover:text-secondary cursor-pointer w-5 h-5 transition-all transform duration-500" />
+//             </Link>
+//           </div>
+//         </div>
+//       </div>
+//       <nav
+//         ref={navRef}
+//         className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 transform-gpu ${navbarClasses}`}
+//       >
+//         <div className="custom-container mx-auto h-24 flex items-center justify-between">
+//           <Link href="/" className="flex items-center">
+//             <Image
+//               src="/logo/bridge-logo1.jpg"
+//               alt="Company Logo"
+//               width={1200}
+//               height={1200}
+//               priority
+//               className="h-24 w-auto object-contain"
+//             />
+//           </Link>
+//           <ul className="hidden lg:flex gap-8 font-semibold text-Secound_primary">
+//             {menuItems.map((item, index) => (
+//               <li key={index} className="relative group">
+//                 <Link
+//                   href={item.path}
+//                   className="transition-colors duration-300 hover:text-primary"
+//                 >
+//                   {item.name}
+//                 </Link>
+//                 <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-primary transition-all duration-500 group-hover:w-full"></span>
+//               </li>
+//             ))}
+//           </ul>
+
+//           <div className="hidden lg:block">
+//             <Link href="/contact">
+//               <button className="bg-primary text-white px-6 py-3 rounded font-semibold hover:bg-secondary transition-all transform duration-500">
+//                 Contact Us
+//               </button>
+//             </Link>
+//           </div>
+
+//           <button
+//             className="lg:hidden text-3xl text-primary"
+//             onClick={() => setIsMenuOpen(!isMenuOpen)}
+//           >
+//             {isMenuOpen ? <HiOutlineX /> : <HiOutlineMenu />}
+//           </button>
+//         </div>
+//       </nav>
+//     </header>
+//   );
+// }
+
 "use client";
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
@@ -9,6 +215,8 @@ import {
   FaFacebookF,
   FaInstagram,
   FaLinkedinIn,
+  FaClock,
+  FaPhoneAlt,
 } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { HiOutlineMenu, HiOutlineX } from "react-icons/hi";
@@ -91,8 +299,8 @@ export default function Navbar() {
   const menuItems = [
     { name: "Home", path: "/" },
     { name: "About", path: "/about" },
-    { name: "Blogs", path: "/blogs" },
     { name: "Services", path: "/services" },
+    { name: "Blogs", path: "/blogs" },
   ];
 
   const isTransparent = !isScrolled;
@@ -121,53 +329,68 @@ export default function Navbar() {
     }
   }, [isScrolled]);
 
+  useEffect(() => {
+    document.body.style.overflow = isMenuOpen ? "hidden" : "auto";
+  }, [isMenuOpen]);
+
   return (
     <header className="w-full">
-      <div className="hidden lg:block fixed top-0 left-0 w-full z-50 bg-primary text-white py-6">
-        <div className="custom-container mx-auto flex flex-col sm:flex-row justify-between items-center gap-2 px-4">
-          <div className="flex flex-col sm:flex-row sm:gap-6 gap-2 text-center sm:text-left">
-            <p className="flex items-center gap-2 justify-center font-normal">
-              <FaMapMarkerAlt className="text-primary shrink-0" />
-              <span>
-                Printers Building, 12-14th Floor, 5 Rajuk Avenue, Motijheel,
-                Dhaka
-              </span>
+      <div className="hidden lg:block fixed top-0 left-0 w-full z-40 bg-primary text-white py-6">
+        <div className="custom-container mx-auto flex items-center justify-between">
+          {/* Left Info */}
+          <div className="flex flex-1 items-center gap-6 text-base">
+            <p className="flex items-center gap-2 border-r border-white/30 pr-4">
+              <FaMapMarkerAlt className="shrink-0" />
+              <span>Printers Building, Rajuk Avenue, Motijheel</span>
             </p>
-            <p className="flex items-center gap-2 justify-center font-normal">
-              <FaEnvelope className="text-primary shrink-0" />
+
+            <p className="flex items-center gap-2 border-r border-white/30 pr-4">
+              <FaEnvelope className="shrink-0" />
               <span>hrbplho@gmail.com</span>
+            </p>
+
+            <p className="flex items-center gap-2 border-r border-white/30 pr-4">
+              <FaPhoneAlt className="shrink-0" />
+              <span>+880 1762627623</span>
+            </p>
+
+            <p className="flex items-center gap-2">
+              <FaClock className="shrink-0" />
+              <span>Sat – Thu · 10 AM – 6 PM</span>
             </p>
           </div>
 
-          <div className="flex gap-4 text-white z-50">
+          {/* Social */}
+          <div className="flex items-center gap-4 ml-6">
             <Link href="https://facebook.com" target="_blank">
-              <FaFacebookF className="hover:text-secondary cursor-pointer w-5 h-5 transition-all transform duration-500" />
+              <FaFacebookF className="hover:text-secondary w-5 h-5 transition duration-300" />
             </Link>
             <Link href="https://twitter.com" target="_blank">
-              <FaXTwitter className="hover:text-secondary cursor-pointer w-5 h-5 transition-all transform duration-500" />
+              <FaXTwitter className="hover:text-secondary w-5 h-5 transition duration-300" />
             </Link>
             <Link href="https://linkedin.com" target="_blank">
-              <FaLinkedinIn className="hover:text-secondary cursor-pointer w-5 h-5 transition-all transform duration-500" />
+              <FaLinkedinIn className="hover:text-secondary w-5 h-5 transition duration-300" />
             </Link>
             <Link href="https://instagram.com" target="_blank">
-              <FaInstagram className="hover:text-secondary cursor-pointer w-5 h-5 transition-all transform duration-500" />
+              <FaInstagram className="hover:text-secondary w-5 h-5 transition duration-300" />
             </Link>
           </div>
         </div>
       </div>
+
       <nav
         ref={navRef}
         className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 transform-gpu ${navbarClasses}`}
       >
-        <div className="custom-container mx-auto h-24 flex items-center justify-between">
+        <div className="custom-container mx-auto md:h-24 h-20 flex items-center justify-between z-40 overflow-hidden">
           <Link href="/" className="flex items-center">
             <Image
-              src="/logo/bridge-logo1.jpg"
+              src="/logo/mah-auditdubai-logo.png"
               alt="Company Logo"
               width={1200}
               height={1200}
               priority
-              className="h-24 w-auto object-contain"
+              className="md:h-40 h-36 w-auto object-contain"
             />
           </Link>
           <ul className="hidden lg:flex gap-8 font-semibold text-Secound_primary">
@@ -193,13 +416,49 @@ export default function Navbar() {
           </div>
 
           <button
-            className="lg:hidden text-3xl text-primary"
+            className="lg:hidden text-3xl text-primary z-50"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
             {isMenuOpen ? <HiOutlineX /> : <HiOutlineMenu />}
           </button>
         </div>
       </nav>
+      <div
+        ref={menuRef}
+        className="fixed top-0 left-0 w-0 h-0 opacity-0 bg-primary text-white z-30 overflow-hidden flex flex-col justify-center items-center lg:hidden"
+      >
+        <ul className="flex flex-col gap-8 text-2xl font-semibold text-center">
+          {menuItems.map((item, index) => (
+            <li key={index}>
+              <Link
+                href={item.path}
+                onClick={() => setIsMenuOpen(false)}
+                className="hover:text-secondary transition-colors"
+              >
+                {item.name}
+              </Link>
+            </li>
+          ))}
+
+          <li>
+            <Link
+              href="/contact"
+              onClick={() => setIsMenuOpen(false)}
+              className="inline-block mt-4 bg-white text-primary px-6 py-3 rounded-lg font-semibold"
+            >
+              Contact Us
+            </Link>
+          </li>
+        </ul>
+
+        {/* Social Icons */}
+        <div className="flex gap-6 mt-12 text-xl">
+          <FaFacebookF />
+          <FaXTwitter />
+          <FaLinkedinIn />
+          <FaInstagram />
+        </div>
+      </div>
     </header>
   );
 }

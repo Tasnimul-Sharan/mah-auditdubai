@@ -1,23 +1,3 @@
-// export default function CategoryDropdown({ value, onChange, options = [] }) {
-//   return (
-//     <div className="text-center mb-6">
-//       <select
-//         value={value}
-//         onChange={(e) => onChange(e.target.value)}
-//         className="border px-4 py-2 rounded"
-//       >
-//         <option value="">All Category</option>
-
-//         {options.map((opt) => (
-//           <option key={opt} value={opt}>
-//             {opt}
-//           </option>
-//         ))}
-//       </select>
-//     </div>
-//   );
-// }
-
 "use client";
 
 import { useEffect, useRef, useState } from "react";

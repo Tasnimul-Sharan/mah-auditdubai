@@ -1,174 +1,139 @@
 "use client";
-
-import { useState } from "react";
-import Link from "next/link";
 import Image from "next/image";
-import { blogPostData } from "@/data/blogPostData";
+import Link from "next/link";
+import { FaArrowRight, FaRegCalendarAlt, FaRegUser } from "react-icons/fa";
+import { motion } from "framer-motion";
+import { useState } from "react";
+import { FiArrowRight } from "react-icons/fi";
 
-const POSTS_PER_PAGE = 6;
+const blogs = [
+  {
+    id: 1,
+    img: "/blogs/blog-1.jpg",
+    date: "September 25, 2025",
+    author: "Ahmed Al Rashid",
+    title: "Forensic Audit in Dubai: Detecting Financial Fraud",
+    excerpt:
+      "Forensic audits play a critical role in identifying fraud, financial misconduct, and irregularities in UAE businesses. Learn how expert auditors uncover hidden risks and ensure legal compliance.",
+    slug: "forensic-audit-dubai",
+  },
+  {
+    id: 2,
+    img: "/blogs/blog-2.jpg",
+    date: "September 20, 2025",
+    author: "Fatima Noor",
+    title: "VAT Compliance in UAE: Avoid Penalties",
+    excerpt:
+      "Understanding VAT regulations is essential for businesses in Dubai. This guide explains registration, filing requirements, and how to avoid costly penalties through proper compliance.",
+    slug: "vat-compliance-uae",
+  },
+  {
+    id: 3,
+    img: "/blogs/blog-3.jpg",
+    date: "September 15, 2025",
+    author: "Omar Hassan",
+    title: "Internal Audit Best Practices for UAE Companies",
+    excerpt:
+      "A strong internal audit framework helps organizations reduce risks and improve efficiency. Discover best practices tailored for UAE businesses and regulatory standards.",
+    slug: "internal-audit-best-practices",
+  },
+  {
+    id: 4,
+    img: "/blogs/blog-4.jpg",
+    date: "September 10, 2025",
+    author: "Ahmed Al Rashid",
+    title: "Corporate Tax in UAE: What Businesses Must Know",
+    excerpt:
+      "With the introduction of corporate tax in the UAE, companies must adapt quickly. Learn about tax rates, exemptions, and compliance strategies for smooth operations.",
+    slug: "corporate-tax-uae",
+  },
+  {
+    id: 5,
+    img: "/blogs/blog-5.jpg",
+    date: "September 7, 2025",
+    author: "Fatima Noor",
+    title: "External Audit Requirements in Dubai",
+    excerpt:
+      "External audits are mandatory for many businesses in Dubai. Understand the requirements, reporting standards, and how audits enhance credibility with stakeholders.",
+    slug: "external-audit-dubai",
+  },
+  {
+    id: 6,
+    img: "/blogs/blog-6.jpg",
+    date: "September 3, 2025",
+    author: "Omar Hassan",
+    title: "Risk Management Strategies for Modern Businesses",
+    excerpt:
+      "Effective risk management is essential in today’s dynamic business environment. Learn how UAE companies can identify, assess, and mitigate financial and operational risks.",
+    slug: "risk-management-strategies",
+  },
+  // {
+  //   id: 7,
+  //   img: "/blogs/blog-7.jpg",
+  //   date: "August 30, 2025",
+  //   author: "Ahmed Al Rashid",
+  //   title: "IFRS Compliance in UAE: A Practical Guide",
+  //   excerpt:
+  //     "IFRS compliance ensures transparency and global standard reporting. This guide explains key IFRS principles and their impact on UAE businesses.",
+  //   slug: "ifrs-compliance-uae",
+  // },
+  // {
+  //   id: 8,
+  //   img: "/blogs/blog-8.jpg",
+  //   date: "August 25, 2025",
+  //   author: "Fatima Noor",
+  //   title: "Why Businesses in Dubai Need Professional Auditors",
+  //   excerpt:
+  //     "Hiring professional auditors enhances financial accuracy, compliance, and trust. Discover why expert audit services are essential for sustainable growth in Dubai.",
+  //   slug: "professional-auditors-dubai",
+  // },
+];
 
-export default function BlogPage() {
-  const [search, setSearch] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-
-  const filteredPosts = blogPostData.filter((post) =>
-    post.title.toLowerCase().includes(search.toLowerCase()),
-  );
-
-  const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE);
-
-  const displayedPosts = filteredPosts.slice(
-    (currentPage - 1) * POSTS_PER_PAGE,
-    currentPage * POSTS_PER_PAGE,
-  );
-
-  const featured = blogPostData[0];
-
+export default function BlogPageSection() {
   return (
-    <section className="bg-gradient-to-b from-[#f8fafc] to-white py-24">
-      <div className="max-w-6xl mx-auto md:px-6">
-        {/* PAGE TITLE */}
-
-        <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold text-[#0F172A] tracking-tight">
-            Insights & Articles
-          </h1>
-          <p className="text-gray-500 mt-4">
-            Expert insights on auditing, compliance and finance in UAE
-          </p>
-        </div>
-
-        {/* FEATURED ARTICLE */}
-
-        <div className="relative rounded-3xl overflow-hidden mb-20 group">
-          <Image
-            src={featured.image}
-            alt={featured.title}
-            width={1200}
-            height={600}
-            className="object-cover w-full h-full group-hover:scale-105 transition duration-700"
-          />
-
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-
-          <div className="absolute bottom-10 left-10 text-white max-w-xl">
-            <p className="text-sm uppercase tracking-widest text-[#C8A96A] mb-2">
-              Featured Article
-            </p>
-
-            <h2 className="text-3xl font-bold leading-tight mb-4">
-              {featured.title}
-            </h2>
-
-            <Link
-              href={`/blog/${featured.slug}`}
-              className="font-semibold text-white hover:text-[#C8A96A]"
-            >
-              Read Full Article →
-            </Link>
-          </div>
-        </div>
-
-        {/* MAIN GRID */}
-
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-12">
-          {/* BLOG POSTS AREA */}
-          <div className="lg:col-span-6">
-            <div className="grid md:grid-cols-2 gap-8">
-              {displayedPosts.map((post) => (
-                <div
-                  key={post.id}
-                  className="group bg-white rounded-3xl border border-gray-100 overflow-hidden hover:shadow-2xl transition duration-500"
-                >
-                  <div className="overflow-hidden">
-                    <Image
-                      src={post.image}
-                      alt={post.title}
-                      width={500}
-                      height={300}
-                      className="object-cover w-full h-52 group-hover:scale-105 transition duration-700"
-                    />
+    <section className="py-20 bg-white relative">
+      <div className="custom-container mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {blogs.map((blog) => (
+            <Link href={`/blogs/${blog.slug}`}>
+              <div
+                key={blog.id}
+                className="group rounded-xl overflow-hidden border"
+              >
+                <div className="relative w-full h-96 overflow-hidden">
+                  <Image
+                    src={blog.img}
+                    alt={blog.title}
+                    fill
+                    className="object-cover rounded transform transition-all duration-1000 group-hover:scale-125"
+                  />
+                </div>
+                <div className="mt-4 p-6">
+                  <div className="flex items-center gap-4 text-gray-500 text-sm mb-2">
+                    <span className="flex items-center gap-2">
+                      <FaRegCalendarAlt className="text-primary" /> {blog.date}
+                    </span>
+                    <span className="flex items-center gap-2">
+                      <FaRegUser className="text-primary" /> By: {blog.author}
+                    </span>
                   </div>
 
-                  <div className="p-6">
-                    <p className="text-xs text-gray-400 mb-2">
-                      {new Date(post.date).toDateString()}
-                    </p>
+                  <h3 className="text-lg font-bold text-secondary mb-2 hover:text-primary transition-colors duration-500">
+                    {blog.title}
+                  </h3>
 
-                    <h3 className="text-lg font-semibold text-[#0F172A] mb-3 group-hover:text-[#1E3A8A] transition">
-                      {post.title}
-                    </h3>
-
-                    <p className="text-gray-600 text-sm mb-4">{post.excerpt}</p>
-
-                    <Link
-                      href={`/blog/${post.slug}`}
-                      className="text-sm font-semibold text-[#1E3A8A] hover:text-[#C8A96A]"
-                    >
-                      Read Article →
-                    </Link>
+                  <p className="text-gray-600 text-sm">{blog.excerpt}</p>
+                  <div
+                    href={`/blogs/${blog.slug}`}
+                    className="relative mt-2 inline-flex items-center gap-1 text-primary text-sm font-semibold transition-all transform duration-500 group"
+                  >
+                    Read More <FiArrowRight />
+                    <span className="hover-line absolute left-0 -bottom-1 h-[2px] w-0 bg-primary transition-all duration-300 ease-out group-hover:w-full"></span>
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
-
-          {/* SIDEBAR */}
-          {/* <aside className="lg:col-span-1 space-y-10 lg:sticky lg:top-24 h-fit">
-            <div className="bg-white rounded-3xl border border-gray-100 p-6">
-              <h4 className="font-semibold text-[#0F172A] mb-4">Search</h4>
-
-              <input
-                type="text"
-                placeholder="Search articles..."
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            </div>
-
-            <div className="bg-white rounded-3xl border border-gray-100 p-6">
-              <h4 className="font-semibold text-[#0F172A] mb-4">Categories</h4>
-
-              <ul className="space-y-3 text-sm text-gray-600">
-                <li className="hover:text-[#1E3A8A] cursor-pointer">
-                  Audit and Assurance
-                </li>
-
-                <li className="hover:text-[#1E3A8A] cursor-pointer">
-                  Financial Audit
-                </li>
-
-                <li className="hover:text-[#1E3A8A] cursor-pointer">
-                  Internal Audit
-                </li>
-
-                <li className="hover:text-[#1E3A8A] cursor-pointer">
-                  Forensic Auditing
-                </li>
-
-                <li className="hover:text-[#1E3A8A] cursor-pointer">IFRS</li>
-              </ul>
-            </div>
-
-            <div className="bg-white rounded-3xl border border-gray-100 p-6">
-              <h4 className="font-semibold text-[#0F172A] mb-4">
-                Recent Posts
-              </h4>
-
-              <div className="space-y-4">
-                {blogPostData.slice(0, 4).map((post) => (
-                  <Link
-                    key={post.id}
-                    href={`/blog/${post.slug}`}
-                    className="block text-sm text-gray-600 hover:text-[#1E3A8A]"
-                  >
-                    {post.title}
-                  </Link>
-                ))}
               </div>
-            </div>
-          </aside> */}
+            </Link>
+          ))}
         </div>
       </div>
     </section>

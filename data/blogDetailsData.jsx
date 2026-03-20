@@ -14,57 +14,62 @@ export const blogDetailsData = {
   },
 
   blogDetails: [
+   {
+  slug: "forensic-audit-dubai",
+  blogPost: {
+    title: "Forensic Audit in Dubai: Detecting Fraud & Ensuring Compliance",
+    image: "/blogs/dubai-audit/audit-1.jpg",
+    author: "Ahmed Al Rashid",
+    date: "18 AUGUST, 2025",
+    description:
+      "Forensic auditing is a specialized practice aimed at uncovering fraud, embezzlement, and financial discrepancies in organizations. In Dubai’s highly regulated financial and corporate environment, forensic audits help businesses maintain transparency, ensure regulatory compliance, and mitigate risks before they escalate.\n\nOur approach combines meticulous financial analysis, data-driven investigation, and adherence to UAE legal standards. From tracing suspicious transactions to assessing internal control weaknesses, forensic audits provide actionable insights that strengthen governance and protect stakeholder interests.",
+    checklist: [
+      "Comprehensive review of financial records and transactions.",
+      "Identification of fraud, misappropriation, and irregularities.",
+      "Application of advanced data analytics for pattern detection.",
+      "Preparation of legally admissible audit reports.",
+      "Evaluation of internal control systems for risk mitigation.",
+    ],
+    highlights: [
+      "Prevents financial loss through early detection of fraud.",
+      "Supports regulatory compliance and corporate governance.",
+      "Provides management with actionable risk insights.",
+      "Enhances investor confidence and corporate credibility.",
+    ],
+    subImages: [
+      "/blogs/dubai-audit/audit-2.jpg",
+      "/blogs/dubai-audit/audit-3.jpg"
+    ],
+    quote:
+      "Forensic auditing is not just about finding fraud — it’s about protecting the future of your business.",
+    postTags: ["Forensic Audit", "Fraud Detection", "Dubai Compliance", "Corporate Governance"],
+  },
+  socialIcons: [
     {
-      slug: "gmp-compliance-pharma-manufacturing",
-      blogPost: {
-        title: "Ensuring GMP Compliance in Modern Pharmaceutical Manufacturing",
-        image: "/blogs/pharma/pharma-1.jpg",
-        author: "Bridge Pharma Insights",
-        date: "18 AUGUST, 2025",
-        description:
-          "Good Manufacturing Practices (GMP) ensure consistent product quality, safety, and compliance in pharmaceutical production. Modern facilities integrate automation, validation systems, and strict quality controls to meet global regulatory standards.",
-        checklist: [
-          "Validated production environments.",
-          "Strict documentation and batch traceability.",
-          "Regular audits and quality inspections.",
-          "Employee training on GMP standards.",
-          "Automated quality control systems.",
-        ],
-        highlights: [
-          "Ensures global regulatory compliance across markets.",
-          "Reduces production risks and contamination chances.",
-          "Improves brand credibility and trust.",
-          "Maintains consistent medicine quality.",
-        ],
-        subImages: ["/blogs/pharma/pharma-2.jpg", "/blogs/pharma/pharma-3.jpg"],
-        quote:
-          "Quality is not inspected into a product — it is built into every process.",
-        postTags: ["GMP", "Manufacturing", "Compliance"],
-      },
-      socialIcons: [
-        {
-          icon: FaFacebookF,
-          link: (url) =>
-            `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-              url,
-            )}`,
-        },
-        {
-          icon: FaXTwitter,
-          link: (url, title) =>
-            `https://twitter.com/intent/tweet?url=${encodeURIComponent(
-              url,
-            )}&text=${encodeURIComponent(title)}`,
-        },
-        {
-          icon: FaLinkedinIn,
-          link: (url, title) =>
-            `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(
-              url,
-            )}&title=${encodeURIComponent(title)}`,
-        },
-      ],
+      icon: FaFacebookF,
+      link: (url) =>
+        `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
     },
+    {
+      icon: FaXTwitter,
+      link: (url, title) =>
+        `https://twitter.com/intent/tweet?url=${encodeURIComponent(
+          url
+        )}&text=${encodeURIComponent(title)}`,
+    },
+    {
+      icon: FaLinkedinIn,
+      link: (url, title) =>
+        `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(
+          url
+        )}&title=${encodeURIComponent(title)}`,
+    },
+    {
+      icon: FaInstagram,
+      link: () => `https://www.instagram.com/yourcompany/`,
+    },
+  ],
+},
     {
       slug: "advancing-animal-health",
       blogPost: {

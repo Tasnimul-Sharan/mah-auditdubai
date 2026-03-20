@@ -10,8 +10,8 @@ export default function ServicesPage() {
     keywords:
       "Anondo Baari services, senior wellness Bangladesh, assisted living Dhaka, elderly care, therapeutic services, wellness programs, yoga meditation, nutrition counseling, retirement home Bangladesh",
     author: "Anondo Baari",
-    url: "https://www.anondobari.com/services",
-    image: "https://www.anondobari.com/services/services-og.jpg",
+    url: "mah-auditdubai.ae/services",
+    image: "mah-auditdubai.ae/services/services-og.jpg",
   };
 
   return (

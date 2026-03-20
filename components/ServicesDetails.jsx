@@ -1,61 +1,149 @@
 "use client";
 
 import Image from "next/image";
-import { FaCheckCircle } from "react-icons/fa";
+import { FaFacebookF, FaTwitter, FaLinkedinIn, FaRegCheckCircle } from "react-icons/fa";
 
-export default function ServicesDetails({ service }) {
+
+const blogsData = {
+  slug: "forensic-audit-in-dubai",
+
+  blogPost: {
+    title: "Forensic Audit in Dubai: Detect Fraud & Ensure Compliance",
+    author: "Admin",
+    date: "18 August, 2025",
+
+    image: "/blogs/forensic-audit/main.jpg",
+
+    subImages: [
+      "/blogs/forensic-audit/sub1.jpg",
+      "/blogs/forensic-audit/sub2.jpg",
+    ],
+
+    quote:
+      "Forensic auditing is not just about finding fraud—it’s about protecting your business, reputation, and future growth.",
+
+    postTags: ["Forensic Audit", "Dubai", "Fraud Detection", "Compliance"],
+
+    content: [
+      "Forensic auditing extends beyond examination of financial statements; it validates the accuracy of transactions. Whether addressing fraud, employee misconduct, or legal proceedings, forensic auditing acts as a critical safeguard for businesses.",
+
+      "At our Audit Firm in Dubai, our auditors combine deep financial expertise with investigative skills. We not only detect irregularities but also help strengthen internal controls to prevent such issues in the future.",
+
+      "⚡ Request a Forensic Audit Consultation",
+
+      "Our forensic audit specialists in Dubai possess the expertise to trace suspicious transactions, analyze financial records, review electronic data, and conduct discreet investigations when required.",
+
+      "⚡ When Should a Forensic Audit be Undertaken?",
+
+      [
+        "Unexplained discrepancies in accounts or cash flow",
+        "Suspicious transactions by vendors or employees",
+        "Whistleblower complaints of fraud or misconduct",
+        "Mergers and acquisitions requiring independent validation",
+        "Ongoing litigation or arbitration involving financial evidence",
+        "Investigations or inquiries by regulators",
+      ],
+
+      "⚡ Why is Forensic Auditing Important?",
+
+      [
+        "Fraud prevention and early detection",
+        "Protection of company assets",
+        "Support for litigation and dispute resolution",
+        "Ensuring compliance with UAE regulations",
+        "Strengthening internal controls",
+        "Building stakeholder trust and reputation",
+      ],
+
+      "⚡ Our Forensic Audit Services in Dubai",
+
+      [
+        "Fraud investigation in payroll, procurement, and vendor management",
+        "Financial statement analysis and transaction tracing",
+        "Internal control assessments and compliance reviews",
+        "Litigation support and expert witness services",
+        "Asset tracing and recovery (local and international)",
+        "Digital forensics including emails, ERP systems, and electronic records",
+      ],
+    ],
+  },
+
+  socialIcons: [
+    {
+      icon: FaFacebookF,
+      link: (url) => `https://www.facebook.com/sharer/sharer.php?u=${url}`,
+    },
+    {
+      icon: FaTwitter,
+      link: (url, title) =>
+        `https://twitter.com/intent/tweet?url=${url}&text=${title}`,
+    },
+    {
+      icon: FaLinkedinIn,
+      link: (url) =>
+        `https://www.linkedin.com/sharing/share-offsite/?url=${url}`,
+    },
+  ],
+};
+
+export default function ServicesDetails() {
+  const { blogPost } = blogsData;
+
   return (
     <section className="py-12 max-w-6xl mx-auto md:px-0 px-6">
-      {/* <div className="relative w-full h-[30rem] mb-8">
-        <Image
-          src={service.services.image}
-          alt={service.services.title}
-          fill
-          className="object-cover rounded-lg"
-        />
-      </div> */}
-      <div className="relative w-full aspect-[16/10] mb-8">
-        <Image
-          src={service.services.image}
-          alt={service.services.title}
-          fill
-          className="object-cover rounded-lg"
-        />
-      </div>
+      <div className="max-w-4xl mx-auto space-y-10">
+        {blogPost.content.map((block, i) => {
+          if (Array.isArray(block)) {
+            return (
+              <div key={i} className="grid sm:grid-cols-2 gap-5">
+                {block.map((item, idx) => (
+                  <div
+                    key={idx}
+                    className="group flex items-start gap-3 p-5 rounded-2xl bg-white border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+                  >
+                    <FaRegCheckCircle className="text-primary mt-1 text-lg group-hover:scale-110 transition" />
+                    <span className="text-gray-700 font-medium leading-relaxed">
+                      {item}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            );
+          }
 
-      <div className="mb-12">
-        {/* <h2 className="text-3xl font-bold text-secondary mb-4">
-          {service.services.title}
-        </h2> */}
-        <p className="text-gray-600 leading-relaxed mb-6">
-          {service.services.description}
-        </p>
+          if (typeof block === "string" && block.startsWith("⚡")) {
+            return (
+              <div key={i} className="pt-10">
+                <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4 relative inline-block">
+                  {block.replace("⚡", "")}
+                  <span className="block w-16 h-1 bg-gradient-to-r from-purple-600 to-pink-500 mt-2 rounded-full"></span>
+                </h2>
+              </div>
+            );
+          }
 
-        <ul className="space-y-3 mb-6 text-gray-700">
-          {service.services.checklist.map((item, idx) => (
-            <li key={idx} className="flex items-start gap-2">
-              <FaCheckCircle className="text-primary mt-1" />
-              <span>{item}</span>
-            </li>
-          ))}
-        </ul>
+          if (typeof block === "string" && block.includes("Consultation")) {
+            return (
+              <div
+                key={i}
+                className="bg-gradient-to-r from-purple-600 to-pink-500 text-white p-8 md:p-10 rounded-3xl shadow-xl"
+              >
+                <h3 className="text-xl md:text-2xl font-semibold mb-3">
+                  {block}
+                </h3>
+              </div>
+            );
+          }
 
-        <blockquote className="italic text-secondary_two md:text-lg text-base border-l-4 border-primary bg-primary/5 p-4 rounded-md pl-4">
-          “{service.services.quote}”
-        </blockquote>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {service.services.subImages.slice(0, 2).map((img, idx) => (
-          <div key={idx} className="relative w-full md:h-[400px] h-12">
-            <Image
-              src={img}
-              alt={service.services.title}
-              fill
-              className="object-cover rounded-lg w-full h-full"
-            />
-          </div>
-        ))}
+          return (
+            <p
+              key={i}
+              className="text-gray-700 leading-relaxed text-lg tracking-[0.2px]"
+            >
+              {block}
+            </p>
+          );
+        })}
       </div>
     </section>
   );

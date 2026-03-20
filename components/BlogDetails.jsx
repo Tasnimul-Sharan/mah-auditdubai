@@ -3,12 +3,17 @@
 import Image from "next/image";
 import Link from "next/link";
 import { AiOutlineTag } from "react-icons/ai";
-import { FaCheckCircle, FaQuoteLeft, FaRegCheckCircle, FaReply } from "react-icons/fa";
+import {
+  FaCheckCircle,
+  FaQuoteLeft,
+  FaRegCheckCircle,
+  FaReply,
+} from "react-icons/fa";
 
 export default function BlogDetails({ blogsData }) {
   const { blogPost, socialIcons } = blogsData;
 
-  // const currentUrl = `https://www.anondobari.com/blogs/${blogsData.slug}`;
+  // const currentUrl = `mah-auditdubai.ae/blogs/${blogsData.slug}`;
   return (
     <div className="max-w-6xl mx-auto md:px-0 px-6 space-y-8 py-20">
       <Image
@@ -118,7 +123,7 @@ export default function BlogDetails({ blogsData }) {
           <span className="text-base text-textPrimary">Share Now</span>
           <div className="flex items-center gap-2">
             {blogsData.socialIcons.map(({ icon: Icon, link }, index) => {
-              const currentUrl = `https://www.anondobari.com/blogs/${blogsData.slug}`;
+              const currentUrl = `mah-auditdubai.ae/blogs/${blogsData.slug}`;
               return (
                 <a
                   key={index}

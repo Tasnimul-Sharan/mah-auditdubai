@@ -7,8 +7,8 @@ export const servicesDetailsData = {
     keywords:
       "Anondo Baari service details, senior care Bangladesh, assisted living Dhaka, therapeutic care, yoga meditation, nutrition counseling, elderly wellness programs, retirement home services",
     author: "Anondo Baari",
-    url: "https://www.anondobari.com/services/details",
-    image: "https://www.anondobari.com/services/service-details-og.jpg",
+    url: "mah-auditdubai.ae/services/details",
+    image: "mah-auditdubai.ae/services/service-details-og.jpg",
   },
   serviceDetails: [
     {

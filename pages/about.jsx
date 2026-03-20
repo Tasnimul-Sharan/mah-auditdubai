@@ -4,7 +4,6 @@ import Head from "next/head";
 import FAQ from "@/components/FAQ";
 import VisionMission from "@/components/VisionMission";
 import OurPurposeSection from "@/components/OurPurposeSection";
-import LeadershipHighlight from "@/components/LeadershipHighlight";
 import ElegantStats from "@/components/ElegantStats";
 import PremiumCTA from "@/components/PremiumCTA";
 
@@ -140,7 +139,7 @@ export default function AboutPage() {
       <AboutUsSection />
       <OurPurposeSection />
       <VisionMission />
-      <LeadershipHighlight />
+      {/* <LeadershipHighlight /> */}
       <ElegantStats />
       <FAQ faqData={faqData} />
       <PremiumCTA />

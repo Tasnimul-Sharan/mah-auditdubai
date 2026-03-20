@@ -41,10 +41,10 @@ export default function ServicesDetailsPage() {
       `Learn more about our ${service.services.title} at Anondo Baari. Located in Purbachal, Dhaka, we provide holistic senior wellness including assisted living, 24/7 healthcare, yoga, meditation, nutrition counseling, and compassionate care in a vibrant community.`,
     keywords: `${service.services.title}, Anondo Baari services, senior wellness Bangladesh, assisted living Dhaka, elderly care, therapeutic programs, yoga meditation, nutrition counseling, holistic wellness center, retirement home Bangladesh`,
     author: "Anondo Baari",
-    url: `https://www.anondobari.com/services/${service.slug}`,
+    url: `mah-auditdubai.ae/services/${service.slug}`,
     image:
       service.services.image ||
-      "https://www.anondobari.com/services/services-og.jpg",
+      "mah-auditdubai.ae/services/services-og.jpg",
   };
 
   return (

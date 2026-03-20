@@ -40,12 +40,11 @@ export default function BlogDetailsDataPage() {
       blog.blogPost.description ||
       `Read "${blog.blogPost.title}" – an insightful article from Anondo Baari on senior care, wellness, healthy aging, and holistic living.`,
     keywords: `${blog.blogPost.postTags.join(
-      ", "
+      ", ",
     )}, Anondo Baari blog, senior wellness Bangladesh, healthy aging tips, elderly care, wellness lifestyle`,
     author: blog.blogPost.author || "Anondo Baari",
-    url: `https://www.anondobari.com/blog/${blog.slug}`,
-    image:
-      blog.blogPost.image || "https://www.anondobari.com/blogs/blogs-og.jpg",
+    url: `mah-auditdubai.ae/blog/${blog.slug}`,
+    image: blog.blogPost.image || "mah-auditdubai.ae/blogs/blogs-og.jpg",
   };
 
   return (

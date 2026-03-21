@@ -45,7 +45,7 @@ const ScrollToTopButton = () => {
         <button
           ref={buttonRef}
           onClick={scrollToTop}
-          className="fixed bottom-28 right-8 w-12 h-12 rounded-full bg-primary hover:bg-primary_secondary text-white flex items-center justify-center transition-all transform duration-500 !z-40"
+          className="fixed bottom-28 right-8 w-12 h-12 rounded-full bg-primary hover:bg-primary_secondary border border-border_color text-white flex items-center justify-center transition-all transform duration-500 !z-40"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

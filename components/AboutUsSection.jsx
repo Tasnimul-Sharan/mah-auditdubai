@@ -3,113 +3,108 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { FaShieldAlt, FaLeaf, FaGlobeAsia } from "react-icons/fa";
-import SectionBadge from "./SectionBadge";
+import { FaChartLine, FaShieldAlt, FaBalanceScale } from "react-icons/fa";
 
-export default function AboutUsSection() {
+export default function AboutAuditDubai() {
   return (
-    <section className="relative overflow-hidden bg-[#F9FAFB]">
-      {/* Premium Gradient Background Accents */}
-      <div className="absolute -top-32 -left-32 w-[500px] h-[500px] bg-primary/10 rounded-full blur-3xl" />
-      <div className="absolute -bottom-32 -right-32 w-[500px] h-[500px] bg-secondary/10 rounded-full blur-3xl" />
+    <section className="relative bg-[#0B1C2D] text-white overflow-hidden">
+      {/* Gradient Glow */}
+      <div className="absolute -top-40 -left-40 w-[500px] h-[500px] bg-[#C8A96A]/20 blur-3xl rounded-full" />
+      <div className="absolute -bottom-40 -right-40 w-[500px] h-[500px] bg-[#1E3A8A]/20 blur-3xl rounded-full" />
 
-      <div className="relative custom-container mx-auto py-28 grid lg:grid-cols-2 gap-20 items-center">
+      <div className="relative max-w-7xl mx-auto px-6 py-28 grid lg:grid-cols-2 gap-20 items-center">
         {/* ================= LEFT CONTENT ================= */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
-          viewport={{ once: true }}
         >
-          <SectionBadge className="mb-4">
-            Since 2010 • Trusted Nationwide
-          </SectionBadge>
+          {/* Badge */}
+          <p className="text-sm uppercase tracking-widest text-[#C8A96A] mb-4">
+            Trusted Audit Firm in Dubai, UAE
+          </p>
 
-          <h2 className="text-4xl md:text-5xl font-bold text-secondary leading-tight mb-6">
-            Advancing Bangladesh’s
-            <span className="block text-primary">
-              Animal Health & Biosecurity Standards
+          {/* Heading */}
+          <h2 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
+            Redefining Audit with
+            <span className="block text-[#C8A96A]">
+              Clarity, Confidence & Strategy
             </span>
           </h2>
 
-          <p className="text-gray-600 text-lg leading-relaxed max-w-xl mb-6">
-            Bridge Pharmaceuticals Ltd. is a leading animal health company
-            committed exclusively to Veterinary & Aquaculture healthcare. We
-            deliver scientifically formulated medicines, nutritional
-            supplements, and advanced biosecurity solutions tailored for modern
-            farming needs.
+          {/* Paragraph */}
+          <p className="text-gray-300 text-lg leading-relaxed mb-6 max-w-xl">
+            Audits should never feel like a burden. At our audit firm in Dubai,
+            we transform auditing into a powerful business advantage. Beyond
+            compliance, we deliver clarity, build confidence, and guide smarter
+            financial decisions.
           </p>
 
-          <p className="text-gray-600 text-lg leading-relaxed max-w-xl mb-10">
-            With a decade of expertise and innovation, our mission is to empower
-            livestock producers with reliable, affordable, and globally
-            benchmarked veterinary solutions that ensure healthier animals and
-            sustainable productivity.
+          <p className="text-gray-300 text-lg leading-relaxed mb-10 max-w-xl">
+            Recognized among the most reputable audit firms in the UAE, we help
+            businesses of all sizes simplify complexity, strengthen financial
+            transparency, and unlock real strategic insights.
           </p>
 
-          {/* Key Highlights */}
+          {/* FEATURES */}
           <div className="grid sm:grid-cols-3 gap-6 mb-10">
             <div className="flex items-center gap-3">
-              <FaShieldAlt className="text-primary text-xl" />
-              <span className="text-gray-700 font-medium">Quality Assured</span>
+              <FaShieldAlt className="text-[#C8A96A]" />
+              <span className="text-gray-200">100% Compliance</span>
             </div>
 
             <div className="flex items-center gap-3">
-              <FaLeaf className="text-primary text-xl" />
-              <span className="text-gray-700 font-medium">
-                Sustainable Practices
-              </span>
+              <FaChartLine className="text-[#C8A96A]" />
+              <span className="text-gray-200">Strategic Insights</span>
             </div>
 
             <div className="flex items-center gap-3">
-              <FaGlobeAsia className="text-primary text-xl" />
-              <span className="text-gray-700 font-medium">
-                Nationwide Reach
-              </span>
+              <FaBalanceScale className="text-[#C8A96A]" />
+              <span className="text-gray-200">Trusted Advisory</span>
             </div>
           </div>
 
-          {/* Buttons */}
+          {/* BUTTONS */}
           <div className="flex flex-wrap gap-5">
-            <Link href="/about">
-              <button className="bg-gradient-to-r from-primary to-secondary text-white px-8 py-4 rounded-xl font-semibold shadow-lg hover:scale-105 transition-all duration-300">
-                Discover Our Journey →
+            <Link href="/contact">
+              <button className="bg-[#C8A96A] text-black px-8 py-4 rounded-xl font-semibold hover:scale-105 transition">
+                Get Free Consultation →
               </button>
             </Link>
 
-            <Link href="/contact">
-              <button className="border-2 border-primary text-primary px-8 py-4 rounded-xl font-semibold hover:bg-primary hover:text-white transition-all duration-300">
-                Talk to Our Experts
+            <Link href="/services">
+              <button className="border border-[#C8A96A] text-[#C8A96A] px-8 py-4 rounded-xl font-semibold hover:bg-[#C8A96A] hover:text-black transition">
+                Explore Services
               </button>
             </Link>
           </div>
         </motion.div>
 
-        {/* ================= RIGHT IMAGE ================= */}
+        {/* ================= RIGHT SIDE ================= */}
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.7, delay: 0.2 }}
-          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
           className="relative"
         >
-          <div className="relative h-[540px] rounded-[30px] overflow-hidden shadow-2xl">
+          {/* IMAGE */}
+          <div className="relative h-[550px] rounded-[30px] overflow-hidden shadow-2xl">
             <Image
-              src="/about.JPG"
-              alt="Bridge Pharmaceuticals Animal Health"
+              src="/audit-dubai.jpg"
+              alt="Audit Firm Dubai"
               fill
               className="object-cover"
               priority
             />
           </div>
 
-          {/* Premium Floating Stats Card */}
-          <div className="absolute -bottom-10 left-10 bg-white/90 backdrop-blur-lg px-8 py-6 rounded-2xl shadow-xl border">
-            <p className="text-sm uppercase tracking-wider text-gray-500 mb-2">
-              Over
-            </p>
-            <p className="text-3xl font-bold text-primary">10+ Years</p>
-            <p className="text-gray-600 text-sm">Of Veterinary Innovation</p>
+          {/* FLOATING CARD */}
+          <div className="absolute -bottom-10 left-10 bg-[#0F172A]/90 backdrop-blur-lg border border-[#C8A96A]/30 px-8 py-6 rounded-2xl shadow-xl">
+            <p className="text-sm text-gray-400 mb-1">Trusted by Businesses</p>
+
+            <p className="text-3xl font-bold text-[#C8A96A]">500+</p>
+
+            <p className="text-gray-300 text-sm">Companies Across UAE</p>
           </div>
         </motion.div>
       </div>

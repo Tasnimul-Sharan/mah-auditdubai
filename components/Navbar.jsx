@@ -132,30 +132,35 @@ export default function Navbar() {
       <div className="hidden lg:block fixed top-0 left-0 w-full z-40 bg-primary text-white py-6">
         <div className="custom-container mx-auto flex items-center justify-between">
           {/* Left Info */}
-          <div className="flex flex-1 items-center gap-6 text-base">
-            <p className="flex items-center gap-2 border-r border-white/30 pr-4">
-              <FaMapMarkerAlt className="shrink-0" />
-              <span>Printers Building, Rajuk Avenue, Motijheel</span>
+          <div className="flex flex-1 items-center gap-6 text-base text-gray-300">
+            <p className="flex items-center gap-2 border-r border-white/20 pr-4">
+              <FaMapMarkerAlt className="shrink-0 text-secondary" />
+              <span>2nd Floor, 154 Bishopsgate, London, EC2M 4LN</span>
             </p>
 
-            <p className="flex items-center gap-2 border-r border-white/30 pr-4">
-              <FaEnvelope className="shrink-0" />
-              <span>hrbplho@gmail.com</span>
+            <p className="flex items-center gap-2 border-r border-white/20 pr-4">
+              <FaEnvelope className="shrink-0 text-secondary" />
+              <a
+                href="mailto:enquiries@mah.uk.com"
+                className="hover:text-secondary transition"
+              >
+                enquiries@mah.uk.com
+              </a>
             </p>
 
-            <p className="flex items-center gap-2 border-r border-white/30 pr-4">
-              <FaPhoneAlt className="shrink-0" />
-              <span>+880 1762627623</span>
-            </p>
-
-            <p className="flex items-center gap-2">
-              <FaClock className="shrink-0" />
-              <span>Sat – Thu · 10 AM – 6 PM</span>
+            <p className="flex items-center gap-2 pr-4">
+              <FaPhoneAlt className="shrink-0 text-secondary" />
+              <a
+                href="tel:02071003610"
+                className="hover:text-secondary transition"
+              >
+                0207 100 3610
+              </a>
             </p>
           </div>
 
           {/* Social */}
-          <div className="flex items-center gap-4 ml-6">
+          <div className="flex items-center gap-4 ml-6 text-gray-300">
             <Link href="https://facebook.com" target="_blank">
               <FaFacebookF className="hover:text-secondary w-5 h-5 transition duration-300" />
             </Link>

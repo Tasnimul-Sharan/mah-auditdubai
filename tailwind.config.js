@@ -10,9 +10,8 @@ module.exports = {
       colors: {
         primary: "#0F172A", // Deep Navy (Main brand color)
         primary_light: "#1E3A8A", // Corporate Blue
-        // secondary: "#F59E0B", // Gold Accent (Premium feel)
-        secondary: "#10B981", // Emerald Green
-        secondary_two: "#FBBF24", // Light Gold (Hover / highlights)
+        secondary: "#C7993B", // Your gold (perfect choice)
+        secondary_two: "#E0B85C", // Slightly lighter gold for hover
         border_color: "#E5E7EB", // Light border
         soft_black: "#111827", // Dark text
         background: "#F8FAFC", // Main background

@@ -140,26 +140,25 @@ export default function Sidebar() {
 
   return (
     <aside className="w-64 min-h-screen bg-primary text-white flex flex-col border-r border-white/10">
-      
       {/* Logo Section */}
       <Link
         href="/"
         className="px-6 py-6 border-b border-white/10 flex items-center gap-3 hover:bg-white/5 transition"
       >
         <Image
-          src="/logo/bridge-logo.png"
+          src="/logo/mah-auditdubai-logo.png"
           alt="Logo"
-          width={160}
-          height={60}
-          className="h-10 w-auto object-contain"
+          width={1650}
+          height={1024}
+          className="h-16 w-auto object-cover rounded-md"
         />
 
         <div>
           <h2 className="text-sm font-semibold tracking-wide">
-            Audit Portal
+            MAH AUDIT
           </h2>
           <p className="text-[10px] text-gray-400 uppercase tracking-widest">
-            Dubai • UAE
+            Dubai
           </p>
         </div>
       </Link>

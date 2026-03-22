@@ -6,8 +6,8 @@ import AdminLayout from "@/components/AdminLayout";
 
 export default function AddBlogPage() {
   const [form, setForm] = useState({
-    title: "",
     slug: "",
+    title: "",
     author: "",
     date: "",
     description: "",
@@ -189,6 +189,7 @@ export default function AddBlogPage() {
           className="border p-2 w-full"
         />
         <input
+          type="date"
           name="date"
           onChange={handleChange}
           placeholder="Date"

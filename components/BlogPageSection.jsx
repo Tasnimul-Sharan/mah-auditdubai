@@ -100,7 +100,7 @@ export default function BlogPageSection() {
                 key={blog.id}
                 className="group rounded-xl overflow-hidden border"
               >
-                <div className="relative w-full h-96 overflow-hidden">
+                <div className="relative w-full h-64 overflow-hidden">
                   <Image
                     src={blog.img}
                     alt={blog.title}
@@ -110,25 +110,49 @@ export default function BlogPageSection() {
                 </div>
                 <div className="mt-4 p-6">
                   <div className="flex items-center gap-4 text-gray-500 text-sm mb-2">
-                    <span className="flex items-center gap-2">
-                      <FaRegCalendarAlt className="text-primary" /> {blog.date}
+                    {/* DATE */}
+                    <span className="flex items-center gap-2 font-medium">
+                      <span className="p-2 rounded-lg bg-primary/10 text-primary">
+                        <FaRegCalendarAlt />
+                      </span>
+                      {blog.date}
                     </span>
-                    <span className="flex items-center gap-2">
-                      <FaRegUser className="text-primary" /> By: {blog.author}
+
+                    {/* AUTHOR */}
+                    <span className="flex items-center gap-2 font-medium">
+                      <span className="p-2 rounded-lg bg-primary/10 text-primary">
+                        <FaRegUser />
+                      </span>
+                      By: {blog.author}
                     </span>
                   </div>
 
-                  <h3 className="text-lg font-bold text-secondary mb-2 hover:text-primary transition-colors duration-500">
+                  <h3 className="text-lg font-bold text-primary mb-2 group-hover:text-secondary transition-colors duration-500">
                     {blog.title}
                   </h3>
 
                   <p className="text-gray-600 text-sm">{blog.excerpt}</p>
-                  <div
+                  {/* <div
                     href={`/blogs/${blog.slug}`}
-                    className="relative mt-2 inline-flex items-center gap-1 text-primary text-sm font-semibold transition-all transform duration-500 group"
+                    className="relative mt-2 inline-flex items-center gap-1 text-primary group-hover:text-secondary text-sm font-semibold transition-all transform duration-500 group"
                   >
-                    Read More <FiArrowRight />
-                    <span className="hover-line absolute left-0 -bottom-1 h-[2px] w-0 bg-primary transition-all duration-300 ease-out group-hover:w-full"></span>
+                    Read More <FiArrowRight className="group-hover:translate-x-2" />
+                    <span className="hover-line absolute left-0 -bottom-1 h-[2px] w-0 bg-primary transition-all duration-500 ease-out group-hover:w-full"></span>
+                  </div> */}
+                  <div className="relative mt-2 inline-flex items-center gap-2 text-primary text-sm font-semibold transition-all duration-300 group">
+                    {/* TEXT */}
+                    <span className="relative transition-all duration-300 group-hover:text-secondary group-hover:translate-x-1">
+                      Read More
+                    </span>
+
+                    {/* ARROW */}
+                    <FiArrowRight className="transition-all duration-500 group-hover:translate-x-2 group-hover:text-secondary" />
+
+                    {/* UNDERLINE (smooth reveal) */}
+                    <span className="absolute left-0 -bottom-1 h-[2px] w-full bg-secondary scale-x-0 origin-left transition-transform duration-500 group-hover:scale-x-100"></span>
+
+                    {/* GLOW EFFECT (extra premium) */}
+                    <span className="absolute inset-0 rounded-md bg-secondary/10 opacity-0 blur-md transition duration-300 group-hover:opacity-100"></span>
                   </div>
                 </div>
               </div>

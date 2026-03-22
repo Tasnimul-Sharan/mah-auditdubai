@@ -15,28 +15,17 @@ cloudinary.config({
 });
 
 export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ message: "Method not allowed" });
-  }
+  if (req.method !== "POST") return res.status(405).end();
 
   try {
-    const { file } = req.body;
-
-    if (!file) {
-      return res.status(400).json({ message: "No file provided" });
-    }
+    const file = req.body.file;
 
     const upload = await cloudinary.uploader.upload(file, {
-      folder: "cv",
-      resource_type: "auto",
-      public_id: `cv_${Date.now()}`,
+      folder: "blogs",
     });
 
-    res.status(200).json({
-      url: upload.secure_url,
-    });
+    res.status(200).json({ url: upload.secure_url });
   } catch (err) {
-    console.error(err);
     res.status(500).json({ error: err.message });
   }
 }

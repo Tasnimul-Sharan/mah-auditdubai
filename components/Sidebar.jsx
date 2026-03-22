@@ -94,7 +94,6 @@
 //   );
 // }
 
-
 "use client";
 
 import { supabaseServer } from "@/lib/supabaseServer";
@@ -107,7 +106,6 @@ import {
   FaPlusCircle,
   FaTags,
   FaLayerGroup,
-  FaBriefcase,
   FaClipboardList,
 } from "react-icons/fa";
 
@@ -123,14 +121,14 @@ export default function Sidebar() {
       icon: <FaPlusCircle />,
     },
     {
-      name: "Job Posts",
-      href: "/dashboard/job-post",
-      icon: <FaBriefcase />,
+      name: "Blogs",
+      href: "/dashboard/blogs",
+      icon: <FaLayerGroup />,
     },
     {
-      name: "Add Job Post",
-      href: "/dashboard/job-post/add",
-      icon: <FaClipboardList />,
+      name: "Add Blog",
+      href: "/dashboard/blogs/add",
+      icon: <FaPlusCircle />,
     },
     { name: "Categories", href: "/dashboard/categories", icon: <FaTags /> },
     { name: "Types", href: "/dashboard/types", icon: <FaLayerGroup /> },
@@ -154,9 +152,7 @@ export default function Sidebar() {
         />
 
         <div>
-          <h2 className="text-sm font-semibold tracking-wide">
-            MAH AUDIT
-          </h2>
+          <h2 className="text-sm font-semibold tracking-wide">MAH AUDIT</h2>
           <p className="text-[10px] text-gray-400 uppercase tracking-widest">
             Dubai
           </p>

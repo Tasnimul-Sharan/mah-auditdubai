@@ -8,32 +8,26 @@ import {
   FaPhoneAlt,
   FaEnvelope,
   FaMapMarkerAlt,
+  FaYoutube,
 } from "react-icons/fa";
-import { FaXTwitter } from "react-icons/fa6";
 
-// import {
-//   FaFacebookF,
-//   FaInstagram,
-//   FaLinkedinIn,
-//   FaXTwitter,
-// } from "react-icons/fa6";
 export default function Footer() {
   const socialLinks = [
     {
       icon: FaFacebookF,
-      link: "https://facebook.com",
+      link: "https://www.facebook.com/p/MAH-Chartered-Accountants-100068129359509/",
     },
     {
       icon: FaInstagram,
-      link: "https://instagram.com",
+      link: "https://www.instagram.com/mahca2011/",
     },
     {
       icon: FaLinkedinIn,
-      link: "https://linkedin.com",
+      link: "https://www.linkedin.com/company/mah-chartered-accountants/",
     },
     {
-      icon: FaXTwitter,
-      link: "https://x.com",
+      icon: FaYoutube,
+      link: "https://www.youtube.com/@MAHCharteredAccountantsLondon",
     },
   ];
 

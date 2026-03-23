@@ -107,6 +107,7 @@ import {
   FaTags,
   FaLayerGroup,
   FaClipboardList,
+  FaFileAlt,
 } from "react-icons/fa";
 
 export default function Sidebar() {
@@ -114,6 +115,7 @@ export default function Sidebar() {
 
   const menu = [
     { name: "Dashboard", href: "/dashboard", icon: <FaHome /> },
+    { name: "Pages", href: "/dashboard/pages", icon: <FaFileAlt /> }, // ✅ NEW
     { name: "Products", href: "/dashboard/products", icon: <FaBoxOpen /> },
     {
       name: "Add Product",

@@ -14,10 +14,10 @@
 //       {/* ================= HERO ================= */}
 //       <section className="relative py-32 bg-gradient-to-b from-white to-gray-50 overflow-hidden">
 //         {/* Background Accent */}
-//         <div className="absolute top-0 left-0 w-full h-96 bg-[#5B2EFF]/5 blur-3xl -z-10" />
+//         <div className="absolute top-0 left-0 w-full h-96 bg-primary_light/5 blur-3xl -z-10" />
 
 //         <div className="custom-container text-center max-w-4xl mx-auto">
-//           <p className="uppercase tracking-widest text-sm text-[#5B2EFF] mb-4">
+//           <p className="uppercase tracking-widest text-sm text-primary_light mb-4">
 //             Our Expertise
 //           </p>
 
@@ -97,7 +97,7 @@
 //       <section className="relative py-32">
 //         <div className="custom-container">
 //           <div className="relative rounded-3xl overflow-hidden bg-[#0B1C2D] p-16 text-white">
-//             <div className="absolute inset-0 bg-gradient-to-r from-[#5B2EFF]/40 to-transparent" />
+//             <div className="absolute inset-0 bg-gradient-to-r from-primary_light/40 to-transparent" />
 
 //             <div className="relative z-10 text-center max-w-3xl mx-auto">
 //               <h2 className="text-4xl font-bold mb-6">
@@ -112,7 +112,7 @@
 //               <Link
 //                 href="/contact"
 //                 className="inline-block bg-white text-[#0B1C2D] px-10 py-4 rounded-2xl
-//                            font-semibold hover:bg-[#5B2EFF]
+//                            font-semibold hover:bg-primary_light
 //                            hover:text-white transition-all duration-300
 //                            shadow-xl"
 //               >
@@ -133,15 +133,15 @@
 //     <div
 //       className="group relative rounded-3xl p-10 bg-white shadow-sm
 //                     hover:shadow-2xl transition-all duration-500
-//                     border border-gray-100 hover:border-[#5B2EFF]/30
+//                     border border-gray-100 hover:border-primary_light/30
 //                     hover:-translate-y-2"
 //     >
 //       {/* Icon Badge */}
 //       <div
-//         className="w-14 h-14 rounded-2xl bg-[#5B2EFF]/10
+//         className="w-14 h-14 rounded-2xl bg-primary_light/10
 //                       flex items-center justify-center
-//                       mb-6 group-hover:bg-[#5B2EFF]
-//                       transition-all duration-300 text-[#5B2EFF]
+//                       mb-6 group-hover:bg-primary_light
+//                       transition-all duration-300 text-primary_light
 //                       group-hover:text-white text-xl"
 //       >
 //         {icon}
@@ -153,7 +153,7 @@
 
 //       <Link
 //         href="/contact"
-//         className="text-[#5B2EFF] font-medium flex items-center gap-2
+//         className="text-primary_light font-medium flex items-center gap-2
 //                    group-hover:gap-4 transition-all duration-300"
 //       >
 //         Learn More →
@@ -216,10 +216,10 @@ export default function ServicesSection() {
     <div className="bg-white text-[#0B1C2D] py-12 overflow-hidden">
       {/* HERO */}
       <section className="relative bg-gradient-to-b from-white to-gray-50">
-        <div className="absolute top-0 left-0 w-full h-96 bg-[#5B2EFF]/5 blur-3xl -z-10" />
+        <div className="absolute top-0 left-0 w-full h-96 bg-primary_light/5 blur-3xl -z-10" />
 
         <div className="custom-container text-center max-w-4xl mx-auto">
-          <p className="uppercase tracking-widest text-sm text-[#5B2EFF] mb-4">
+          <p className="uppercase tracking-widest text-sm text-primary_light mb-4">
             Our Expertise
           </p>
 
@@ -269,22 +269,32 @@ function ServiceCard({ service }) {
 
       {/* Content */}
       <div className="p-8">
-        <h3 className="text-xl font-semibold mb-3 group-hover:text-[#5B2EFF] transition">
+        <h3 className="text-xl font-semibold mb-3 group-hover:text-primary_light transition">
           {service.title}
         </h3>
         <p className="text-gray-600 mb-6 leading-relaxed">
           {service.description}
         </p>
-        <span className="inline-flex items-center gap-3 text-sm font-semibold text-[#5B2EFF] relative">
+        {/* <span className="inline-flex items-center gap-3 text-sm font-semibold text-primary_light relative">
           View Service Details
           <span
-            className="flex items-center justify-center w-8 h-8 rounded-full bg-[#5B2EFF]/10 
-  group-hover:bg-[#5B2EFF] transition-all duration-300"
+            className="flex items-center justify-center w-9 h-9 rounded-full 
+    bg-primary_light/10
+    group-hover:bg-primary_light
+    transition-all duration-300 ease-out
+    group-hover:scale-110"
           >
-            <FaArrowRight className="text-[#5B2EFF] group-hover:text-white transition-transform duration-300 group-hover:translate-x-1" />
+            <FaArrowRight
+              className="text-primary_light group-hover:text-white 
+      transition-all duration-300 group-hover:translate-x-1"
+            />
           </span>
-          {/* underline hover effect */}
-          <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-[#5B2EFF] group-hover:w-full transition-all duration-500"></span>
+          <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-primary_light group-hover:w-full transition-all duration-500"></span>
+        </span> */}
+        <span className="inline-flex items-center gap-2 text-sm font-semibold text-primary_light relative group-hover:gap-3 transition-all duration-300">
+          View Service Details
+          <FaArrowRight className="transition-all duration-300 group-hover:translate-x-1 group-hover:scale-110" />
+          <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-primary_light group-hover:w-full transition-all duration-500"></span>
         </span>
       </div>
     </Link>
@@ -385,7 +395,7 @@ function ServiceCard({ service }) {
   /* <section className="relative py-32">
         <div className="custom-container">
           <div className="relative rounded-3xl overflow-hidden bg-[#0B1C2D] p-16 text-white">
-            <div className="absolute inset-0 bg-gradient-to-r from-[#5B2EFF]/40 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-r from-primary_light/40 to-transparent" />
 
             <div className="relative z-10 text-center max-w-3xl mx-auto">
               <h2 className="text-4xl font-bold mb-6">
@@ -400,7 +410,7 @@ function ServiceCard({ service }) {
               <Link
                 href="/contact"
                 className="inline-block bg-white text-[#0B1C2D] px-10 py-4 rounded-2xl
-                font-semibold hover:bg-[#5B2EFF] hover:text-white transition-all duration-300 shadow-xl"
+                font-semibold hover:bg-primary_light hover:text-white transition-all duration-300 shadow-xl"
               >
                 Schedule Now
               </Link>

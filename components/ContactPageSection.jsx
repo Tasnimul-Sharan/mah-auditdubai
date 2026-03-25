@@ -272,29 +272,26 @@ export default function ContactPage() {
         >
           <h3 className="text-2xl font-bold mb-8">Direct Contact</h3>
 
-          <div className="space-y-8">
+          <div className="space-y-4">
             <ContactItem
               icon={<FaPhoneAlt />}
-              title="Direct Consultation"
-              text="+971 42 500 251"
-            />
-
-            <ContactItem
-              icon={<FaWhatsapp />}
-              title="WhatsApp Priority Line"
-              text="+971 50 786 9887"
+              title="London Office Phone"
+              text="0207 100 3610"
+              href="tel:02071003610"
             />
 
             <ContactItem
               icon={<FaEnvelope />}
-              title="Corporate Email"
-              text="sales@auditfirmsindubai.com"
+              title="Corporate Enquiries"
+              text="enquiries@mah.uk.com"
+              href="mailto:enquiries@mah.uk.com"
             />
 
             <ContactItem
               icon={<FaMapMarkerAlt />}
-              title="Dubai Office"
-              text="IBIS Hotel Building, Rigga Road, Dubai"
+              title="London Office"
+              text="2nd Floor, 154 Bishopsgate, London, EC2M 4LN"
+              href="https://maps.google.com"
             />
           </div>
         </motion.div>

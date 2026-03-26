@@ -1,3 +1,10 @@
+"use client";
+
+import Slider from "react-slick";
+import { FaQuoteRight, FaStar } from "react-icons/fa";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+
 export default function TestimonialsSection() {
   const testimonials = [
     {
@@ -15,35 +22,87 @@ export default function TestimonialsSection() {
       role: "Business Owner",
       text: "Outstanding guidance and financial insights that improved our reporting standards.",
     },
+    {
+      name: "Michael Carter",
+      role: "Managing Partner",
+      text: "Exceptional advisory service with deep industry understanding.",
+    },
   ];
 
+  const settings = {
+    dots: true,
+    infinite: true,
+    autoplay: true,
+    speed: 600,
+    autoplaySpeed: 3500,
+    slidesToShow: 3,
+    slidesToScroll: 1,
+    responsive: [
+      { breakpoint: 1024, settings: { slidesToShow: 2 } },
+      { breakpoint: 768, settings: { slidesToShow: 1 } },
+    ],
+  };
+
   return (
-    <section className="py-24 bg-gray-50">
+    <section className="py-28 bg-gradient-to-b from-white to-gray-50">
       <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-16">
+        {/* Heading */}
+        <div className="text-center mb-6">
           <h2 className="text-3xl md:text-4xl font-bold text-[#0B1C2D]">
             What Our Clients Say
           </h2>
+          <p className="text-gray-500 mt-4">Trusted by businesses worldwide</p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        <Slider {...settings}>
           {testimonials.map((item, i) => (
-            <div
-              key={i}
-              className="bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl 
-                         transition-all duration-300"
-            >
-              <p className="text-gray-600 leading-relaxed mb-6">
-                “{item.text}”
-              </p>
+            <div key={i} className="px-4">
+              <div
+                className="group h-full bg-white p-8 rounded-3xl 
+                border border-gray-100
+                shadow-[0_10px_30px_rgba(0,0,0,0.05)]
+                hover:shadow-[0_25px_60px_rgba(0,0,0,0.12)]
+                transition-all duration-500 hover:-translate-y-2"
+              >
+                {/* Top Row */}
+                <div className="flex justify-between mb-6">
+                  <div className="flex gap-1 text-[#C8A951]">
+                    <FaStar />
+                    <FaStar />
+                    <FaStar />
+                    <FaStar />
+                    <FaStar />
+                  </div>
 
-              <div>
-                <h4 className="font-semibold text-[#0B1C2D]">{item.name}</h4>
-                <p className="text-sm text-gray-500">{item.role}</p>
+                  <FaQuoteRight className="text-3xl text-primary_light opacity-20 group-hover:opacity-40 transition" />
+                </div>
+
+                {/* Text */}
+                <p className="text-gray-600 leading-relaxed mb-8">
+                  “{item.text}”
+                </p>
+
+                {/* Author */}
+                <div className="flex items-center gap-4">
+                  <div
+                    className="w-12 h-12 rounded-full bg-gradient-to-r 
+                    from-primary_light to-primary flex items-center 
+                    justify-center text-white font-semibold"
+                  >
+                    {item.name.charAt(0)}
+                  </div>
+
+                  <div>
+                    <h4 className="font-semibold text-[#0B1C2D]">
+                      {item.name}
+                    </h4>
+                    <p className="text-sm text-gray-500">{item.role}</p>
+                  </div>
+                </div>
               </div>
             </div>
           ))}
-        </div>
+        </Slider>
       </div>
     </section>
   );

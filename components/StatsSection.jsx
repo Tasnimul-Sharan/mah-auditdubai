@@ -1,33 +1,62 @@
 import Counter from "./Counter";
+import { FaBriefcase, FaGlobe, FaUsers, FaAward } from "react-icons/fa";
 
 export default function StatsSection() {
   return (
     <section className="py-24 bg-[#0B1C2D] text-white">
       <div className="max-w-6xl mx-auto px-6">
         <div className="grid md:grid-cols-4 gap-12 text-center">
-          <div>
-            <h3 className="text-4xl md:text-5xl font-bold text-[#C8A951]">
+          {/* Experience */}
+          <div className="group">
+            <div className="flex justify-center mb-4">
+              <div className="w-16 h-16 md:w-20 md:h-20 text-2xl md:text-3xl flex items-center justify-center rounded-xl bg-white/5 border border-white/10 text-secondary group-hover:scale-110 transition-all duration-300">
+                <FaBriefcase />
+              </div>
+            </div>
+
+            <h3 className="text-4xl md:text-5xl font-bold text-secondary">
               <Counter end={40} suffix="+" />
             </h3>
             <p className="mt-3 text-gray-300">Years of Experience</p>
           </div>
 
-          <div>
-            <h3 className="text-4xl md:text-5xl font-bold text-[#C8A951]">
+          {/* Countries */}
+          <div className="group">
+            <div className="flex justify-center mb-4">
+              <div className="w-16 h-16 md:w-20 md:h-20 text-2xl md:text-3xl flex items-center justify-center rounded-xl bg-white/5 border border-white/10 text-secondary group-hover:scale-110 transition-all duration-300">
+                <FaGlobe />
+              </div>
+            </div>
+
+            <h3 className="text-4xl md:text-5xl font-bold text-secondary">
               <Counter end={150} suffix="+" />
             </h3>
             <p className="mt-3 text-gray-300">Countries Served</p>
           </div>
 
-          <div>
-            <h3 className="text-4xl md:text-5xl font-bold text-[#C8A951]">
+          {/* Clients */}
+          <div className="group">
+            <div className="flex justify-center mb-4">
+              <div className="w-16 h-16 md:w-20 md:h-20 text-2xl md:text-3xl flex items-center justify-center rounded-xl bg-white/5 border border-white/10 text-secondary group-hover:scale-110 transition-all duration-300">
+                <FaUsers />
+              </div>
+            </div>
+
+            <h3 className="text-4xl md:text-5xl font-bold text-secondary">
               <Counter end={30000} suffix="+" />
             </h3>
             <p className="mt-3 text-gray-300">Clients Served</p>
           </div>
 
-          <div>
-            <h3 className="text-4xl md:text-5xl font-bold text-[#C8A951]">
+          {/* Awards */}
+          <div className="group">
+            <div className="flex justify-center mb-4">
+              <div className="w-16 h-16 md:w-20 md:h-20 text-2xl md:text-3xl flex items-center justify-center rounded-xl bg-white/5 border border-white/10 text-secondary group-hover:scale-110 transition-all duration-300">
+                <FaAward />
+              </div>
+            </div>
+
+            <h3 className="text-4xl md:text-5xl font-bold text-secondary">
               <Counter end={120} suffix="+" />
             </h3>
             <p className="mt-3 text-gray-300">Industry Awards</p>

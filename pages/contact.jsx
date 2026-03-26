@@ -3,6 +3,7 @@ import HeroSection from "@/components/HeroSection";
 import Head from "next/head";
 import EventMap from "@/components/EventMap";
 import ContactPageSection from "@/components/ContactPageSection";
+import ContactHero from "@/components/ContactHero";
 export default function ContactPage() {
   const meta = {
     title:
@@ -43,6 +44,7 @@ export default function ContactPage() {
           backgroundImage: "/contact-bg.jpg",
         }}
       />
+      <ContactHero />
       <ContactPageSection />
       {/* <EventMap /> */}
     </div>

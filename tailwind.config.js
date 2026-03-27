@@ -7,11 +7,20 @@ module.exports = {
   ],
   theme: {
     extend: {
+      // colors: {
+      //   primary: "#0F172A", // Deep Navy (Main brand color)
+      //   primary_light: "#1E3A8A", // Corporate Blue
+      //   secondary: "#C7993B", // Your gold (perfect choice)
+      //   secondary_two: "#C8A951", // Slightly lighter gold for hover
+      //   border_color: "#E5E7EB", // Light border
+      //   soft_black: "#111827", // Dark text
+      //   background: "#F8FAFC", // Main background
+      // },
       colors: {
-        primary: "#0F172A", // Deep Navy (Main brand color)
-        primary_light: "#1E3A8A", // Corporate Blue
-        secondary: "#C7993B", // Your gold (perfect choice)
-        secondary_two: "#C8A951", // Slightly lighter gold for hover
+        primary: "#38b6ff", // Brand Light Blue
+        primary_light: "#6cc9ff", // Lighter shade for hover / gradients
+        secondary: "#0F172A", // Professional dark (replacing gold)
+        secondary_two: "#1F2937", // Slightly lighter dark for hover
         border_color: "#E5E7EB", // Light border
         soft_black: "#111827", // Dark text
         background: "#F8FAFC", // Main background

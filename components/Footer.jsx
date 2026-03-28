@@ -32,7 +32,7 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="bg-primary text-gray-400">
+    <footer className="bg-secondary text-gray-400">
       {/* Top Section */}
       <div className="custom-container mx-auto pt-16 pb-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10">
         {/* About */}

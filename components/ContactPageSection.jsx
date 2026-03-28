@@ -59,7 +59,7 @@
 //   return (
 //     <div className="bg-[#F9F7FC] text-[#1C1C1E] overflow-hidden">
 //       {/* ================= HERO ================= */}
-// <section className="relative py-28 text-white bg-gradient-to-r from-primary_light to-primary">
+// <section className="relative py-28 text-white bg-gradient-to-r from-primary to-primary">
 //   <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
 
 //   <div className="relative custom-container text-center">
@@ -131,7 +131,7 @@
 
 //             <button
 //               type="submit"
-//               className="w-full bg-gradient-to-r from-primary_light to-primary text-white py-4 rounded-xl font-semibold shadow-lg hover:scale-[1.02] transition-all duration-300"
+//               className="w-full bg-gradient-to-r from-primary to-primary text-white py-4 rounded-xl font-semibold shadow-lg hover:scale-[1.02] transition-all duration-300"
 //             >
 //               Send Confidential Inquiry →
 //             </button>
@@ -206,7 +206,7 @@ function TrustCard({ icon, title, text }) {
       {/* Icon */}
       <div
         className="relative z-10 w-16 h-16 mx-auto mb-5 flex items-center justify-center 
-        rounded-2xl bg-gradient-to-br from-primary_light to-primary
+        rounded-2xl bg-gradient-to-br from-primary to-primary
         text-white text-2xl shadow-lg group-hover:scale-110 transition-all transform duration-500"
       >
         {icon}
@@ -282,7 +282,7 @@ export default function ContactSection() {
               />
             </div>
 
-            <button className="group flex items-center gap-3 bg-primary_light text-white px-6 py-3 rounded-full font-medium hover:bg-purple-800 transition">
+            <button className="group flex items-center gap-3 bg-primary text-white px-6 py-3 rounded-full font-medium hover:bg-purple-800 transition">
               Submit Form
               <FaArrowRight className="group-hover:translate-x-1 transition" />
             </button>
@@ -350,7 +350,7 @@ function ContactCard({ icon, title, text, value }) {
       <div className="flex items-start gap-4">
         <div
           className="w-12 h-12 flex items-center justify-center rounded-xl
-          bg-purple-100 text-primary_light text-lg
+          bg-purple-100 text-primary text-lg
           group-hover:scale-110 transition"
         >
           {icon}
@@ -359,7 +359,7 @@ function ContactCard({ icon, title, text, value }) {
         <div>
           <h3 className="text-lg font-semibold">{title}</h3>
           <p className="text-gray-600 text-sm mb-1">{text}</p>
-          <p className="text-primary_light font-medium">{value}</p>
+          <p className="text-primary font-medium">{value}</p>
         </div>
       </div>
     </div>

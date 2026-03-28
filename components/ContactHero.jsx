@@ -14,7 +14,7 @@ function StatCard({ number, label }) {
 
 export default function ContactHero() {
   return (
-    <section className="relative py-32 text-white overflow-hidden bg-gradient-to-r from-primary_light to-primary">
+    <section className="relative py-32 text-white overflow-hidden bg-gradient-to-r from-primary to-primary">
       {/* grid texture */}
       <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
 

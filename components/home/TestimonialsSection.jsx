@@ -74,7 +74,7 @@ export default function TestimonialsSection() {
                     <FaStar />
                   </div>
 
-                  <FaQuoteRight className="text-3xl text-primary_light opacity-20 group-hover:opacity-40 transition" />
+                  <FaQuoteRight className="text-3xl text-primary opacity-20 group-hover:opacity-40 transition" />
                 </div>
 
                 {/* Text */}
@@ -86,7 +86,7 @@ export default function TestimonialsSection() {
                 <div className="flex items-center gap-4">
                   <div
                     className="w-12 h-12 rounded-full bg-gradient-to-r 
-                    from-primary_light to-primary flex items-center 
+                    from-primary to-primary flex items-center 
                     justify-center text-white font-semibold"
                   >
                     {item.name.charAt(0)}

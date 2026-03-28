@@ -132,14 +132,14 @@ export default function Navbar() {
       <div className="hidden lg:block fixed top-0 left-0 w-full z-40 bg-primary text-white py-6">
         <div className="custom-container mx-auto flex items-center justify-between">
           {/* Left Info */}
-          <div className="flex flex-1 items-center gap-6 text-base text-gray-300">
+          <div className="flex flex-1 items-center gap-6 text-base text-white">
             <p className="flex items-center gap-2 border-r border-white/20 pr-4">
-              <FaMapMarkerAlt className="shrink-0 text-secondary" />
+              <FaMapMarkerAlt className="shrink-0 text-gray-100" />
               <span>2nd Floor, 154 Bishopsgate, London, EC2M 4LN</span>
             </p>
 
             <p className="flex items-center gap-2 border-r border-white/20 pr-4">
-              <FaEnvelope className="shrink-0 text-secondary" />
+              <FaEnvelope className="shrink-0 text-gray-100" />
               <a
                 href="mailto:enquiries@mah.uk.com"
                 className="hover:text-secondary transition"
@@ -149,7 +149,7 @@ export default function Navbar() {
             </p>
 
             <p className="flex items-center gap-2 pr-4">
-              <FaPhoneAlt className="shrink-0 text-secondary" />
+              <FaPhoneAlt className="shrink-0 text-gray-100" />
               <a
                 href="tel:02071003610"
                 className="hover:text-secondary transition"
@@ -160,7 +160,7 @@ export default function Navbar() {
           </div>
 
           {/* Social */}
-          <div className="flex items-center gap-4 ml-6 text-gray-300">
+          <div className="flex items-center gap-4 ml-6 text-white">
             <Link href="https://facebook.com" target="_blank">
               <FaFacebookF className="hover:text-secondary w-5 h-5 transition duration-300" />
             </Link>
@@ -184,12 +184,12 @@ export default function Navbar() {
         <div className="custom-container mx-auto md:h-24 h-20 flex items-center justify-between z-40 overflow-hidden">
           <Link href="/" className="flex items-center">
             <Image
-              src="/logo/mah-auditdubai-logo.png"
+              src="/logo/MAH Audit Dubai Logo-1.png"
               alt="Company Logo"
               width={1200}
               height={1200}
               priority
-              className="md:h-40 h-36 w-auto object-contain"
+              className="md:h-32 h-28 w-auto object-contain"
             />
           </Link>
           <ul className="hidden lg:flex gap-8 font-semibold text-Secound_primary">

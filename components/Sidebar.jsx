@@ -174,7 +174,7 @@ export default function Sidebar() {
               ${
                 active
                   ? "bg-secondary text-soft_black shadow-md"
-                  : "text-white/70 hover:bg-primary_light/40 hover:text-white"
+                  : "text-white/70 hover:bg-primary/40 hover:text-white"
               }`}
             >
               {/* Icon */}

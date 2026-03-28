@@ -218,7 +218,7 @@ export default function AdminHeader() {
           </div>
 
           {/* Avatar */}
-          <div className="h-10 w-10 rounded-lg bg-primary_light/40 border border-white/10 flex items-center justify-center text-secondary shadow-sm backdrop-blur-sm hover:border-secondary transition-all">
+          <div className="h-10 w-10 rounded-lg bg-primary/40 border border-white/10 flex items-center justify-center text-secondary shadow-sm backdrop-blur-sm hover:border-secondary transition-all">
             <FaUserShield size={18} />
           </div>
         </div>

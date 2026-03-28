@@ -19,7 +19,7 @@
 //             Our team prioritizes accuracy and long-term trust.
 //           </p>
 
-//           <button className="mt-8 bg-primary_light text-white px-7 py-3 rounded-xl hover:bg-[#4726d1] transition-all duration-300 shadow-lg">
+//           <button className="mt-8 bg-primary text-white px-7 py-3 rounded-xl hover:bg-[#4726d1] transition-all duration-300 shadow-lg">
 //             Contact Us
 //           </button>
 //         </div>
@@ -44,12 +44,12 @@ export default function WhyChooseUs() {
   return (
     <section className="relative py-24 bg-white overflow-hidden">
       {/* soft background accent */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-primary_light/5 blur-3xl -z-10" />
+      <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 blur-3xl -z-10" />
 
       <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-16 items-center">
         {/* IMAGE */}
         <div className="relative group">
-          <div className="absolute -inset-3 bg-gradient-to-r from-primary_light/20 to-transparent rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition" />
+          <div className="absolute -inset-3 bg-gradient-to-r from-primary/20 to-transparent rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition" />
 
           <Image
             src="/why-us.jpg"
@@ -62,7 +62,7 @@ export default function WhyChooseUs() {
 
         {/* CONTENT */}
         <div>
-          <p className="uppercase tracking-widest text-sm text-primary_light mb-4">
+          <p className="uppercase tracking-widest text-sm text-primary mb-4">
             Why Clients Choose Us
           </p>
 
@@ -82,7 +82,7 @@ export default function WhyChooseUs() {
           <div className="mt-8 space-y-4">
             {points.map((item, index) => (
               <div key={index} className="flex items-start gap-3 text-gray-700">
-                <FaCheckCircle className="text-primary_light mt-1" />
+                <FaCheckCircle className="text-primary mt-1" />
                 <span>{item}</span>
               </div>
             ))}
@@ -92,7 +92,7 @@ export default function WhyChooseUs() {
           <Link
             href="/contact"
             className="inline-flex items-center gap-3 mt-10 px-7 py-3 rounded-xl
-            bg-primary_light text-white font-semibold
+            bg-primary text-white font-semibold
             hover:bg-primary transition-all duration-300
             shadow-lg hover:shadow-xl"
           >

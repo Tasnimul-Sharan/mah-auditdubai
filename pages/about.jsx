@@ -4,8 +4,11 @@ import Head from "next/head";
 import FAQ from "@/components/FAQ";
 import VisionMission from "@/components/VisionMission";
 import OurPurposeSection from "@/components/OurPurposeSection";
-import ElegantStats from "@/components/ElegantStats";
 import PremiumCTA from "@/components/PremiumCTA";
+import WhyUs from "@/components/WhyUs";
+import StatsSection from "@/components/StatsSection";
+import ClientsSection from "@/components/home/ClientsSection";
+import TestimonialsSection from "@/components/home/TestimonialsSection";
 
 export default function AboutPage() {
   const meta = {
@@ -24,88 +27,79 @@ export default function AboutPage() {
     title: "Frequently Asked Questions",
     faqs: [
       {
-        question: "What is Bridge Pharmaceuticals Ltd.?",
+        question: "What audit services do you provide in Dubai?",
         answer:
-          "Bridge Pharmaceuticals Ltd. is a pioneering Animal Health Pharmaceutical company in Bangladesh, dedicated exclusively to Veterinary and Aquaculture medicines, Nutritional Supplements, and Biosecurity solutions.",
+          "We offer a full range of audit services including external audit, internal audit, VAT audit, forensic audit, and compliance advisory tailored to UAE regulations.",
       },
       {
-        question: "When was Bridge Pharmaceuticals established?",
+        question: "Is audit mandatory for companies in Dubai?",
         answer:
-          "Bridge Pharmaceuticals Ltd. was established in 2010 with the mission to serve farmers and livestock producers with world-class veterinary medicines at affordable prices.",
+          "Yes, many businesses in Dubai and the UAE are required to maintain audited financial statements depending on their license type, free zone regulations, and legal structure.",
       },
       {
-        question: "Who are the founders of Bridge Pharmaceuticals?",
+        question: "What is VAT compliance in the UAE?",
         answer:
-          "Bridge Pharmaceuticals was founded by Mr. Safar Ali, a pioneer in Animal Health entrepreneurship and product development, and Mr. Kamrul Hassan, a specialist in veterinary sales and distribution strategy.",
+          "VAT compliance involves proper registration, accurate record keeping, timely filing of returns, and adherence to Federal Tax Authority (FTA) regulations to avoid penalties.",
       },
       {
-        question: "Who leads Bridge Pharmaceuticals currently?",
+        question: "How often should a company conduct an audit?",
         answer:
-          "The company is led by Chairperson Mrs. Farzana Mozammel and Managing Director Mr. Gazi Md. Mokammel Hoque, who joined in 2023 and brought modern management practices and innovation-driven growth.",
+          "Most companies conduct audits annually, but internal audits and compliance checks can be performed quarterly or as needed for better financial control.",
       },
       {
-        question: "What is the corporate philosophy of Bridge Pharmaceuticals?",
+        question: "What is the difference between internal and external audit?",
         answer:
-          "Bridge Pharmaceuticals believes that Animal Health is the foundation of human prosperity. Its guiding principles are Quality, Service, Innovation, Integrity, and Sustainability.",
+          "Internal audits focus on improving internal processes and risk management, while external audits provide independent verification of financial statements for compliance and reporting.",
       },
       {
-        question: "What is the vision of Bridge Pharmaceuticals?",
+        question: "What is forensic audit and when is it needed?",
         answer:
-          "The vision is to be Bangladesh’s most trusted and innovative animal health company, delivering world-class veterinary solutions that enhance animal welfare, ensure food safety, and empower farmers for a prosperous nation.",
+          "A forensic audit is used to investigate financial fraud, misconduct, or irregularities. It is typically required in cases of disputes, legal investigations, or suspected fraud.",
       },
       {
-        question: "What is the mission of Bridge Pharmaceuticals?",
+        question: "How can audit services help my business?",
         answer:
-          "The mission is to advance livestock, poultry, aquaculture, and companion animal sectors by producing high-quality, affordable, and research-driven veterinary medicines, nutritional supplements, probiotics, and biosecurity solutions.",
+          "Audit services improve financial transparency, ensure regulatory compliance, identify risks, and help businesses make informed strategic decisions.",
       },
       {
-        question: "How does Bridge Pharmaceuticals ensure product quality?",
+        question: "What documents are required for an audit?",
         answer:
-          "Every product undergoes rigorous quality control and quality assurance processes, ensuring no compromise in safety, purity, or efficacy.",
+          "Common documents include financial statements, invoices, bank statements, tax records, payroll data, and supporting business documents.",
       },
       {
-        question: "What types of products does Bridge Pharmaceuticals offer?",
+        question: "Do you assist with VAT registration and filing?",
         answer:
-          "The company offers a comprehensive portfolio including Therapeutics, Nutritional Supplements, and Aquaculture solutions designed for disease prevention, treatment, growth, and biosecurity.",
+          "Yes, we assist businesses with VAT registration, return filing, documentation, and ongoing compliance to ensure smooth operations.",
       },
       {
-        question: "What therapeutic products are available?",
+        question: "How long does an audit process take?",
         answer:
-          "Therapeutic products include antibiotics, anti-protozoal drugs, anthelmintics, anti-parasitic medicines, and other treatments for disease prevention and control.",
+          "The duration depends on the size and complexity of the business, but typically audits take between 1 to 4 weeks.",
       },
       {
-        question:
-          "What nutritional supplements does Bridge Pharmaceuticals produce?",
+        question: "Are your audit services compliant with UAE regulations?",
         answer:
-          "Bridge Pharmaceuticals produces multivitamins, probiotics, amino acids, and multiminerals to support optimal growth, immunity, and overall animal health.",
+          "Yes, all our services follow UAE laws and are aligned with Federal Tax Authority (FTA) guidelines and international auditing standards.",
       },
       {
-        question: "Does Bridge Pharmaceuticals provide aquaculture solutions?",
+        question: "What industries do you serve?",
         answer:
-          "Yes. The company offers aquaculture-focused biosecurity products and pond management solutions to improve water quality, fish health, and farm productivity.",
+          "We work with a wide range of industries including trading, manufacturing, real estate, technology, and professional services across the UAE.",
       },
       {
-        question:
-          "How does Bridge Pharmaceuticals support farmers and veterinarians?",
+        question: "Can small businesses benefit from audit services?",
         answer:
-          "The company supports farmers and veterinarians through reliable product supply, technical training, field-level assistance, and continuous knowledge sharing.",
+          "Absolutely. Audit and compliance services help small businesses maintain accurate records, avoid penalties, and build credibility with stakeholders.",
       },
       {
-        question:
-          "What makes Bridge Pharmaceuticals different from competitors?",
+        question: "How do you ensure data confidentiality?",
         answer:
-          "Bridge Pharmaceuticals combines scientific innovation, ethical business practices, affordable pricing, and farmer-centric services, making it a trusted and reliable home-grown brand.",
+          "We follow strict confidentiality protocols and use secure systems to protect all client data and financial information.",
       },
       {
-        question: "Is Bridge Pharmaceuticals committed to sustainability?",
+        question: "How can I get started with your audit services?",
         answer:
-          "Yes. Sustainability is a core value, reflected in responsible manufacturing, ethical operations, and long-term strategies that benefit animals, farmers, and society.",
-      },
-      {
-        question:
-          "How can customers or partners contact Bridge Pharmaceuticals?",
-        answer:
-          "Customers and partners can contact Bridge Pharmaceuticals through its official office, sales representatives, or authorized distributors across Bangladesh.",
+          "You can contact us through our website, email, or phone to schedule a consultation and discuss your business requirements.",
       },
     ],
   };
@@ -139,8 +133,10 @@ export default function AboutPage() {
       <AboutUsSection />
       <OurPurposeSection />
       <VisionMission />
-      {/* <LeadershipHighlight /> */}
-      <ElegantStats />
+      <WhyUs />
+      <StatsSection />
+      <ClientsSection />
+      <TestimonialsSection />
       <FAQ faqData={faqData} />
       <PremiumCTA />
     </div>

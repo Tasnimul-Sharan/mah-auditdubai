@@ -61,9 +61,13 @@ export default function FAQ({ faqData }) {
   };
 
   return (
-    <section className="max-w-4xl mx-auto py-20 px-6">
+    <section className="relative max-w-4xl mx-auto py-20 px-6">
+      {/* Background blur */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[400px] h-[400px] bg-primary/10 blur-[100px] opacity-30 pointer-events-none" />
+
+      {/* Heading */}
       <motion.h2
-        className="text-center text-3xl md:text-4xl font-bold mb-14"
+        className="text-center text-3xl md:text-4xl font-bold mb-14 text-soft_black"
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
@@ -71,61 +75,87 @@ export default function FAQ({ faqData }) {
         {faqData.title}
       </motion.h2>
 
-      <div className="space-y-6">
+      <div className="space-y-5">
         {faqData.faqs.map((faq, index) => {
           const isActive = activeIndex === index;
+
           return (
             <motion.div
               key={index}
               onClick={() => toggleFAQ(index)}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 25 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: index * 0.05 }}
-              className="relative cursor-pointer bg-white border border-gray-200 rounded-xl hover:bg-Secound_primary/10 p-6 transition-all transform-gpu duration-500 overflow-hidden"
-            >
-              <span
-                className={`absolute left-0 top-0 h-full w-1 rounded-l-xl transition-all transform-gpu duration-500 ${
-                  isActive ? "bg-primary" : "bg-transparent"
+              className={`group cursor-pointer rounded-2xl border transition-all duration-300
+                ${
+                  isActive
+                    ? "border-primary bg-background shadow-sm"
+                    : "border-border_color bg-white hover:border-primary/50"
                 }`}
-              />
+            >
+              <div className="p-5 md:p-6">
+                {/* Top Row */}
+                <div className="flex items-start gap-4">
+                  {/* Index */}
+                  <span className="text-primary font-semibold text-sm tracking-widest">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
 
-              <div className="flex items-start gap-4">
-                <span className="text-primary font-semibold">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <div className="flex-1">
-                  <h3 className="font-semibold text-gray-900 text-lg">
-                    {faq.question}
-                  </h3>
+                  {/* Question */}
+                  <div className="flex-1">
+                    <h3
+                      className={`text-lg md:text-xl font-semibold transition-colors duration-300
+                        ${
+                          isActive
+                            ? "text-primary"
+                            : "text-soft_black group-hover:text-primary"
+                        }`}
+                    >
+                      {faq.question}
+                    </h3>
+                  </div>
+
+                  {/* Icon */}
+                  <span
+                    className={`flex items-center justify-center w-10 h-10 rounded-full transition-all duration-300
+                      ${
+                        isActive
+                          ? "bg-primary text-white rotate-180"
+                          : "bg-background text-soft_black group-hover:bg-primary group-hover:text-white"
+                      }`}
+                  >
+                    <motion.div
+                      animate={{ rotate: isActive ? 180 : 0 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      {isActive ? (
+                        <AiOutlineMinus className="text-lg" />
+                      ) : (
+                        <AiOutlinePlus className="text-lg" />
+                      )}
+                    </motion.div>
+                  </span>
                 </div>
-                {/* <span
-                  className={`text-xl transition-transform duration-300 ${
-                    isActive ? "rotate-180 text-primary" : "text-gray-400"
-                  }`}
-                >
-                  {isActive ? <AiOutlineMinus /> : <AiOutlinePlus />}
-                </span> */}
-                <span
-                  className={`flex items-center justify-center w-9 h-9 rounded-full transition-all transform-gpu duration-500
-    ${isActive ? "bg-primary text-white rotate-180 scale-105" : "bg-primary text-white"}
-  `}
-                >
-                  {isActive ? (
-                    <AiOutlineMinus className="text-lg" />
-                  ) : (
-                    <AiOutlinePlus className="text-lg" />
-                  )}
-                </span>
-              </div>
 
-              {/* Answer */}
-              <div
-                ref={(el) => (answerRefs.current[index] = el)}
-                className="pl-10 pr-4 pt-3 text-gray-600 text-sm leading-relaxed overflow-hidden"
-                style={{ height: 0, opacity: 0, display: "none" }}
-              >
-                {faq.answer}
+                {/* Divider */}
+                <div
+                  className={`h-[1px] bg-border_color mt-4 mb-2 transition-all duration-300
+                    ${
+                      isActive
+                        ? "opacity-100 scale-x-100"
+                        : "opacity-0 scale-x-0"
+                    }`}
+                />
+
+                {/* Answer */}
+                <div
+                  ref={(el) => (answerRefs.current[index] = el)}
+                  className="pl-8 pr-2 text-secondary_two text-sm md:text-base leading-relaxed overflow-hidden"
+                  style={{ height: 0, opacity: 0, display: "none" }}
+                >
+                  {faq.answer}
+                </div>
               </div>
             </motion.div>
           );

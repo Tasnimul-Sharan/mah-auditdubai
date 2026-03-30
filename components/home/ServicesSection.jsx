@@ -168,6 +168,13 @@ import { FaArrowRight } from "react-icons/fa";
 
 const services = [
   {
+    title: "Forensic Audit",
+    description:
+      "Financial investigation and fraud detection using advanced analytical methodologies.",
+    image: "/services/forensic-audit.jpg",
+    slug: "forensic-audit",
+  },
+  {
     title: "External Audit Services",
     description:
       "Independent statutory audits ensuring full regulatory compliance and transparent financial reporting.",
@@ -180,13 +187,6 @@ const services = [
       "Risk assessment frameworks and internal control systems to strengthen governance.",
     image: "/services/internal-audit.jpg",
     slug: "internal-audit",
-  },
-  {
-    title: "Forensic Audit",
-    description:
-      "Financial investigation and fraud detection using advanced analytical methodologies.",
-    image: "/services/forensic-audit.jpg",
-    slug: "forensic-audit",
   },
   {
     title: "Tax Advisory",

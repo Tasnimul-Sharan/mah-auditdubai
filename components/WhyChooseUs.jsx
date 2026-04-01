@@ -1,36 +1,7 @@
-// export default function WhyChooseUs() {
-//   return (
-//     <section className="py-24 bg-gray-50">
-//       <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-16 items-center">
-//         <img
-//           src="/why-us.jpg"
-//           alt="Why Choose Us"
-//           className="rounded-2xl shadow-xl"
-//         />
-
-//         <div>
-//           <h2 className="text-3xl md:text-4xl font-bold text-[#0B1C2D]">
-//             Why Partner With Our Firm?
-//           </h2>
-
-//           <p className="mt-6 text-gray-600 leading-relaxed">
-//             We combine regulatory expertise with precision-driven audit
-//             methodology to ensure compliance, transparency, and business growth.
-//             Our team prioritizes accuracy and long-term trust.
-//           </p>
-
-//           <button className="mt-8 bg-primary text-white px-7 py-3 rounded-xl hover:bg-[#4726d1] transition-all duration-300 shadow-lg">
-//             Contact Us
-//           </button>
-//         </div>
-//       </div>
-//     </section>
-//   );
-// }
-
 import Image from "next/image";
 import Link from "next/link";
-import { FaCheckCircle } from "react-icons/fa";
+import { FaCheckCircle, FaStar } from "react-icons/fa";
+import SectionBadge from "./SectionBadge";
 
 export default function WhyChooseUs() {
   const points = [
@@ -62,9 +33,9 @@ export default function WhyChooseUs() {
 
         {/* CONTENT */}
         <div>
-          <p className="uppercase tracking-widest text-sm text-primary mb-4">
+          <SectionBadge icon={FaStar} className="mb-4">
             Why Clients Choose Us
-          </p>
+          </SectionBadge>
 
           <h2 className="text-4xl font-bold text-[#0B1C2D] leading-tight">
             Trusted Audit & Advisory Partner

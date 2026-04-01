@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { FaCheckCircle } from "react-icons/fa";
+import { FaCheckCircle, FaIndustry } from "react-icons/fa";
+import SectionBadge from "./SectionBadge";
 
 const industries = [
   "Small & Medium Enterprises (SMEs)",
@@ -18,9 +19,9 @@ export default function WhoWeWorkWith() {
       <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center">
         {/* LEFT CONTENT */}
         <div>
-          <p className="text-primary font-semibold tracking-widest uppercase mb-4">
-            Industries We Serve
-          </p>
+          <div className="flex justify-start mb-4">
+            <SectionBadge    icon={FaIndustry}>Industries We Serve</SectionBadge>
+          </div>
 
           <h2 className="text-4xl font-bold leading-tight mb-6">
             Trusted by Businesses Across Multiple Sectors
@@ -42,7 +43,7 @@ export default function WhoWeWorkWith() {
           ))}
           {/* </div> */}
 
-          <button className="mt-10 border border-primary text-primary px-8 py-3 rounded-xl hover:bg-primary hover:text-white transition">
+          <button className="mt-10 border border-primary text-primary px-8 py-3 rounded-md hover:bg-primary hover:text-white transition-all transform duration-300">
             Consult With Our Experts
           </button>
         </div>

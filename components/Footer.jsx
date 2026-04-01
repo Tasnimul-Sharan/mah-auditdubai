@@ -40,7 +40,7 @@ export default function Footer() {
           {/* Logo */}
           <div className="mb-5">
             <Image
-              src="/logo/mah-auditdubai-logo.png" // 👉 your logo path
+              src="/logo/MAH Audit Dubai Logo-1.png"
               alt="Audit Firms in Dubai"
               width={1536}
               height={1024}

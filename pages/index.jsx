@@ -9,6 +9,7 @@ import TestimonialsSection from "@/components/home/TestimonialsSection";
 import ServicesSection from "@/components/home/ServicesSection";
 import WhyChooseUs from "@/components/WhyChooseUs";
 import WhoWeWorkWith from "@/components/WhoWeWorkWith";
+import ContactSection from "@/components/ContactSection";
 export default function Home() {
   const meta = {
     title:
@@ -67,7 +68,8 @@ export default function Home() {
       <ClientsSection />
       <TestimonialsSection />
       <BlogSection />
-      <CTASection />
+      {/* <CTASection /> */}
+      <ContactSection />
     </div>
   );
 }

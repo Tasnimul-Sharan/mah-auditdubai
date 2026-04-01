@@ -1,186 +1,3 @@
-// "use client";
-
-// import { motion } from "framer-motion";
-// import {
-//   FaPhoneAlt,
-//   FaWhatsapp,
-//   FaEnvelope,
-//   FaMapMarkerAlt,
-//   FaShieldAlt,
-//   FaBolt,
-//   FaAward,
-// } from "react-icons/fa";
-
-// function ContactItem({ icon, title, text }) {
-//   return (
-//     <div className="flex items-start gap-4">
-//       <div className="text-xl text-primary mt-1">{icon}</div>
-//       <div>
-//         <h4 className="font-semibold text-lg">{title}</h4>
-//         <p className="text-gray-600">{text}</p>
-//       </div>
-//     </div>
-//   );
-// }
-
-// function InputField({ placeholder }) {
-//   return (
-//     <input
-//       type="text"
-//       placeholder={placeholder}
-//       className="w-full border border-gray-200 rounded-xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-primary"
-//     />
-//   );
-// }
-
-// function TextareaField({ placeholder }) {
-//   return (
-//     <textarea
-//       rows={5}
-//       placeholder={placeholder}
-//       className="w-full border border-gray-200 rounded-xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-primary"
-//     />
-//   );
-// }
-
-// function TrustCard({ icon, title, text }) {
-//   return (
-//     <div className="bg-white p-8 rounded-3xl shadow-lg text-center">
-//       <div className="text-3xl text-primary mb-4 flex justify-center">
-//         {icon}
-//       </div>
-//       <h4 className="font-bold text-lg mb-2">{title}</h4>
-//       <p className="text-gray-600">{text}</p>
-//     </div>
-//   );
-// }
-
-// export default function ContactPage() {
-//   return (
-//     <div className="bg-[#F9F7FC] text-[#1C1C1E] overflow-hidden">
-//       {/* ================= HERO ================= */}
-// <section className="relative py-28 text-white bg-gradient-to-r from-primary to-primary">
-//   <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
-
-//   <div className="relative custom-container text-center">
-//     <h1 className="text-4xl md:text-6xl font-bold mb-6">
-//       Let’s Start a Strategic Conversation
-//     </h1>
-//     <p className="text-lg md:text-xl max-w-3xl mx-auto opacity-90 mb-8">
-//       We’re here to guide your business with clarity, compliance, and
-//       confidence.
-//     </p>
-
-//     <div className="flex flex-wrap justify-center gap-6 text-sm md:text-base">
-//       <span>⭐ 40+ Years Experience</span>
-//       <span>🌍 150+ Countries</span>
-//       <span>🛡 Trusted by 30,000+ Clients</span>
-//     </div>
-//   </div>
-// </section>
-
-//       {/* ================= MAIN CONTACT SECTION ================= */}
-//       <section className="py-24 custom-container grid lg:grid-cols-2 gap-16">
-//         {/* ========= LEFT GLASS PANEL ========= */}
-//         <motion.div
-//           initial={{ opacity: 0, x: -40 }}
-//           whileInView={{ opacity: 1, x: 0 }}
-//           transition={{ duration: 0.6 }}
-//           className="bg-white/70 backdrop-blur-xl rounded-3xl p-10 shadow-2xl border"
-//         >
-//           <h3 className="text-2xl font-bold mb-8">Direct Contact</h3>
-
-//           <div className="space-y-4">
-//             <ContactItem
-//               icon={<FaPhoneAlt />}
-//               title="London Office Phone"
-//               text="0207 100 3610"
-//               href="tel:02071003610"
-//             />
-
-//             <ContactItem
-//               icon={<FaEnvelope />}
-//               title="Corporate Enquiries"
-//               text="enquiries@mah.uk.com"
-//               href="mailto:enquiries@mah.uk.com"
-//             />
-
-//             <ContactItem
-//               icon={<FaMapMarkerAlt />}
-//               title="London Office"
-//               text="2nd Floor, 154 Bishopsgate, London, EC2M 4LN"
-//               href="https://maps.google.com"
-//             />
-//           </div>
-//         </motion.div>
-
-//         {/* ========= RIGHT FORM ========= */}
-//         <motion.div
-//           initial={{ opacity: 0, x: 40 }}
-//           whileInView={{ opacity: 1, x: 0 }}
-//           transition={{ duration: 0.6 }}
-//           className="bg-white rounded-3xl p-12 shadow-2xl border border-gray-200"
-//         >
-//           <h3 className="text-2xl font-bold mb-8">Send Confidential Inquiry</h3>
-
-//           <form className="space-y-6">
-//             <InputField placeholder="Full Name" />
-//             <InputField placeholder="Email Address" />
-//             <InputField placeholder="Subject" />
-//             <TextareaField placeholder="Your Message" />
-
-//             <button
-//               type="submit"
-//               className="w-full bg-gradient-to-r from-primary to-primary text-white py-4 rounded-xl font-semibold shadow-lg hover:scale-[1.02] transition-all duration-300"
-//             >
-//               Send Confidential Inquiry →
-//             </button>
-//           </form>
-//         </motion.div>
-//       </section>
-
-//       {/* ================= WHY CONTACT US ================= */}
-//       <section className="pb-24 custom-container">
-//         <div className="grid md:grid-cols-3 gap-8">
-//           <TrustCard
-//             icon={<FaShieldAlt />}
-//             title="100% Confidential"
-//             text="Your consultation remains strictly private."
-//           />
-
-//           <TrustCard
-//             icon={<FaBolt />}
-//             title="Fast Response"
-//             text="We respond within 24 business hours."
-//           />
-
-//           <TrustCard
-//             icon={<FaAward />}
-//             title="Award Winning Experts"
-//             text="Certified and experienced audit professionals."
-//           />
-//         </div>
-//       </section>
-
-//       {/* ================= MAP SECTION ================= */}
-//       <section className="relative">
-//         <div className="absolute top-8 left-8 bg-white p-6 rounded-2xl shadow-xl z-10">
-//           <h4 className="font-bold text-lg mb-2">Visit Our Dubai Office</h4>
-//           <button className="text-primary font-semibold">
-//             Open in Google Maps →
-//           </button>
-//         </div>
-
-//         <iframe
-//           src="https://www.google.com/maps/embed?..."
-//           className="w-full h-[500px] rounded-t-[40px]"
-//           loading="lazy"
-//         />
-//       </section>
-//     </div>
-//   );
-// }
-
 import {
   FaPhoneAlt,
   FaEnvelope,
@@ -194,7 +11,7 @@ import {
 function TrustCard({ icon, title, text }) {
   return (
     <div
-      className="group relative bg-white p-8 rounded-3xl 
+      className="group relative bg-white p-8 rounded-3xl
       border border-gray-100
       shadow-[0_10px_30px_rgba(0,0,0,0.06)]
       hover:shadow-[0_25px_60px_rgba(0,0,0,0.12)]
@@ -205,7 +22,7 @@ function TrustCard({ icon, title, text }) {
 
       {/* Icon */}
       <div
-        className="relative z-10 w-16 h-16 mx-auto mb-5 flex items-center justify-center 
+        className="relative z-10 w-16 h-16 mx-auto mb-5 flex items-center justify-center
         rounded-2xl bg-gradient-to-br from-primary to-primary
         text-white text-2xl shadow-lg group-hover:scale-110 transition-all transform duration-500"
       >
@@ -381,3 +198,204 @@ function Input({ label, placeholder, required }) {
     </div>
   );
 }
+
+// "use client";
+// import {
+//   FaPhoneAlt,
+//   FaEnvelope,
+//   FaMapMarkerAlt,
+//   FaArrowRight,
+//   FaShieldAlt,
+//   FaBolt,
+//   FaAward,
+// } from "react-icons/fa";
+
+// /* ================= MAIN COMPONENT ================= */
+// export default function ContactPage() {
+//   return (
+//     <div className="bg-[#F7F5FB]">
+//       {/* ================= HERO ================= */}
+//       <section className="text-center py-20 px-4">
+//         <h1 className="text-4xl font-bold mb-4">
+//           Let’s Talk About Your Project
+//         </h1>
+//         <p className="text-gray-600 max-w-xl mx-auto">
+//           Have a question or need expert consultation? Reach out to us and we’ll
+//           get back within 24 hours.
+//         </p>
+//       </section>
+
+//       {/* ================= CONTACT CARDS ================= */}
+//       <section className="max-w-6xl mx-auto grid md:grid-cols-3 gap-6 px-4 mb-20">
+//         <ContactCard
+//           icon={<FaPhoneAlt />}
+//           title="Call Us"
+//           text="Speak directly with our team"
+//           value="+44 0207 100 3610"
+//         />
+//         <ContactCard
+//           icon={<FaEnvelope />}
+//           title="Email Us"
+//           text="Send your inquiry anytime"
+//           value="enquiries@mah.uk.com"
+//         />
+//         <ContactCard
+//           icon={<FaMapMarkerAlt />}
+//           title="Visit Office"
+//           text="Come meet us in person"
+//           value="London, UK"
+//         />
+//       </section>
+
+//       {/* ================= FORM ================= */}
+//       <section className="max-w-3xl mx-auto px-4 mb-20">
+//         <div className="bg-white p-10 rounded-3xl shadow-xl border">
+//           <h2 className="text-2xl font-bold text-center mb-2">
+//             Send Us a Message
+//           </h2>
+
+//           <p className="text-gray-600 text-center mb-6">
+//             Fill out the form and we’ll get back to you shortly.
+//           </p>
+
+//           <form className="space-y-5">
+//             <Input label="Full Name" placeholder="Your Name" />
+//             <Input label="Email" placeholder="Your Email" required />
+//             <Input label="Subject" placeholder="Subject" />
+
+//             <select className="w-full p-3 border rounded-xl">
+//               <option>Select Service</option>
+//               <option>Audit</option>
+//               <option>Accounting</option>
+//               <option>Consulting</option>
+//             </select>
+
+//             <textarea
+//               rows="4"
+//               placeholder="Your Message"
+//               className="w-full p-3 border rounded-xl"
+//             />
+
+//             <button className="mx-auto flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-full hover:bg-purple-800 transition">
+//               Submit Form
+//               <FaArrowRight />
+//             </button>
+//           </form>
+//         </div>
+//       </section>
+
+//       {/* ================= TRUST ================= */}
+//       <section className="max-w-6xl mx-auto grid md:grid-cols-3 gap-6 px-4 mb-20">
+//         <TrustCard
+//           icon={<FaShieldAlt />}
+//           title="100% Confidential"
+//           text="Your data is fully secure"
+//         />
+//         <TrustCard
+//           icon={<FaBolt />}
+//           title="Fast Response"
+//           text="Reply within 24 hours"
+//         />
+//         <TrustCard
+//           icon={<FaAward />}
+//           title="Expert Team"
+//           text="Certified professionals"
+//         />
+//       </section>
+
+//       {/* ================= FAQ ================= */}
+//       <section className="max-w-4xl mx-auto px-4 mb-20">
+//         <h2 className="text-2xl font-bold text-center mb-8">
+//           Frequently Asked Questions
+//         </h2>
+
+//         <div className="space-y-4">
+//           <Faq
+//             q="How long does it take to respond?"
+//             a="We usually respond within 24 business hours."
+//           />
+//           <Faq
+//             q="Is consultation free?"
+//             a="Yes, initial consultation is completely free."
+//           />
+//           <Faq
+//             q="What services do you offer?"
+//             a="We provide audit, accounting, and consulting services."
+//           />
+//         </div>
+//       </section>
+
+//       {/* ================= CTA ================= */}
+//       <section className="text-center py-16 bg-white">
+//         <h2 className="text-2xl font-bold mb-4">Still have questions?</h2>
+//         <p className="text-gray-600 mb-6">
+//           Book a free consultation with our experts.
+//         </p>
+
+//         <button className="bg-primary text-white px-8 py-3 rounded-full hover:bg-purple-800 transition">
+//           Book a Call
+//         </button>
+//       </section>
+
+//       {/* ================= MAP ================= */}
+//       <section>
+//         <iframe
+//           src="https://www.google.com/maps/embed?pb=!1m18..."
+//           className="w-full h-[400px]"
+//           loading="lazy"
+//         />
+//       </section>
+//     </div>
+//   );
+// }
+
+// /* ================= SMALL COMPONENTS ================= */
+
+// function ContactCard({ icon, title, text, value }) {
+//   return (
+//     <div className="bg-white p-6 rounded-2xl shadow hover:shadow-xl transition">
+//       <div className="flex gap-4">
+//         <div className="text-primary text-xl">{icon}</div>
+//         <div>
+//           <h4 className="font-semibold">{title}</h4>
+//           <p className="text-sm text-gray-500">{text}</p>
+//           <p className="text-primary">{value}</p>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
+
+// function TrustCard({ icon, title, text }) {
+//   return (
+//     <div className="bg-white p-6 rounded-2xl text-center shadow">
+//       <div className="text-primary text-2xl mb-3">{icon}</div>
+//       <h4 className="font-semibold">{title}</h4>
+//       <p className="text-sm text-gray-500">{text}</p>
+//     </div>
+//   );
+// }
+
+// function Faq({ q, a }) {
+//   return (
+//     <div className="bg-white p-5 rounded-xl shadow">
+//       <h4 className="font-semibold">{q}</h4>
+//       <p className="text-gray-600 text-sm mt-1">{a}</p>
+//     </div>
+//   );
+// }
+
+// function Input({ label, placeholder, required }) {
+//   return (
+//     <div>
+//       <label className="text-sm font-medium">
+//         {label} {required && "*"}
+//       </label>
+//       <input
+//         type="text"
+//         placeholder={placeholder}
+//         className="w-full mt-1 p-3 border rounded-xl"
+//       />
+//     </div>
+//   );
+// }

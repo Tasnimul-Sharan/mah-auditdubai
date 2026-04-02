@@ -92,7 +92,7 @@ const blogs = [
 export default function BlogPageSection() {
   return (
     <section className="py-20 bg-white relative">
-      <div className="custom-container mx-auto">
+      <div className="max-w-7xl mx-auto px-6 md:px-0">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {blogs.map((blog) => (
             <Link href={`/blogs/${blog.slug}`}>
@@ -127,7 +127,7 @@ export default function BlogPageSection() {
                     </span>
                   </div>
 
-                  <h3 className="text-lg font-bold text-primary mb-2 group-hover:text-secondary transition-colors duration-500">
+                  <h3 className="text-lg font-bold text-secondary mb-2 group-hover:text-primary transition-colors duration-500">
                     {blog.title}
                   </h3>
 
@@ -139,20 +139,20 @@ export default function BlogPageSection() {
                     Read More <FiArrowRight className="group-hover:translate-x-2" />
                     <span className="hover-line absolute left-0 -bottom-1 h-[2px] w-0 bg-primary transition-all duration-500 ease-out group-hover:w-full"></span>
                   </div> */}
-                  <div className="relative mt-2 inline-flex items-center gap-2 text-primary text-sm font-semibold transition-all duration-300 group">
+                  <div className="relative mt-2 inline-flex items-center gap-2 text-secondary text-sm font-semibold transition-all duration-300 group">
                     {/* TEXT */}
-                    <span className="relative transition-all duration-300 group-hover:text-secondary group-hover:translate-x-1">
+                    <span className="relative transition-all duration-300 group-hover:text-primary group-hover:translate-x-1">
                       Read More
                     </span>
 
                     {/* ARROW */}
-                    <FiArrowRight className="transition-all duration-500 group-hover:translate-x-2 group-hover:text-secondary" />
+                    <FiArrowRight className="transition-all duration-500 group-hover:translate-x-2 group-hover:text-primary" />
 
                     {/* UNDERLINE (smooth reveal) */}
-                    <span className="absolute left-0 -bottom-1 h-[2px] w-full bg-secondary scale-x-0 origin-left transition-transform duration-500 group-hover:scale-x-100"></span>
+                    <span className="absolute left-0 -bottom-1 h-[2px] w-full bg-primary scale-x-0 origin-left transition-transform duration-500 group-hover:scale-x-100"></span>
 
                     {/* GLOW EFFECT (extra premium) */}
-                    <span className="absolute inset-0 rounded-md bg-secondary/10 opacity-0 blur-md transition duration-300 group-hover:opacity-100"></span>
+                    <span className="absolute inset-0 rounded-md bg-primary/10 opacity-0 blur-md transition duration-300 group-hover:opacity-100"></span>
                   </div>
                 </div>
               </div>

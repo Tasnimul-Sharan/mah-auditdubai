@@ -7,7 +7,7 @@ export default function OurPurposeSection() {
             Our Purpose
           </h2>
 
-          <div className="w-16 h-1 bg-[#C8A951] my-6"></div>
+          <div className="w-16 h-1 bg-primary my-6"></div>
 
           <p className="text-gray-600 leading-relaxed">
             We assist enterprises, high-net-worth individuals, and corporations

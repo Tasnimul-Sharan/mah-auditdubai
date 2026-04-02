@@ -46,7 +46,7 @@ export default function ContactPage() {
       />
       <ContactHero />
       <ContactPageSection />
-      {/* <EventMap /> */}
+      <EventMap />
     </div>
   );
 }

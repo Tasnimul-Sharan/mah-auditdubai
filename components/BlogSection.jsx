@@ -1,10 +1,16 @@
 "use client";
 import Image from "next/image";
-import { FaArrowRight, FaBookOpen, FaRegUser } from "react-icons/fa";
+import {
+  FaArrowRight,
+  FaBookOpen,
+  FaRegCalendarAlt,
+  FaRegUser,
+} from "react-icons/fa";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Button from "./Button";
 import SectionBadge from "./SectionBadge";
+import { FiArrowRight } from "react-icons/fi";
 
 const blogs = [
   {
@@ -50,7 +56,7 @@ const cardVariants = {
 
 export default function BlogSection() {
   return (
-    <section className="py-24 bg-gray-50 relative">
+    <section className="py-24 bg-secondary/5 relative">
       <div className="custom-container mx-auto">
         {/* ================= Header ================= */}
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14">
@@ -79,57 +85,75 @@ export default function BlogSection() {
         </div>
 
         {/* ================= Blog Cards ================= */}
-        <motion.div
+                <motion.div
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10"
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, amount: 0.2 }}
         >
-          {blogs.map((blog) => (
-            <motion.article
-              key={blog.id}
-              variants={cardVariants}
-              className="group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-500"
-            >
-              {/* Image */}
-              <div className="relative h-64 overflow-hidden">
-                <motion.div
-                  whileHover={{ scale: 1.08 }}
-                  transition={{ duration: 0.6, ease: "easeOut" }}
-                  className="relative w-full h-full"
-                >
-                  <Image
-                    src={blog.img}
-                    alt={blog.title}
-                    fill
-                    className="object-cover"
-                  />
-                </motion.div>
+          {blogs.slice(0, 3).map((blog) => (
+            <motion.article key={blog.id} variants={cardVariants}>
+              <Link
+                href={`/blogs/${blog.slug}`}
+                className="block group rounded-xl bg-white overflow-hidden border
+        hover:shadow-xl transition-all duration-500 hover:-translate-y-2"
+              >
+              <div className="relative w-full h-64 overflow-hidden">
+                <Image
+                  src={blog.img}
+                  alt={blog.title}
+                  fill
+                  className="object-cover rounded transform transition-all duration-1000 group-hover:scale-125"
+                />
               </div>
-
-              {/* Content */}
-              <div className="p-7">
-                <div className="flex items-center gap-4 mb-4">
-                  <span className="inline-flex items-center text-xs font-semibold tracking-wider text-primary bg-primary/10 px-3 py-1 rounded-full">
+              <div className="mt-4 p-6">
+                <div className="flex items-center gap-4 text-gray-500 text-sm mb-2">
+                  {/* DATE */}
+                  <span className="flex items-center gap-2 font-medium">
+                    <span className="p-2 rounded-lg bg-primary/10 text-primary">
+                      <FaRegCalendarAlt />
+                    </span>
                     {blog.date}
                   </span>
 
-                  <div className="flex items-center gap-2 text-gray-500 text-xs">
-                    <FaRegUser />
-                    <span>{blog.author}</span>
-                  </div>
+                  {/* AUTHOR */}
+                  <span className="flex items-center gap-2 font-medium">
+                    <span className="p-2 rounded-lg bg-primary/10 text-primary">
+                      <FaRegUser />
+                    </span>
+                    By: {blog.author}
+                  </span>
                 </div>
 
-                <h3 className="text-lg font-semibold text-gray-900 leading-snug mb-5">
+                <h3 className="text-lg font-bold text-secondary mb-2 group-hover:text-primary transition-colors duration-500">
                   {blog.title}
                 </h3>
 
-                <Link href={`/blogs/${blog.slug}`}>
-                  <span className="inline-flex items-center gap-2 text-primary font-semibold text-sm group-hover:gap-3 transition-all duration-300">
-                    Read Article <FaArrowRight />
+                <p className="text-gray-600 text-sm">{blog.excerpt}</p>
+                {/* <div
+                                href={`/blogs/${blog.slug}`}
+                                className="relative mt-2 inline-flex items-center gap-1 text-primary group-hover:text-secondary text-sm font-semibold transition-all transform duration-500 group"
+                              >
+                                Read More <FiArrowRight className="group-hover:translate-x-2" />
+                                <span className="hover-line absolute left-0 -bottom-1 h-[2px] w-0 bg-primary transition-all duration-500 ease-out group-hover:w-full"></span>
+                              </div> */}
+                <div className="relative mt-2 inline-flex items-center gap-2 text-secondary text-sm font-semibold transition-all duration-300 group">
+                  {/* TEXT */}
+                  <span className="relative transition-all duration-300 group-hover:text-primary group-hover:translate-x-1">
+                    Read More
                   </span>
+
+                  {/* ARROW */}
+                  <FiArrowRight className="transition-all duration-500 group-hover:translate-x-2 group-hover:text-primary" />
+
+                  {/* UNDERLINE (smooth reveal) */}
+                  <span className="absolute left-0 -bottom-1 h-[2px] w-full bg-primary scale-x-0 origin-left transition-transform duration-500 group-hover:scale-x-100"></span>
+
+                  {/* GLOW EFFECT (extra premium) */}
+                  <span className="absolute inset-0 rounded-md bg-primary/10 opacity-0 blur-md transition duration-300 group-hover:opacity-100"></span>
+                </div>
+                </div>
                 </Link>
-              </div>
             </motion.article>
           ))}
         </motion.div>
@@ -137,3 +161,47 @@ export default function BlogSection() {
     </section>
   );
 }
+
+// <motion.article
+//   key={blog.id}
+//   variants={cardVariants}
+//   className="group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-500"
+// >
+//     <motion.div
+//       whileHover={{ scale: 1.08 }}
+//       transition={{ duration: 0.6, ease: "easeOut" }}
+//       className="relative w-full h-full"
+//     >
+//       <Image
+//         src={blog.img}
+//         alt={blog.title}
+//         fill
+//         className="object-cover"
+//       />
+//     </motion.div>
+//   </div>
+
+//   {/* Content */}
+//   <div className="p-7">
+//     <div className="flex items-center gap-4 mb-4">
+//       <span className="inline-flex items-center text-xs font-semibold tracking-wider text-primary bg-primary/10 px-3 py-1 rounded-full">
+//         {blog.date}
+//       </span>
+
+//       <div className="flex items-center gap-2 text-gray-500 text-xs">
+//         <FaRegUser />
+//         <span>{blog.author}</span>
+//       </div>
+//     </div>
+
+//     <h3 className="text-lg font-semibold text-gray-900 leading-snug mb-5">
+//       {blog.title}
+//     </h3>
+
+//     <Link href={`/blogs/${blog.slug}`}>
+//       <span className="inline-flex items-center gap-2 text-primary font-semibold text-sm group-hover:gap-3 transition-all duration-300">
+//         Read Article <FaArrowRight />
+//       </span>
+//     </Link>
+//   </div>
+// </motion.article>

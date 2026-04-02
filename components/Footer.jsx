@@ -63,7 +63,7 @@ export default function Footer() {
                 rel="noopener noreferrer"
                 className="w-9 h-9 flex items-center justify-center rounded-full 
                  bg-white/5 border border-white/10 text-gray-300
-                 hover:bg-[#D4AF37] hover:text-black hover:scale-110
+                 hover:bg-primary hover:text-black hover:scale-110
                  transition-all duration-300"
               >
                 <Icon size={14} />
@@ -76,14 +76,14 @@ export default function Footer() {
         <div>
           <h4 className="text-white font-semibold mb-4 tracking-wide relative inline-block">
             Quick Links
-            <span className="absolute left-0 -bottom-2 w-10 h-[2px] bg-secondary rounded"></span>
+            <span className="absolute left-0 -bottom-2 w-10 h-[2px] bg-primary rounded"></span>
           </h4>
           <ul className="space-y-3 text-sm">
             {["Home", "About Us", "Services", "Contact"].map((item) => (
               <li key={item}>
                 <Link
                   href="#"
-                  className="hover:text-secondary transition duration-300"
+                  className="hover:text-primary_light transition duration-300"
                 >
                   {item}
                 </Link>
@@ -96,7 +96,7 @@ export default function Footer() {
         <div>
           <h4 className="text-white font-semibold mb-4 tracking-wide relative inline-block">
             Audit Services
-            <span className="absolute left-0 -bottom-2 w-10 h-[2px] bg-secondary rounded"></span>
+            <span className="absolute left-0 -bottom-2 w-10 h-[2px] bg-primary rounded"></span>
           </h4>
           <ul className="space-y-3 text-sm">
             {[
@@ -107,7 +107,7 @@ export default function Footer() {
             ].map((service) => (
               <li
                 key={service}
-                className="hover:text-secondary transition duration-300 cursor-pointer"
+                className="hover:text-primary_light transition duration-300 cursor-pointer"
               >
                 {service}
               </li>
@@ -117,25 +117,25 @@ export default function Footer() {
 
         {/* Contact */}
         <div>
-          <h4 className="text-white font-semibold mb-4 tracking-wide relative inline-block">
+          <h4 className="text-white text-lg font-semibold mb-4 tracking-wide relative inline-block">
             Contact
-            <span className="absolute left-0 -bottom-2 w-10 h-[2px] bg-secondary rounded"></span>
+            <span className="absolute left-0 -bottom-2 w-10 h-[2px] bg-primary rounded"></span>
           </h4>
 
-          <ul className="space-y-4 text-sm">
+          <ul className="space-y-4 text-base">
             <li className="flex items-start gap-3">
-              <FaPhoneAlt className="mt-1 text-secondary" />
+              <FaPhoneAlt className="mt-1 text-primary" />
               <div>
                 <p>0207 100 3610</p>
               </div>
             </li>
 
             <li className="flex items-center gap-3">
-              <FaEnvelope className="text-secondary" />
+              <FaEnvelope className="text-primary" />
               <p>enquiries@mah.uk.com</p>
             </li>
             <li className="flex items-start gap-3">
-              <FaMapMarkerAlt className="mt-1 text-secondary" />
+              <FaMapMarkerAlt className="mt-1 text-primary" />
               <p>2nd Floor, 154 Bishopsgate, London, EC2M 4LN</p>
             </li>
           </ul>
@@ -146,17 +146,17 @@ export default function Footer() {
       <div className="border-t border-white/10" />
 
       {/* Bottom */}
-      <div className="max-w-7xl mx-auto px-6 py-6 flex flex-col md:flex-row items-center justify-between text-xs text-gray-500">
+      <div className="max-w-7xl mx-auto px-6 py-6 flex flex-col md:flex-row items-center justify-center text-base text-gray-500">
         <p>© 2026 Audit Firms in Dubai. All rights reserved.</p>
 
-        <div className="flex gap-6 mt-3 md:mt-0">
-          <Link href="#" className="hover:text-secondary transition">
+        {/* <div className="flex gap-6 mt-3 md:mt-0">
+          <Link href="#" className="hover:text-primary_light transition">
             Privacy Policy
           </Link>
           <Link href="#" className="hover:text-secondary transition">
             Terms & Conditions
           </Link>
-        </div>
+        </div> */}
       </div>
     </footer>
   );

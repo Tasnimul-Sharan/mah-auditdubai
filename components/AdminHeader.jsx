@@ -173,7 +173,7 @@ export default function AdminHeader() {
   const username = user?.email?.split("@")[0] || "Auditor";
 
   return (
-    <header className="h-24 bg-primary border-b border-white/10 flex items-center justify-between px-10 sticky top-0 z-50">
+    <header className="h-24 bg-secondary border-b border-white/10 flex items-center justify-between px-10 sticky top-0 z-50">
       {/* Left Section */}
       <div className="flex items-center gap-4">
         <div className="h-8 w-[2px] bg-secondary/60 hidden md:block"></div>

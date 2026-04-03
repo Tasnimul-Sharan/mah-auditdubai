@@ -1,102 +1,5 @@
-// "use client";
-
-// import { supabaseServer } from "@/lib/supabaseServer";
-// import Link from "next/link";
-// import { useRouter } from "next/router";
-// import Image from "next/image";
-// import {
-//   FaBoxOpen,
-//   FaHome,
-//   FaPlusCircle,
-//   FaSignOutAlt,
-//   FaTags,
-//   FaLayerGroup,
-//   FaBriefcase,
-//   FaClipboardList,
-//   FaFileAlt,
-// } from "react-icons/fa";
-
-// export default function Sidebar() {
-//   const router = useRouter();
-
-//   const menu = [
-//     { name: "Dashboard", href: "/dashboard", icon: <FaHome /> },
-//     { name: "Products", href: "/dashboard/products", icon: <FaBoxOpen /> },
-//     {
-//       name: "Add Product",
-//       href: "/dashboard/products/add",
-//       icon: <FaPlusCircle />,
-//     },
-//     {
-//       name: "Job Posts",
-//       href: "/dashboard/job-post",
-//       icon: <FaBriefcase />,
-//     },
-//     {
-//       name: "Add Job Post",
-//       href: "/dashboard/job-post/add",
-//       icon: <FaClipboardList />,
-//     },
-//     // {
-//     //   name: "Job Applications",
-//     //   href: "/dashboard/job-post/applications/[slug]",
-//     //   icon: <FaFileAlt />,
-//     // },
-//     { name: "Categories", href: "/dashboard/categories", icon: <FaTags /> },
-//     { name: "Types", href: "/dashboard/types", icon: <FaLayerGroup /> },
-//   ];
-
-//   const isActiveRoute = (href) => router.pathname === href;
-
-//   return (
-//     <aside className="w-64 min-h-screen bg-soft_black text-white flex flex-col border-r border-white/10">
-//       <Link
-//         href="/"
-//         className="px-6 py-6 border-b border-white/10 flex items-center gap-3 hover:bg-white/5 transition"
-//       >
-//         <Image
-//           src="/logo/bridge-logo.png"
-//           alt="Bridge Logo"
-//           width={2000}
-//           height={2000}
-//           className="w-16 h-16 rounded-full object-cover"
-//         />
-//         <div>
-//           <h2 className="text-lg font-bold">
-//             Bridge <span className="text-primary">Pharma</span>
-//           </h2>
-//           <p className="text-xs text-white/50">Admin Panel</p>
-//         </div>
-//       </Link>
-
-//       <nav className="flex-1 px-4 py-6 space-y-1">
-//         {menu.map((item) => {
-//           const active = isActiveRoute(item.href);
-
-//           return (
-//             <Link
-//               key={item.name}
-//               href={item.href}
-//               className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition
-//                 ${
-//                   active
-//                     ? "bg-primary text-white shadow"
-//                     : "text-white/70 hover:bg-white/10 hover:text-white"
-//                 }`}
-//             >
-//               <span className="text-base">{item.icon}</span>
-//               {item.name}
-//             </Link>
-//           );
-//         })}
-//       </nav>
-//     </aside>
-//   );
-// }
-
 "use client";
 
-import { supabaseServer } from "@/lib/supabaseServer";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Image from "next/image";
@@ -106,7 +9,6 @@ import {
   FaPlusCircle,
   FaTags,
   FaLayerGroup,
-  FaClipboardList,
   FaFileAlt,
 } from "react-icons/fa";
 
@@ -139,26 +41,26 @@ export default function Sidebar() {
   const isActiveRoute = (href) => router.pathname === href;
 
   return (
-    <aside className="w-64 min-h-screen bg-primary text-white flex flex-col border-r border-white/10">
+    <aside className="w-64 min-h-screen bg-secondary text-white flex flex-col border-r border-white/10">
       {/* Logo Section */}
       <Link
         href="/"
         className="px-6 py-6 border-b border-white/10 flex items-center gap-3 hover:bg-white/5 transition"
       >
         <Image
-          src="/logo/mah-auditdubai-logo.png"
+          src="/logo/MAH Audit Dubai Logo-1.png"
           alt="Logo"
           width={1650}
           height={1024}
           className="h-16 w-auto object-cover rounded-md"
         />
 
-        <div>
+        {/* <div>
           <h2 className="text-sm font-semibold tracking-wide">MAH AUDIT</h2>
           <p className="text-[10px] text-gray-400 uppercase tracking-widest">
             Dubai
           </p>
-        </div>
+        </div> */}
       </Link>
 
       {/* Menu */}
@@ -173,7 +75,7 @@ export default function Sidebar() {
               className={`group flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all
               ${
                 active
-                  ? "bg-secondary text-soft_black shadow-md"
+                  ? "bg-primary text-soft_black shadow-md"
                   : "text-white/70 hover:bg-primary/40 hover:text-white"
               }`}
             >

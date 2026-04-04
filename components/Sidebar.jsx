@@ -24,6 +24,12 @@ export default function Sidebar() {
       href: "/dashboard/products/add",
       icon: <FaPlusCircle />,
     },
+    { name: "Services", href: "/dashboard/services", icon: <FaLayerGroup /> },
+    {
+      name: "Add Service",
+      href: "/dashboard/services/add",
+      icon: <FaPlusCircle />,
+    },
     {
       name: "Blogs",
       href: "/dashboard/blogs",

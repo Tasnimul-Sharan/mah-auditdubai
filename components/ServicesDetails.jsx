@@ -501,15 +501,15 @@ export default function ServicesDetails({ service }) {
         </div>
 
         {/* PREMIUM CTA */}
-        <div className="relative overflow-hidden rounded-3xl p-[1px] bg-gradient-to-r from-primary via-purple-600 to-pink-500 shadow-2xl">
-          <div className="absolute inset-0 opacity-30 blur-2xl bg-gradient-to-r from-primary via-purple-500 to-pink-500"></div>
+        <div className="relative overflow-hidden rounded-3xl p-[1px] bg-gradient-to-r from-primary via-primary_light to-secondary shadow-2xl">
+          <div className="absolute inset-0 opacity-30 blur-2xl bg-gradient-to-r from-primary via-primary_light to-secondary"></div>
 
-          <div className="relative bg-gradient-to-br from-[#0f172a] to-[#1e293b] text-white p-8 md:p-12 rounded-3xl flex flex-col gap-8">
+          <div className="relative bg-gradient-to-br from-secondary to-secondary_two text-white p-8 md:p-12 rounded-3xl flex flex-col gap-8">
             {/* TEXT */}
             <div className="max-w-xl space-y-4">
               <h2 className="text-2xl md:text-3xl font-bold leading-snug">
                 Request a{" "}
-                <span className="bg-gradient-to-r from-primary to-pink-400 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
                   Consultation
                 </span>{" "}
                 in Dubai

@@ -24,10 +24,15 @@ export default function Sidebar() {
       href: "/dashboard/products/add",
       icon: <FaPlusCircle />,
     },
-    { name: "Services", href: "/dashboard/services", icon: <FaLayerGroup /> },
     {
       name: "Add Service",
       href: "/dashboard/services/add",
+      icon: <FaPlusCircle />,
+    },
+    { name: "Services", href: "/dashboard/services", icon: <FaLayerGroup /> },
+    {
+      name: "Add Blog",
+      href: "/dashboard/blogs/add",
       icon: <FaPlusCircle />,
     },
     {
@@ -36,9 +41,14 @@ export default function Sidebar() {
       icon: <FaLayerGroup />,
     },
     {
-      name: "Add Blog",
-      href: "/dashboard/blogs/add",
-      icon: <FaPlusCircle />,
+      name: "Add Contact",
+      href: "/dashboard/contact/add",
+      icon: <FaLayerGroup />,
+    },
+    {
+      name: "Contact",
+      href: "/dashboard/contact",
+      icon: <FaLayerGroup />,
     },
     { name: "Categories", href: "/dashboard/categories", icon: <FaTags /> },
     { name: "Types", href: "/dashboard/types", icon: <FaLayerGroup /> },

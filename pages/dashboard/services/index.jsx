@@ -133,7 +133,9 @@ export default function ServicesPage() {
                     <div className="flex justify-center gap-2">
                       {/* View */}
                       <button
-                        onClick={() => router.push(`/services/${service.slug}`)}
+                        onClick={() =>
+                          router.push(`/dashboard/services/view/${service.slug}`)
+                        }
                         className="bg-emerald-100 p-2 rounded hover:bg-emerald-200"
                       >
                         <Eye size={16} className="text-emerald-600" />

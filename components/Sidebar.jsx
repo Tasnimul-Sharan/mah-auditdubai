@@ -41,6 +41,16 @@ export default function Sidebar() {
       icon: <FaLayerGroup />,
     },
     {
+      name: "Testimonials",
+      href: "/dashboard/testimonials",
+      icon: <FaLayerGroup />,
+    },
+    {
+      name: "Clients",
+      href: "/dashboard/clients",
+      icon: <FaLayerGroup />,
+    },
+    {
       name: "Add Contact",
       href: "/dashboard/contact/add",
       icon: <FaLayerGroup />,

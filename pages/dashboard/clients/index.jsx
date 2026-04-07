@@ -109,8 +109,6 @@ import { Plus, Trash2 } from "lucide-react";
 import AdminLayout from "@/components/AdminLayout";
 import { useUpload } from "@/Hooks/useUpload";
 import { useCrud } from "@/Hooks/useCrud";
-// import { useUpload } from "@/hooks/useUpload";
-// import { useCrud } from "@/hooks/useCrud";
 
 export default function ClientsAdmin() {
   const { data, loading, createItem, deleteItem } = useCrud("clients");
@@ -126,17 +124,37 @@ export default function ClientsAdmin() {
     try {
       setUploading(true);
 
-      const url = await uploadFile(file, "clients");
+      const { url, public_id } = await uploadFile(file, "clients");
 
-      await createItem({ logo_url: url });
+      await createItem({
+        logo_url: url,
+        public_id, // ✅ SAVE THIS
+      });
 
       setFile(null);
       setPreview("");
     } catch (err) {
       console.error(err);
-      alert("Upload failed");
     } finally {
       setUploading(false);
+    }
+  };
+
+  const handleDelete = async (item) => {
+    if (!confirm("Delete this client?")) return;
+
+    try {
+      // 🔥 delete from cloudinary
+      await fetch("/api/delete-image", {
+        method: "POST",
+        body: JSON.stringify({ public_id: item.public_id }),
+        headers: { "Content-Type": "application/json" },
+      });
+
+      // 🔥 delete from DB
+      await deleteItem(item.id);
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -180,7 +198,8 @@ export default function ClientsAdmin() {
               <img src={item.logo_url} className="h-16 object-contain" />
 
               <button
-                onClick={() => deleteItem(item.id)}
+                // onClick={() => deleteItem(item.id)}
+                onClick={() => handleDelete(item)}
                 className="mt-3 bg-red-100 p-2 rounded"
               >
                 <Trash2 size={16} className="text-red-600" />

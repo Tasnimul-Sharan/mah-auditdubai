@@ -1,3 +1,25 @@
+// import { v2 as cloudinary } from "cloudinary";
+
+// cloudinary.config({
+//   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+//   api_key: process.env.CLOUDINARY_API_KEY,
+//   api_secret: process.env.CLOUDINARY_API_SECRET,
+// });
+
+// export default async function handler(req, res) {
+//   if (req.method !== "POST") return res.status(405).end();
+
+//   try {
+//     const { public_id } = req.body;
+
+//     await cloudinary.uploader.destroy(public_id);
+
+//     res.status(200).json({ success: true });
+//   } catch (err) {
+//     res.status(500).json({ error: err.message });
+//   }
+// }
+
 import { v2 as cloudinary } from "cloudinary";
 
 cloudinary.config({
@@ -7,7 +29,9 @@ cloudinary.config({
 });
 
 export default async function handler(req, res) {
-  if (req.method !== "POST") return res.status(405).end();
+  if (req.method !== "POST") {
+    return res.status(405).json({ message: "Method not allowed" });
+  }
 
   try {
     const { public_id } = req.body;
@@ -16,6 +40,7 @@ export default async function handler(req, res) {
 
     res.status(200).json({ success: true });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error(err);
+    res.status(500).json({ message: "Delete failed" });
   }
 }

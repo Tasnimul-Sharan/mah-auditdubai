@@ -165,6 +165,7 @@ export default function WhyChooseAdmin() {
   const [file, setFile] = useState(null);
   const [editingPoint, setEditingPoint] = useState(null);
   const [pointText, setPointText] = useState("");
+  const [preview, setPreview] = useState("");
 
   // ================= FETCH =================
   const fetchData = async () => {
@@ -191,25 +192,82 @@ export default function WhyChooseAdmin() {
   }, []);
 
   // ================= SAVE SECTION =================
+  // const handleSave = async () => {
+  //   let imageUrl = form.image;
+
+  //   if (file) {
+  //     imageUrl = await uploadFile(file, "why");
+  //   }
+
+  //   if (section) {
+  //     await supabaseServer
+  //       .from("why_choose_us")
+  //       .update({ ...form, image: imageUrl })
+  //       .eq("id", section.id);
+  //   } else {
+  //     await supabaseServer
+  //       .from("why_choose_us")
+  //       .insert([{ ...form, image: imageUrl }]);
+  //   }
+
+  //   fetchData();
+  // };
+
   const handleSave = async () => {
-    let imageUrl = form.image;
+    try {
+      let imageUrl = form.image;
+      let publicId = section?.public_id || null;
 
-    if (file) {
-      imageUrl = await uploadFile(file, "why");
+      // ✅ যদি নতুন image upload হয়
+      if (file) {
+        // 🔥 old image delete first
+        if (section?.public_id) {
+          await fetch("/api/delete-image", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ public_id: section.public_id }),
+          });
+        }
+
+        // 🔥 upload new
+        const res = await uploadFile(file, "why");
+
+        imageUrl = res.url;
+        publicId = res.public_id;
+      }
+
+      // ✅ UPDATE
+      if (section) {
+        await supabaseServer
+          .from("why_choose_us")
+          .update({
+            title: form.title,
+            subtitle: form.subtitle,
+            description: form.description,
+            image: imageUrl,
+            public_id: publicId,
+          })
+          .eq("id", section.id);
+      }
+      // ✅ INSERT (ONLY ONCE)
+      else {
+        await supabaseServer.from("why_choose_us").insert([
+          {
+            title: form.title,
+            subtitle: form.subtitle,
+            description: form.description,
+            image: imageUrl,
+            public_id: publicId,
+          },
+        ]);
+      }
+
+      setFile(null);
+      fetchData();
+    } catch (err) {
+      console.error(err);
+      alert("Save failed");
     }
-
-    if (section) {
-      await supabaseServer
-        .from("why_choose_us")
-        .update({ ...form, image: imageUrl })
-        .eq("id", section.id);
-    } else {
-      await supabaseServer
-        .from("why_choose_us")
-        .insert([{ ...form, image: imageUrl }]);
-    }
-
-    fetchData();
   };
 
   // ================= ADD POINT =================
@@ -225,6 +283,41 @@ export default function WhyChooseAdmin() {
 
     setPointText("");
     fetchData();
+  };
+
+  const handleFileChange = (e) => {
+    const selected = e.target.files[0];
+    if (!selected) return;
+
+    setFile(selected);
+
+    // ✅ instant preview
+    const previewUrl = URL.createObjectURL(selected);
+    setPreview(previewUrl);
+  };
+
+  const deleteImage = async () => {
+    if (!section?.public_id) return;
+
+    try {
+      await fetch("/api/delete-image", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ public_id: section.public_id }),
+      });
+
+      await supabaseServer
+        .from("why_choose_us")
+        .update({ image: null, public_id: null })
+        .eq("id", section.id);
+
+      fetchData();
+    } catch (err) {
+      console.error(err);
+      alert("Image delete failed");
+    }
   };
 
   // ================= DELETE POINT =================
@@ -272,9 +365,46 @@ export default function WhyChooseAdmin() {
           className="border p-2 w-full"
         />
 
-        <input type="file" onChange={(e) => setFile(e.target.files[0])} />
+        <input type="file" onChange={handleFileChange} />
 
-        {form.image && <img src={form.image} className="w-32 rounded" />}
+        {preview ? (
+          <div className="relative w-fit">
+            <img
+              src={preview}
+              className="w-40 h-28 object-cover rounded border"
+            />
+          </div>
+        ) : form.image ? (
+          <div className="relative w-fit">
+            <img
+              src={form.image}
+              className="w-40 h-28 object-cover rounded border"
+            />
+
+            <button
+              onClick={deleteImage}
+              className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded"
+            >
+              <Trash2 size={14} />
+            </button>
+          </div>
+        ) : null}
+
+        {/* {form.image && (
+          <div className="relative w-fit">
+            <img
+              src={form.image}
+              className="w-40 h-28 object-cover rounded border"
+            />
+
+            <button
+              onClick={deleteImage}
+              className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded"
+            >
+              <Trash2 size={14} />
+            </button>
+          </div>
+        )} */}
 
         <button
           onClick={handleSave}

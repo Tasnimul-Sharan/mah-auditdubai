@@ -1,58 +1,3 @@
-// "use client";
-
-// import { useState } from "react";
-// import { Plus, Trash2 } from "lucide-react";
-// import AdminLayout from "@/components/AdminLayout";
-// import { useCrud } from "@/Hooks/useCrud";
-
-// export default function IndustriesAdmin() {
-//   const { data, createItem, deleteItem } = useCrud("industries");
-
-//   const [title, setTitle] = useState("");
-
-//   const handleAdd = async () => {
-//     await createItem({ title });
-//     setTitle("");
-//   };
-
-//   return (
-//     <div className="max-w-3xl mx-auto space-y-6">
-//       <h1 className="text-2xl font-bold">Industries</h1>
-
-//       <div className="bg-white p-6 rounded-xl border flex gap-3">
-//         <input
-//           value={title}
-//           onChange={(e) => setTitle(e.target.value)}
-//           placeholder="Industry name"
-//           className="border p-2 w-full"
-//         />
-
-//         <button
-//           onClick={handleAdd}
-//           className="bg-primary text-white px-4 py-2 rounded"
-//         >
-//           <Plus size={16} />
-//         </button>
-//       </div>
-
-//       {data.map((item) => (
-//         <div key={item.id} className="border p-3 rounded flex justify-between">
-//           <p>{item.title}</p>
-
-//           <button
-//             onClick={() => deleteItem(item.id)}
-//             className="bg-red-100 p-2 rounded"
-//           >
-//             <Trash2 size={16} />
-//           </button>
-//         </div>
-//       ))}
-//     </div>
-//   );
-// }
-
-// IndustriesAdmin.getLayout = (page) => <AdminLayout>{page}</AdminLayout>;
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -75,9 +20,12 @@ export default function IndustriesAdmin() {
   });
 
   const [file, setFile] = useState(null);
+  const [preview, setPreview] = useState("");
+
   const [text, setText] = useState("");
   const [editing, setEditing] = useState(null);
 
+  // ================= FETCH =================
   const fetchData = async () => {
     const { data } = await supabaseServer
       .from("industries")
@@ -101,27 +49,99 @@ export default function IndustriesAdmin() {
     fetchData();
   }, []);
 
-  const saveSection = async () => {
-    let imageUrl = form.image;
+  // ================= FILE CHANGE =================
+  const handleFileChange = (e) => {
+    const selected = e.target.files[0];
+    if (!selected) return;
 
-    if (file) {
-      imageUrl = await uploadFile(file, "industries");
-    }
-
-    if (section) {
-      await supabaseServer
-        .from("industries")
-        .update({ ...form, image: imageUrl })
-        .eq("id", section.id);
-    } else {
-      await supabaseServer
-        .from("industries")
-        .insert([{ ...form, image: imageUrl }]);
-    }
-
-    fetchData();
+    setFile(selected);
+    setPreview(URL.createObjectURL(selected));
   };
 
+  // ================= SAVE SECTION =================
+  const saveSection = async () => {
+    try {
+      let imageUrl = form.image;
+      let publicId = section?.public_id || null;
+
+      if (file) {
+        // 🔥 delete old image
+        if (section?.public_id) {
+          await fetch("/api/delete-image", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ public_id: section.public_id }),
+          });
+        }
+
+        // 🔥 upload new
+        const res = await uploadFile(file, "industries");
+
+        imageUrl = res.url;
+        publicId = res.public_id;
+      }
+
+      if (section) {
+        await supabaseServer
+          .from("industries")
+          .update({
+            ...form,
+            image: imageUrl,
+            public_id: publicId,
+          })
+          .eq("id", section.id);
+      } else {
+        await supabaseServer.from("industries").insert([
+          {
+            ...form,
+            image: imageUrl,
+            public_id: publicId,
+          },
+        ]);
+      }
+
+      // ✅ reset state
+      setFile(null);
+      setPreview("");
+
+      await fetchData();
+    } catch (err) {
+      console.error(err);
+      alert("Save failed");
+    }
+  };
+
+  // ================= DELETE IMAGE =================
+  const deleteImage = async () => {
+    if (!section?.public_id) return;
+
+    try {
+      await fetch("/api/delete-image", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ public_id: section.public_id }),
+      });
+
+      await supabaseServer
+        .from("industries")
+        .update({ image: null, public_id: null })
+        .eq("id", section.id);
+
+      setPreview("");
+      setFile(null);
+
+      fetchData();
+    } catch (err) {
+      console.error(err);
+      alert("Delete failed");
+    }
+  };
+
+  // ================= ITEMS =================
   const addItem = async () => {
     if (!text || !section) return;
 
@@ -152,6 +172,7 @@ export default function IndustriesAdmin() {
     fetchData();
   };
 
+  // ================= UI =================
   return (
     <div className="max-w-5xl mx-auto space-y-6">
       <h1 className="text-2xl font-bold">Industries</h1>
@@ -179,15 +200,53 @@ export default function IndustriesAdmin() {
           className="border p-2 w-full"
         />
 
-        <input type="file" onChange={(e) => setFile(e.target.files[0])} />
+        <input type="file" onChange={handleFileChange} />
 
-        {form.image && <img src={form.image} className="w-32 rounded" />}
+        {/* IMAGE PREVIEW */}
+        {/* {(preview || form.image) && (
+          <div className="relative w-fit">
+            <img
+              src={preview || form.image}
+              className="w-40 h-28 object-cover rounded border"
+            />
+
+            <button
+              onClick={deleteImage}
+              className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded"
+            >
+              <Trash2 size={14} />
+            </button>
+          </div>
+        )} */}
+
+        {preview ? (
+          <div className="relative w-fit">
+            <img
+              src={preview}
+              className="w-40 h-28 object-cover rounded border"
+            />
+          </div>
+        ) : form.image ? (
+          <div className="relative w-fit">
+            <img
+              src={form.image}
+              className="w-40 h-28 object-cover rounded border"
+            />
+
+            <button
+              onClick={deleteImage}
+              className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded"
+            >
+              <Trash2 size={14} />
+            </button>
+          </div>
+        ) : null}
 
         <button
           onClick={saveSection}
-          className="bg-primary text-white px-4 py-2 rounded"
+          className="bg-primary text-white px-4 py-2 rounded flex gap-2"
         >
-          Save Section
+          <Save size={16} /> Save Section
         </button>
       </div>
 
@@ -209,7 +268,7 @@ export default function IndustriesAdmin() {
       {items.map((item) => (
         <div
           key={item.id}
-          className="border p-3 rounded flex justify-between items-center"
+          className="border p-3 bg-white rounded flex justify-between items-center"
         >
           {editing === item.id ? (
             <>

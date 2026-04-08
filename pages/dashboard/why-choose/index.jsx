@@ -1,146 +1,3 @@
-// // "use client";
-
-// // import { useState } from "react";
-// // import { Plus, Trash2 } from "lucide-react";
-// // import AdminLayout from "@/components/AdminLayout";
-// // import { useCrud } from "@/Hooks/useCrud";
-
-// // export default function WhyChooseAdmin() {
-// //   const { data, createItem, deleteItem } = useCrud("why_choose_us");
-
-// //   const [point, setPoint] = useState("");
-
-// //   const handleAdd = async () => {
-// //     await createItem({ point });
-// //     setPoint("");
-// //   };
-
-// //   return (
-// //     <div className="max-w-3xl mx-auto space-y-6">
-// //       <h1 className="text-2xl font-bold">Why Choose Us</h1>
-
-// //       <div className="bg-white p-6 rounded-xl border flex gap-3">
-// //         <input
-// //           value={point}
-// //           onChange={(e) => setPoint(e.target.value)}
-// //           placeholder="Enter point"
-// //           className="border p-2 w-full"
-// //         />
-
-// //         <button
-// //           onClick={handleAdd}
-// //           className="bg-primary text-white px-4 py-2 rounded"
-// //         >
-// //           <Plus size={16} />
-// //         </button>
-// //       </div>
-
-// //       {data.map((item) => (
-// //         <div key={item.id} className="border p-3 rounded flex justify-between">
-// //           <p>{item.point}</p>
-
-// //           <button
-// //             onClick={() => deleteItem(item.id)}
-// //             className="bg-red-100 p-2 rounded"
-// //           >
-// //             <Trash2 size={16} />
-// //           </button>
-// //         </div>
-// //       ))}
-// //     </div>
-// //   );
-// // }
-
-// // WhyChooseAdmin.getLayout = (page) => <AdminLayout>{page}</AdminLayout>;
-
-// "use client";
-
-// import { useState } from "react";
-// import { Plus, Trash2, Pencil } from "lucide-react";
-// import AdminLayout from "@/components/AdminLayout";
-// import { useCrud } from "@/Hooks/useCrud";
-
-// export default function WhyChooseAdmin() {
-//   const { data, createItem, updateItem, deleteItem } = useCrud("why_choose_us");
-
-//   const [point, setPoint] = useState("");
-//   const [editId, setEditId] = useState(null);
-
-//   const handleSubmit = async () => {
-//     if (!point) return;
-
-//     if (editId) {
-//       // UPDATE
-//       await updateItem(editId, { point });
-//       setEditId(null);
-//     } else {
-//       // CREATE
-//       await createItem({ point });
-//     }
-
-//     setPoint("");
-//   };
-
-//   const handleEdit = (item) => {
-//     setPoint(item.point);
-//     setEditId(item.id);
-//   };
-
-//   return (
-//     <div className="max-w-3xl mx-auto space-y-6">
-//       <h1 className="text-2xl font-bold">Why Choose Us</h1>
-
-//       {/* FORM */}
-//       <div className="bg-white p-6 rounded-xl border flex gap-3">
-//         <input
-//           value={point}
-//           onChange={(e) => setPoint(e.target.value)}
-//           placeholder="Enter point"
-//           className="border p-2 w-full"
-//         />
-
-//         <button
-//           onClick={handleSubmit}
-//           className="bg-primary text-white px-4 py-2 rounded flex items-center gap-2"
-//         >
-//           <Plus size={16} />
-//           {editId ? "Update" : "Add"}
-//         </button>
-//       </div>
-
-//       {/* LIST */}
-//       {data.map((item) => (
-//         <div
-//           key={item.id}
-//           className="border p-3 rounded flex justify-between items-center"
-//         >
-//           <p>{item.point}</p>
-
-//           <div className="flex gap-2">
-//             {/* EDIT */}
-//             <button
-//               onClick={() => handleEdit(item)}
-//               className="bg-blue-100 p-2 rounded"
-//             >
-//               <Pencil size={16} className="text-blue-600" />
-//             </button>
-
-//             {/* DELETE */}
-//             <button
-//               onClick={() => deleteItem(item.id)}
-//               className="bg-red-100 p-2 rounded"
-//             >
-//               <Trash2 size={16} className="text-red-600" />
-//             </button>
-//           </div>
-//         </div>
-//       ))}
-//     </div>
-//   );
-// }
-
-// WhyChooseAdmin.getLayout = (page) => <AdminLayout>{page}</AdminLayout>;
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -263,6 +120,7 @@ export default function WhyChooseAdmin() {
       }
 
       setFile(null);
+      setPreview(""); // 🔥 MUST
       fetchData();
     } catch (err) {
       console.error(err);
@@ -390,6 +248,22 @@ export default function WhyChooseAdmin() {
           </div>
         ) : null}
 
+        {/* <div className="relative w-fit">
+          <img
+            src={preview || form.image}
+            className="w-40 h-28 object-cover rounded border"
+          />
+
+          {(preview || form.image) && (
+            <button
+              onClick={deleteImage}
+              className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded"
+            >
+              <Trash2 size={14} />
+            </button>
+          )}
+        </div> */}
+
         {/* {form.image && (
           <div className="relative w-fit">
             <img
@@ -432,7 +306,7 @@ export default function WhyChooseAdmin() {
       {points.map((item) => (
         <div
           key={item.id}
-          className="border p-3 rounded flex justify-between items-center"
+          className="border p-3 bg-white rounded flex justify-between items-center"
         >
           {editingPoint === item.id ? (
             <>

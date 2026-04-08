@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { FaShieldAlt, FaChartLine, FaUserTie, FaGlobe } from "react-icons/fa";
 import { fadeUp } from "@/Hooks/animations";
 import SectionBadge from "./SectionBadge";
-import { FaShield } from "react-icons/fa6";
+import { FaShield } from "react-icons/fa6";   
 
 export default function WhyUs() {
   const features = [

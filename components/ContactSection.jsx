@@ -133,7 +133,7 @@ export default function ContactSection() {
                 <textarea
                   rows="4"
                   placeholder="Your Message"
-                  className="w-full mt-1 p-3 border border-gray-200 rounded-lg outline-none focus:ring-2 transition-all transform duration-500"
+                  className="w-full mt-1 p-3 border border-gray-200 rounded-lg outline-none transition-all transform duration-500"
                 />
               </div>
 
@@ -182,7 +182,7 @@ function Input({ label, placeholder, required }) {
       <input
         type="text"
         placeholder={placeholder}
-        className="w-full mt-1 px-6 py-3 border border-gray-200 rounded-lg outline-none focus:ring-2 transition-all transform duration-500"
+        className="w-full mt-1 px-6 py-3 border border-gray-200 rounded-lg outline-none transition-all transform duration-500"
       />
     </div>
   );

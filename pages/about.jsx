@@ -131,7 +131,7 @@ export default function AboutPage() {
         }}
       />
       <AboutUsSection />
-      <OurPurposeSection />
+      {/* <OurPurposeSection /> */}
       <VisionMission />
       <WhyUs />
       <StatsSection />

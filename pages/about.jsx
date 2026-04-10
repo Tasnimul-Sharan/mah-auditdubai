@@ -23,86 +23,86 @@ export default function AboutPage() {
     image: "https://bridgepharmabd.com/og-about.jpg",
   };
 
-  const faqData = {
-    title: "Frequently Asked Questions",
-    faqs: [
-      {
-        question: "What audit services do you provide in Dubai?",
-        answer:
-          "We offer a full range of audit services including external audit, internal audit, VAT audit, forensic audit, and compliance advisory tailored to UAE regulations.",
-      },
-      {
-        question: "Is audit mandatory for companies in Dubai?",
-        answer:
-          "Yes, many businesses in Dubai and the UAE are required to maintain audited financial statements depending on their license type, free zone regulations, and legal structure.",
-      },
-      {
-        question: "What is VAT compliance in the UAE?",
-        answer:
-          "VAT compliance involves proper registration, accurate record keeping, timely filing of returns, and adherence to Federal Tax Authority (FTA) regulations to avoid penalties.",
-      },
-      {
-        question: "How often should a company conduct an audit?",
-        answer:
-          "Most companies conduct audits annually, but internal audits and compliance checks can be performed quarterly or as needed for better financial control.",
-      },
-      {
-        question: "What is the difference between internal and external audit?",
-        answer:
-          "Internal audits focus on improving internal processes and risk management, while external audits provide independent verification of financial statements for compliance and reporting.",
-      },
-      {
-        question: "What is forensic audit and when is it needed?",
-        answer:
-          "A forensic audit is used to investigate financial fraud, misconduct, or irregularities. It is typically required in cases of disputes, legal investigations, or suspected fraud.",
-      },
-      {
-        question: "How can audit services help my business?",
-        answer:
-          "Audit services improve financial transparency, ensure regulatory compliance, identify risks, and help businesses make informed strategic decisions.",
-      },
-      {
-        question: "What documents are required for an audit?",
-        answer:
-          "Common documents include financial statements, invoices, bank statements, tax records, payroll data, and supporting business documents.",
-      },
-      {
-        question: "Do you assist with VAT registration and filing?",
-        answer:
-          "Yes, we assist businesses with VAT registration, return filing, documentation, and ongoing compliance to ensure smooth operations.",
-      },
-      {
-        question: "How long does an audit process take?",
-        answer:
-          "The duration depends on the size and complexity of the business, but typically audits take between 1 to 4 weeks.",
-      },
-      {
-        question: "Are your audit services compliant with UAE regulations?",
-        answer:
-          "Yes, all our services follow UAE laws and are aligned with Federal Tax Authority (FTA) guidelines and international auditing standards.",
-      },
-      {
-        question: "What industries do you serve?",
-        answer:
-          "We work with a wide range of industries including trading, manufacturing, real estate, technology, and professional services across the UAE.",
-      },
-      {
-        question: "Can small businesses benefit from audit services?",
-        answer:
-          "Absolutely. Audit and compliance services help small businesses maintain accurate records, avoid penalties, and build credibility with stakeholders.",
-      },
-      {
-        question: "How do you ensure data confidentiality?",
-        answer:
-          "We follow strict confidentiality protocols and use secure systems to protect all client data and financial information.",
-      },
-      {
-        question: "How can I get started with your audit services?",
-        answer:
-          "You can contact us through our website, email, or phone to schedule a consultation and discuss your business requirements.",
-      },
-    ],
-  };
+  // const faqData = {
+  //   title: "Frequently Asked Questions",
+  //   faqs: [
+  //     {
+  //       question: "What audit services do you provide in Dubai?",
+  //       answer:
+  //         "We offer a full range of audit services including external audit, internal audit, VAT audit, forensic audit, and compliance advisory tailored to UAE regulations.",
+  //     },
+  //     {
+  //       question: "Is audit mandatory for companies in Dubai?",
+  //       answer:
+  //         "Yes, many businesses in Dubai and the UAE are required to maintain audited financial statements depending on their license type, free zone regulations, and legal structure.",
+  //     },
+  //     {
+  //       question: "What is VAT compliance in the UAE?",
+  //       answer:
+  //         "VAT compliance involves proper registration, accurate record keeping, timely filing of returns, and adherence to Federal Tax Authority (FTA) regulations to avoid penalties.",
+  //     },
+  //     {
+  //       question: "How often should a company conduct an audit?",
+  //       answer:
+  //         "Most companies conduct audits annually, but internal audits and compliance checks can be performed quarterly or as needed for better financial control.",
+  //     },
+  //     {
+  //       question: "What is the difference between internal and external audit?",
+  //       answer:
+  //         "Internal audits focus on improving internal processes and risk management, while external audits provide independent verification of financial statements for compliance and reporting.",
+  //     },
+  //     {
+  //       question: "What is forensic audit and when is it needed?",
+  //       answer:
+  //         "A forensic audit is used to investigate financial fraud, misconduct, or irregularities. It is typically required in cases of disputes, legal investigations, or suspected fraud.",
+  //     },
+  //     {
+  //       question: "How can audit services help my business?",
+  //       answer:
+  //         "Audit services improve financial transparency, ensure regulatory compliance, identify risks, and help businesses make informed strategic decisions.",
+  //     },
+  //     {
+  //       question: "What documents are required for an audit?",
+  //       answer:
+  //         "Common documents include financial statements, invoices, bank statements, tax records, payroll data, and supporting business documents.",
+  //     },
+  //     {
+  //       question: "Do you assist with VAT registration and filing?",
+  //       answer:
+  //         "Yes, we assist businesses with VAT registration, return filing, documentation, and ongoing compliance to ensure smooth operations.",
+  //     },
+  //     {
+  //       question: "How long does an audit process take?",
+  //       answer:
+  //         "The duration depends on the size and complexity of the business, but typically audits take between 1 to 4 weeks.",
+  //     },
+  //     {
+  //       question: "Are your audit services compliant with UAE regulations?",
+  //       answer:
+  //         "Yes, all our services follow UAE laws and are aligned with Federal Tax Authority (FTA) guidelines and international auditing standards.",
+  //     },
+  //     {
+  //       question: "What industries do you serve?",
+  //       answer:
+  //         "We work with a wide range of industries including trading, manufacturing, real estate, technology, and professional services across the UAE.",
+  //     },
+  //     {
+  //       question: "Can small businesses benefit from audit services?",
+  //       answer:
+  //         "Absolutely. Audit and compliance services help small businesses maintain accurate records, avoid penalties, and build credibility with stakeholders.",
+  //     },
+  //     {
+  //       question: "How do you ensure data confidentiality?",
+  //       answer:
+  //         "We follow strict confidentiality protocols and use secure systems to protect all client data and financial information.",
+  //     },
+  //     {
+  //       question: "How can I get started with your audit services?",
+  //       answer:
+  //         "You can contact us through our website, email, or phone to schedule a consultation and discuss your business requirements.",
+  //     },
+  //   ],
+  // };
 
   return (
     <div className="w-full relative">
@@ -137,7 +137,7 @@ export default function AboutPage() {
       <StatsSection />
       <ClientsSection />
       <TestimonialsSection />
-      <FAQ faqData={faqData} />
+      <FAQ />
       <PremiumCTA />
     </div>
   );

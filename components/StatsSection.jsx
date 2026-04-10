@@ -61,7 +61,7 @@ export default function StatsSection() {
             </h3>
             <p className="mt-3 text-gray-300">Industry Awards</p>
           </div>
-        </div>
+        </div> 
       </div>
     </section>
   );

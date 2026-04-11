@@ -20,6 +20,11 @@ export default function Sidebar() {
     { name: "Pages", href: "/dashboard/pages", icon: <FaFileAlt /> }, // ✅ NEW
     { name: "Products", href: "/dashboard/products", icon: <FaBoxOpen /> },
     {
+      name: "Home Page",
+      href: "/dashboard/home",
+      icon: <FaHome />,
+    },
+    {
       name: "HeroSlides",
       href: "/dashboard/hero-slides",
       icon: <FaBoxOpen />,

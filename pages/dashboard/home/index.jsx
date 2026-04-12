@@ -21,7 +21,7 @@ export default function HomeDashboard() {
   // ================= FETCH =================
   const fetchHomeSettings = async () => {
     const { data } = await supabaseServer
-      .from("home_settings")
+      .from("home_page")
       .select("*")
       .single();
 
@@ -39,10 +39,10 @@ export default function HomeDashboard() {
   const saveMeta = async () => {
     try {
       if (rowId) {
-        await supabaseServer.from("home_settings").update(meta).eq("id", rowId);
+        await supabaseServer.from("home_page").update(meta).eq("id", rowId);
       } else {
         const { data } = await supabaseServer
-          .from("home_settings")
+          .from("home_page")
           .insert([meta])
           .select()
           .single();

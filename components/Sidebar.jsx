@@ -54,11 +54,17 @@ export default function Sidebar() {
       href: "/dashboard/services/add",
       icon: <FaPlusCircle />,
     },
+    { name: "Services Page", href: "/dashboard/services-page", icon: <FaLayerGroup /> },
     { name: "Services", href: "/dashboard/services", icon: <FaLayerGroup /> },
     {
       name: "Add Blog",
       href: "/dashboard/blogs/add",
       icon: <FaPlusCircle />,
+    },
+    {
+      name: "Blog Page",
+      href: "/dashboard/blog-page",
+      icon: <FaLayerGroup />,
     },
     {
       name: "Blogs",
@@ -73,6 +79,11 @@ export default function Sidebar() {
     {
       name: "Clients",
       href: "/dashboard/clients",
+      icon: <FaLayerGroup />,
+    },
+    {
+      name: "Contact Page",
+      href: "/dashboard/contact-page",
       icon: <FaLayerGroup />,
     },
     {

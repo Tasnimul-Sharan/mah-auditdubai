@@ -1,46 +1,76 @@
-import BlogPageSection from "@/components/BlogPageSection";
-import HeroSection from "@/components/HeroSection";
 import Head from "next/head";
-export default function BlogsPage() {
-  const meta = {
-    title:
-      "Blogs | Bridge Pharmaceuticals Ltd. Animal Health Insights & Industry Trends in Bangladesh",
-    description:
-      "Explore expert insights from Bridge Pharmaceuticals Ltd. on Animal Health, GMP compliance, Veterinary medicines, Pharmaceutical quality assurance, Cold chain logistics, R&D innovation, and modern pharmaceutical manufacturing in Bangladesh.",
-    keywords:
-      "Bridge Pharmaceuticals blog, animal health insights Bangladesh, veterinary pharmaceutical articles, GMP compliance Bangladesh, pharmaceutical manufacturing blog, aquaculture medicine research, cold chain logistics pharma, veterinary R&D Bangladesh",
-    author: "Bridge Pharmaceuticals Ltd.",
-    url: "https://bridgepharmabd.com/blogs",
-    image: "https://bridgepharmabd.com/blogs/blog-og.jpg",
-  };
+import HeroSection from "@/components/HeroSection";
+import BlogPageSection from "@/components/BlogPageSection";
+import { supabaseServer } from "@/lib/supabaseServer";
 
+export default function BlogsPage({ data }) {
   return (
     <div className="w-full relative">
       <Head>
-        <title>{meta.title}</title>
-        <meta name="description" content={meta.description} />
-        <meta name="keywords" content={meta.keywords} />
-        <meta name="author" content={meta.author} />
+        <title>{data?.meta_title || "Blogs"}</title>
+
+        <meta name="description" content={data?.meta_description} />
+        <meta name="keywords" content={data?.meta_keywords} />
+        <meta name="author" content={data?.meta_author} />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta property="og:title" content={meta.title} />
-        <meta property="og:description" content={meta.description} />
+
+        {/* Canonical */}
+        <link rel="canonical" href={data?.meta_url} />
+
+        {/* Open Graph */}
+        <meta property="og:title" content={data?.meta_title} />
+        <meta property="og:description" content={data?.meta_description} />
+        <meta property="og:url" content={data?.meta_url} />
+        <meta property="og:image" content={data?.meta_image} />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content={meta.url} />
-        <meta property="og:image" content={meta.image} />
-        <meta property="og:site_name" content="Bridge Pharmaceuticals Ltd." />
+
+        {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={meta.title} />
-        <meta name="twitter:description" content={meta.description} />
-        <meta name="twitter:image" content={meta.image} />
-        <link rel="canonical" href={meta.url} />
+        <meta name="twitter:title" content={data?.meta_title} />
+        <meta name="twitter:description" content={data?.meta_description} />
+        <meta name="twitter:image" content={data?.meta_image} />
+
+        <meta name="robots" content="index, follow" />
+
+        {/* Structured Data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Blog",
+              name: "MAH Audit Dubai Blog",
+              url: data?.meta_url,
+              description: data?.meta_description,
+              keywords: data?.meta_keywords,
+              areaServed: "Dubai, UAE",
+            }),
+          }}
+        />
       </Head>
+
       <HeroSection
         hero={{
-          title: "Blogs",
-          backgroundImage: "/blogs/blog-hero.jpg",
+          title: data?.hero_title || "Blogs",
+          backgroundImage: data?.hero_image || "/blogs/blog-hero.jpg",
         }}
       />
+
       <BlogPageSection />
     </div>
   );
+}
+
+// SSR
+export async function getServerSideProps() {
+  const { data } = await supabaseServer
+    .from("blog_page")
+    .select("*")
+    .single();
+
+  return {
+    props: {
+      data: data || null,
+    },
+  };
 }

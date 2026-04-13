@@ -8,35 +8,35 @@ import {
   FaShieldAlt,
 } from "react-icons/fa";
 
-function TrustCard({ icon, title, text }) {
-  return (
-    <div
-      className="group relative bg-white p-8 rounded-3xl
-      border border-gray-100
-      shadow-[0_10px_30px_rgba(0,0,0,0.06)]
-      hover:shadow-[0_25px_60px_rgba(0,0,0,0.12)]
-      transition-all duration-500 hover:-translate-y-2 text-center overflow-hidden"
-    >
-      {/* subtle gradient glow */}
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-100/40 to-transparent opacity-0 group-hover:opacity-100 transition-all transform duration-500" />
+// function TrustCard({ icon, title, text }) {
+//   return (
+//     <div
+//       className="group relative bg-white p-8 rounded-3xl
+//       border border-gray-100
+//       shadow-[0_10px_30px_rgba(0,0,0,0.06)]
+//       hover:shadow-[0_25px_60px_rgba(0,0,0,0.12)]
+//       transition-all duration-500 hover:-translate-y-2 text-center overflow-hidden"
+//     >
+//       {/* subtle gradient glow */}
+//       <div className="absolute inset-0 bg-gradient-to-br from-purple-100/40 to-transparent opacity-0 group-hover:opacity-100 transition-all transform duration-500" />
 
-      {/* Icon */}
-      <div
-        className="relative z-10 w-16 h-16 mx-auto mb-5 flex items-center justify-center
-        rounded-2xl bg-gradient-to-br from-primary to-primary
-        text-white text-2xl shadow-lg group-hover:scale-110 transition-all transform duration-500"
-      >
-        {icon}
-      </div>
+//       {/* Icon */}
+//       <div
+//         className="relative z-10 w-16 h-16 mx-auto mb-5 flex items-center justify-center
+//         rounded-2xl bg-gradient-to-br from-primary to-primary
+//         text-white text-2xl shadow-lg group-hover:scale-110 transition-all transform duration-500"
+//       >
+//         {icon}
+//       </div>
 
-      {/* Title */}
-      <h4 className="relative z-10 font-bold text-lg mb-2">{title}</h4>
+//       {/* Title */}
+//       <h4 className="relative z-10 font-bold text-lg mb-2">{title}</h4>
 
-      {/* Text */}
-      <p className="relative z-10 text-gray-600 leading-relaxed">{text}</p>
-    </div>
-  );
-}
+//       {/* Text */}
+//       <p className="relative z-10 text-gray-600 leading-relaxed">{text}</p>
+//     </div>
+//   );
+// }
 
 export default function ContactSection() {
   return (
@@ -97,7 +97,7 @@ export default function ContactSection() {
           </form>
         </div>
       </div>
-      <section className="pt-12 custom-container mx-auto">
+      {/* <section className="pt-12 custom-container mx-auto">
         <div className="grid md:grid-cols-3 gap-8">
           <TrustCard
             icon={<FaShieldAlt />}
@@ -117,7 +117,7 @@ export default function ContactSection() {
             text="Certified and experienced audit professionals."
           />
         </div>
-      </section>
+      </section> */}
 
       {/* ================= MAP SECTION ================= */}
       {/* <section className="relative">

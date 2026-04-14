@@ -18,7 +18,7 @@ export default function Sidebar() {
   const menu = [
     { name: "Dashboard", href: "/dashboard", icon: <FaHome /> },
     { name: "Pages", href: "/dashboard/pages", icon: <FaFileAlt /> }, // ✅ NEW
-    { name: "Products", href: "/dashboard/products", icon: <FaBoxOpen /> },
+    // { name: "Products", href: "/dashboard/products", icon: <FaBoxOpen /> },
     {
       name: "Home Page",
       href: "/dashboard/home",
@@ -54,7 +54,11 @@ export default function Sidebar() {
       href: "/dashboard/services/add",
       icon: <FaPlusCircle />,
     },
-    { name: "Services Page", href: "/dashboard/services-page", icon: <FaLayerGroup /> },
+    {
+      name: "Services Page",
+      href: "/dashboard/services-page",
+      icon: <FaLayerGroup />,
+    },
     { name: "Services", href: "/dashboard/services", icon: <FaLayerGroup /> },
     {
       name: "Add Blog",
@@ -96,8 +100,8 @@ export default function Sidebar() {
       href: "/dashboard/contact",
       icon: <FaLayerGroup />,
     },
-    { name: "Categories", href: "/dashboard/categories", icon: <FaTags /> },
-    { name: "Types", href: "/dashboard/types", icon: <FaLayerGroup /> },
+    // { name: "Categories", href: "/dashboard/categories", icon: <FaTags /> },
+    // { name: "Types", href: "/dashboard/types", icon: <FaLayerGroup /> },
   ];
 
   const isActiveRoute = (href) => router.pathname === href;

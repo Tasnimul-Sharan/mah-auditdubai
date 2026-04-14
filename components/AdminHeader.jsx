@@ -226,7 +226,7 @@ export default function AdminHeader() {
         {/* Logout */}
         <button
           onClick={logout}
-          className="group flex items-center gap-2 bg-secondary text-soft_black px-5 py-2.5 rounded-lg hover:bg-secondary_two transition-all text-[11px] font-bold uppercase tracking-widest shadow-md"
+          className="group flex items-center gap-2 bg-red-500 text-white px-5 py-2.5 rounded-lg hover:bg-red-600 transition-all text-[11px] font-bold uppercase tracking-widest shadow-md"
         >
           <LogOut
             size={14}

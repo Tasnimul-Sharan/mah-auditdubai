@@ -11,39 +11,45 @@ import {
 } from "react-icons/fa";
 
 function Dashboard() {
-  const [stats, setStats] = useState({
-    totalReports: 0,
-    totalClients: 0,
-    totalServices: 0,
-  });
+const [stats, setStats] = useState({
+  totalServices: 0,
+  totalBlogs: 0,
+  totalClients: 0,
+  totalPages: 0,
+});
 
   useEffect(() => {
     fetchStats();
   }, []);
 
-  const fetchStats = async () => {
-    try {
-      const { count: reportsCount } = await supabaseServer
-        .from("products")
-        .select("*", { count: "exact", head: true });
+const fetchStats = async () => {
+  try {
+    const { count: servicesCount } = await supabaseServer
+      .from("services")
+      .select("*", { count: "exact", head: true });
 
-      const { count: clientsCount } = await supabaseServer
-        .from("categories")
-        .select("*", { count: "exact", head: true });
+    const { count: blogsCount } = await supabaseServer
+      .from("blogs")
+      .select("*", { count: "exact", head: true });
 
-      const { count: servicesCount } = await supabaseServer
-        .from("types")
-        .select("*", { count: "exact", head: true });
+    const { count: clientsCount } = await supabaseServer
+      .from("clients")
+      .select("*", { count: "exact", head: true });
 
-      setStats({
-        totalReports: reportsCount || 0,
-        totalClients: clientsCount || 0,
-        totalServices: servicesCount || 0,
-      });
-    } catch (error) {
-      console.error("Error fetching dashboard stats:", error);
-    }
-  };
+    const { count: pagesCount } = await supabaseServer
+      .from("pages") // or blog_page + others combined later
+      .select("*", { count: "exact", head: true });
+
+    setStats({
+      totalServices: servicesCount || 0,
+      totalBlogs: blogsCount || 0,
+      totalClients: clientsCount || 0,
+      totalPages: pagesCount || 0,
+    });
+  } catch (error) {
+    console.error(error);
+  }
+};
 
   return (
     <div className="space-y-10">
@@ -74,8 +80,7 @@ function Dashboard() {
       <div className="h-px bg-border_color" />
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
-        {/* Reports */}
+      {/* <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
         <div className="group bg-white rounded-2xl border border-border_color p-6 shadow-sm hover:shadow-xl transition">
           <div className="flex items-center justify-between">
             <div>
@@ -91,7 +96,6 @@ function Dashboard() {
           </div>
         </div>
 
-        {/* Clients */}
         <div className="group bg-white rounded-2xl border border-border_color p-6 shadow-sm hover:shadow-xl transition">
           <div className="flex items-center justify-between">
             <div>
@@ -107,7 +111,7 @@ function Dashboard() {
           </div>
         </div>
 
-        {/* Services */}
+
         <div className="group bg-white rounded-2xl border border-border_color p-6 shadow-sm hover:shadow-xl transition">
           <div className="flex items-center justify-between">
             <div>
@@ -123,7 +127,7 @@ function Dashboard() {
           </div>
         </div>
 
-        {/* Admin */}
+
         <div className="group bg-white rounded-2xl border border-border_color p-6 shadow-sm hover:shadow-xl transition">
           <div className="flex items-center justify-between">
             <div>
@@ -134,6 +138,80 @@ function Dashboard() {
             </div>
 
             <div className="h-12 w-12 rounded-xl bg-green-100 text-green-600 flex items-center justify-center text-xl group-hover:scale-110 transition">
+              <FaUserShield />
+            </div>
+          </div>
+        </div>
+      </div> */}
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
+        {/* SERVICES */}
+        <div className="group relative bg-white rounded-2xl p-6 border border-border_color shadow-sm hover:shadow-2xl transition-all duration-500">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 rounded-2xl transition" />
+
+          <div className="flex items-center justify-between relative z-10">
+            <div>
+              <p className="text-sm text-gray-500">Services</p>
+              <h3 className="text-3xl font-bold mt-2 text-soft_black">
+                {stats.totalServices}
+              </h3>
+            </div>
+
+            <div className="h-12 w-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center text-xl group-hover:scale-110 transition">
+              <FaLayerGroup />
+            </div>
+          </div>
+        </div>
+
+        {/* BLOGS */}
+        <div className="group relative bg-white rounded-2xl p-6 border border-border_color shadow-sm hover:shadow-2xl transition-all duration-500">
+          <div className="absolute inset-0 bg-gradient-to-br from-secondary/5 to-transparent opacity-0 group-hover:opacity-100 rounded-2xl transition" />
+
+          <div className="flex items-center justify-between relative z-10">
+            <div>
+              <p className="text-sm text-gray-500">Blogs</p>
+              <h3 className="text-3xl font-bold mt-2 text-soft_black">
+                {stats.totalBlogs}
+              </h3>
+            </div>
+
+            <div className="h-12 w-12 rounded-xl bg-secondary/10 text-secondary flex items-center justify-center text-xl group-hover:scale-110 transition">
+              <FaFileInvoiceDollar />
+            </div>
+          </div>
+        </div>
+
+        {/* CLIENTS */}
+        <div className="group relative bg-white rounded-2xl p-6 border border-border_color shadow-sm hover:shadow-2xl transition-all duration-500">
+          <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent opacity-0 group-hover:opacity-100 rounded-2xl transition" />
+
+          <div className="flex items-center justify-between relative z-10">
+            <div>
+              <p className="text-sm text-gray-500">Clients</p>
+              <h3 className="text-3xl font-bold mt-2 text-soft_black">
+                {stats.totalClients}
+              </h3>
+            </div>
+
+            <div className="h-12 w-12 rounded-xl bg-green-100 text-green-600 flex items-center justify-center text-xl group-hover:scale-110 transition">
+              <FaBuilding />
+            </div>
+          </div>
+        </div>
+
+        {/* PAGES */}
+        <div className="group relative bg-white rounded-2xl p-6 border border-border_color shadow-sm hover:shadow-2xl transition-all duration-500">
+          <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-transparent opacity-0 group-hover:opacity-100 rounded-2xl transition" />
+
+          <div className="flex items-center justify-between relative z-10">
+            <div>
+              <p className="text-sm text-gray-500">Pages</p>
+              <h3 className="text-3xl font-bold mt-2 text-soft_black">
+                {stats.totalPages}
+              </h3>
+            </div>
+
+            <div className="h-12 w-12 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center text-xl group-hover:scale-110 transition">
               <FaUserShield />
             </div>
           </div>

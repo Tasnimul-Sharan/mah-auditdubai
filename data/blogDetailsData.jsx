@@ -2,16 +2,6 @@ import { FaFacebookF, FaLinkedinIn, FaInstagram } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 
 export const blogDetailsData = {
-  meta: {
-    title: "Blogs | Bridge Pharma",
-    description:
-      "Explore expert insights from Bridge Pharma on pharmaceutical manufacturing, animal health, research, quality assurance, logistics, and digital transformation.",
-    keywords:
-      "Bridge Pharma blog, pharmaceutical manufacturing, GMP compliance, animal health medicines, pharma research, cold chain logistics, quality assurance pharma, digital pharma transformation",
-    author: "Bridge Pharma Insights",
-    url: "https://www.bridgepharma.com/blogs",
-    image: "https://www.bridgepharma.com/blogs/blogs-og.jpg",
-  },
 
   blogDetails: [
     {

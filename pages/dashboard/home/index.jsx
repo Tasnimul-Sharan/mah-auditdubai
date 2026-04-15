@@ -60,7 +60,7 @@ export default function HomeDashboard() {
   // ================= SECTIONS =================
   const sections = [
     { name: "Landing Page", link: "/dashboard/hero-slides" },
-    { name: "About Us", link: "/dashboard/about" },
+    { name: "About Us", link: "/dashboard/about-section" },
     { name: "Services", link: "/dashboard/services" },
     { name: "Stats", link: "/dashboard/stats" },
     { name: "Why Choose Us", link: "/dashboard/why-us" },

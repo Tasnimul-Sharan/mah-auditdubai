@@ -137,63 +137,74 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { FaChartLine, FaShieldAlt, FaBalanceScale } from "react-icons/fa";
-import { FiArrowRightCircle } from "react-icons/fi";
 import SectionBadge from "./SectionBadge";
-import { useFetchData } from "@/Hooks/useFetchData";
-// import { useFetchData } from "@/hooks/useFetchData";
+import { FiArrowRightCircle } from "react-icons/fi";
+import { FaShieldAlt, FaChartLine, FaBalanceScale } from "react-icons/fa";
 
 const iconMap = {
   shield: FaShieldAlt,
   chart: FaChartLine,
-  scale: FaBalanceScale,
+  balance: FaBalanceScale,
 };
 
-export default function AboutAuditDubai() {
-  const { data, loading } = useFetchData("about_section");
-
-  if (loading) return null;
+export default function AboutUsSection({ data }) {
   if (!data) return null;
 
   return (
     <section className="relative bg-white overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6 py-28 grid lg:grid-cols-2 gap-20 items-center">
-        {/* LEFT */}
-        <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}>
-          <SectionBadge icon={FaShieldAlt}>{data.badge}</SectionBadge>
+      <div className="absolute -top-40 -left-40 w-[500px] h-[500px] bg-primary/10 blur-3xl rounded-full" />
+      <div className="absolute -bottom-40 -right-40 w-[500px] h-[500px] bg-secondary/10 blur-3xl rounded-full" />
 
-          <h2 className="text-4xl font-bold">
+      <div className="relative max-w-7xl mx-auto px-6 py-28 grid lg:grid-cols-2 gap-20 items-center">
+        {/* LEFT */}
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7 }}
+        >
+          <SectionBadge className="mb-6">{data.badge}</SectionBadge>
+
+          <h2 className="text-4xl md:text-5xl font-bold leading-tight mb-6 text-secondary">
             {data.title}
             <span className="block text-primary">{data.highlighted_title}</span>
           </h2>
 
-          <p className="mt-6 text-gray-600">{data.description1}</p>
-          <p className="mt-4 text-gray-600">{data.description2}</p>
+          <p className="text-gray-600 text-lg mb-6 max-w-xl">
+            {data.description1}
+          </p>
+
+          <p className="text-gray-600 text-lg mb-10 max-w-xl">
+            {data.description2}
+          </p>
 
           {/* FEATURES */}
-          <div className="grid sm:grid-cols-3 gap-6 mt-8">
+          <div className="grid sm:grid-cols-3 gap-6 mb-10">
             {data.features?.map((item, i) => {
               const Icon = iconMap[item.icon];
-
               return (
                 <div key={i} className="flex items-center gap-3">
-                  <Icon className="text-primary" />
-                  <span>{item.text}</span>
+                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                    {Icon && <Icon className="text-primary" />}
+                  </div>
+                  <span className="text-soft_black font-medium">
+                    {item.text}
+                  </span>
                 </div>
               );
             })}
           </div>
 
           {/* BUTTONS */}
-          <div className="flex gap-5 mt-10">
+          <div className="flex flex-wrap gap-5">
             <Link href={data.button_primary_link}>
-              <button className="bg-primary text-white px-6 py-3 rounded">
+              <button className="bg-primary text-white px-8 py-4 rounded-xl font-semibold flex items-center gap-2 hover:scale-105 transition">
                 {data.button_primary_text}
+                <FiArrowRightCircle />
               </button>
             </Link>
 
             <Link href={data.button_secondary_link}>
-              <button className="border px-6 py-3 rounded">
+              <button className="border border-border_color text-secondary px-8 py-4 rounded-xl font-semibold hover:bg-secondary hover:text-white transition">
                 {data.button_secondary_text}
               </button>
             </Link>
@@ -201,23 +212,32 @@ export default function AboutAuditDubai() {
         </motion.div>
 
         {/* RIGHT */}
-        <div className="relative">
-          <Image
-            src={data.image}
-            alt="about"
-            width={600}
-            height={500}
-            className="rounded-3xl"
-          />
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.7 }}
+          className="relative"
+        >
+          <div className="relative h-[550px] rounded-[30px] overflow-hidden shadow-xl border border-border_color">
+            <Image
+              src={data.image}
+              alt="Audit Firm Dubai"
+              fill
+              className="object-cover"
+            />
+          </div>
 
-          <div className="absolute bottom-0 left-10 bg-white p-6 rounded-xl shadow">
-            <p className="text-sm">{data.stats_title}</p>
-            <p className="text-2xl font-bold text-primary">
+          {/* STATS */}
+          <div className="absolute -bottom-10 left-10 bg-white border px-8 py-6 rounded-2xl shadow-xl">
+            <p className="text-sm text-gray-500 mb-1">{data.stats_title}</p>
+
+            <p className="text-3xl font-bold text-primary">
               {data.stats_value}
             </p>
-            <p className="text-sm">{data.stats_subtitle}</p>
+
+            <p className="text-gray-600 text-sm">{data.stats_subtitle}</p>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

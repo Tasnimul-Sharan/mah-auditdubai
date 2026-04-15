@@ -9,7 +9,7 @@ export default function ContactPage({ data }) {
   return (
     <div className="w-full relative">
       <Head>
-        <title>{data?.meta_title || "Contact"}</title>
+        <title>{data?.meta_title}</title>
 
         <meta name="description" content={data?.meta_description} />
         <meta name="keywords" content={data?.meta_keywords} />

@@ -23,18 +23,40 @@ export default function NavbarAdmin() {
     fetchData();
   }, []);
 
+  // const fetchData = async () => {
+  //   const { data } = await supabaseServer.from("navbar").select("*").single();
+
+  //   const { data: linksData } = await supabaseServer
+  //     .from("nav_links")
+  //     .select("*")
+  //     .order("order", { ascending: true });
+
+  //   if (data) {
+  //     setForm(data);
+  //     setId(data.id);
+  //   }
+
+  //   setLinks(linksData || []);
+  // };
+
   const fetchData = async () => {
     const { data } = await supabaseServer.from("navbar").select("*").single();
 
-    const { data: linksData } = await supabaseServer
+    const { data: linksData, error } = await supabaseServer
       .from("nav_links")
       .select("*")
-      .order("order", { ascending: true });
+      .order("order_no", { ascending: true });
+
+    if (error) {
+      console.error("Links fetch error:", error);
+    }
 
     if (data) {
       setForm(data);
       setId(data.id);
     }
+
+    console.log("Links Data:", linksData);
 
     setLinks(linksData || []);
   };
@@ -193,9 +215,9 @@ export default function NavbarAdmin() {
         />
 
         <input
-          placeholder="Twitter"
-          value={form.twitter || ""}
-          onChange={(e) => setForm({ ...form, twitter: e.target.value })}
+          placeholder="YouTube"
+          value={form.youtube || ""}
+          onChange={(e) => setForm({ ...form, youtube: e.target.value })}
           className="border p-2 w-full"
         />
 
@@ -246,7 +268,7 @@ export default function NavbarAdmin() {
           </button>
         </div>
 
-        {links.map((l) => (
+        {/* {links.map((l) => (
           <div key={l.id} className="flex justify-between border p-2 rounded">
             <span>
               {l.name} ({l.path})
@@ -255,7 +277,21 @@ export default function NavbarAdmin() {
               Delete
             </button>
           </div>
-        ))}
+        ))} */}
+        {links.map((l) => {
+          if (!l) return null;
+
+          return (
+            <div key={l.id} className="flex justify-between border p-2 rounded">
+              <span>
+                {l.name} ({l.path})
+              </span>
+              <button onClick={() => deleteLink(l.id)} className="text-red-500">
+                Delete
+              </button>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

@@ -11,6 +11,7 @@ import {
   FaLinkedinIn,
   FaClock,
   FaPhoneAlt,
+  FaYoutube,
 } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { HiOutlineMenu, HiOutlineX } from "react-icons/hi";
@@ -164,8 +165,8 @@ export default function Navbar() {
             <Link href="https://facebook.com" target="_blank">
               <FaFacebookF className="hover:text-secondary w-5 h-5 transition duration-300" />
             </Link>
-            <Link href="https://twitter.com" target="_blank">
-              <FaXTwitter className="hover:text-secondary w-5 h-5 transition duration-300" />
+            <Link href="https://youtube.com" target="_blank">
+              <FaYoutube className="hover:text-secondary w-5 h-5 transition duration-300" />
             </Link>
             <Link href="https://linkedin.com" target="_blank">
               <FaLinkedinIn className="hover:text-secondary w-5 h-5 transition duration-300" />
@@ -253,9 +254,9 @@ export default function Navbar() {
         {/* Social Icons */}
         <div className="flex gap-6 mt-12 text-xl">
           <FaFacebookF />
-          <FaXTwitter />
           <FaLinkedinIn />
           <FaInstagram />
+          <FaYoutube />
         </div>
       </div>
     </header>

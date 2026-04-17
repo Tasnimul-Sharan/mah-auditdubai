@@ -18,6 +18,7 @@ export default function Sidebar() {
   const menu = [
     { name: "Dashboard", href: "/dashboard", icon: <FaHome /> },
     { name: "Navbar", href: "/dashboard/navbar", icon: <FaFileAlt /> }, // ✅ NEW
+    { name: "Footer", href: "/dashboard/footer", icon: <FaFileAlt /> }, // ✅ NEW
     { name: "Pages", href: "/dashboard/pages", icon: <FaFileAlt /> }, // ✅ NEW
     // { name: "Products", href: "/dashboard/products", icon: <FaBoxOpen /> },
     {

@@ -111,7 +111,18 @@ export default function FooterAdmin() {
 
   // ================= SAVE =================
   const handleSave = async () => {
-    await supabaseServer.from("footer").update(form).eq("id", id);
+    if (id) {
+      await supabaseServer.from("footer").update(form).eq("id", id);
+    } else {
+      const { data } = await supabaseServer
+        .from("footer")
+        .insert([form])
+        .select()
+        .single();
+
+      setId(data.id);
+    }
+
     alert("Footer Updated");
   };
 
@@ -247,6 +258,15 @@ export default function FooterAdmin() {
         <button onClick={addService} className="flex gap-2">
           <Plus /> Add Service
         </button>
+      </div>
+      <div className="bg-white p-6 rounded-xl border space-y-3">
+        <h3 className="font-semibold">Copyright text</h3>
+        <input
+          placeholder="Copyright Text"
+          value={form.copyright || ""}
+          onChange={(e) => setForm({ ...form, copyright: e.target.value })}
+          className="border p-2 w-full"
+        />
       </div>
 
       {/* SAVE */}

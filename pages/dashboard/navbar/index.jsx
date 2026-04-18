@@ -298,3 +298,4 @@ export default function NavbarAdmin() {
 }
 
 NavbarAdmin.getLayout = (page) => <AdminLayout>{page}</AdminLayout>;
+

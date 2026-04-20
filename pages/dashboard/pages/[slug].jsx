@@ -1,41 +1,3 @@
-// import { supabaseServer } from "@/lib/supabaseServer";
-
-// export default function PageEditor({ page, sections }) {
-//   return (
-//     <div>
-//       <h1>{page.title}</h1>
-
-//       {sections.map((sec) => (
-//         <div key={sec.id}>
-//           <p>{sec.type}</p>
-//         </div>
-//       ))}
-//     </div>
-//   );
-// }
-
-// export async function getServerSideProps({ params }) {
-//   const { slug } = params;
-
-//   const { data: page } = await supabaseServer
-//     .from("pages")
-//     .select("*")
-//     .eq("slug", slug)
-//     .single();
-
-//   const { data: sections } = await supabaseServer
-//     .from("sections")
-//     .select("*")
-//     .eq("page_slug", slug)
-//     .order("position");
-
-//   return {
-//     props: {
-//       page,
-//       sections: sections || [],
-//     },
-//   };
-// }
 
 "use client";
 
@@ -62,17 +24,44 @@ export default function PageEditor({ slug }) {
     if (slug) fetchSections();
   }, [slug]);
 
+  // const addSection = async () => {
+  //   if (!type) return alert("Select type");
+
+  //   await supabaseServer.from("sections").insert([
+  //     {
+  //       page_slug: slug,
+  //       type,
+  //       content: { text: content },
+  //       position: sections.length + 1,
+  //     },
+  //   ]);
+
+  //   setType("");
+  //   setContent("");
+  //   fetchSections();
+  // };
+
+
   const addSection = async () => {
     if (!type) return alert("Select type");
 
-    await supabaseServer.from("sections").insert([
-      {
-        page_slug: slug,
-        type,
-        content: { text: content },
-        position: sections.length + 1,
-      },
-    ]);
+    const { data, error } = await supabaseServer
+      .from("sections")
+      .insert([
+        {
+          page_slug: slug,
+          type,
+          content: { text: content },
+          position: sections.length + 1,
+        },
+      ])
+      .select();
+
+    if (error) {
+      console.error("Insert Error:", error);
+      alert(error.message);
+      return;
+    }
 
     setType("");
     setContent("");

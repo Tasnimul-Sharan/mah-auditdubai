@@ -178,18 +178,105 @@
 
 // PagesDashboard.getLayout = (page) => <AdminLayout>{page}</AdminLayout>;
 
+// "use client";
+
+// import { useEffect, useState } from "react";
+// import Link from "next/link";
+// import { supabaseServer } from "@/lib/supabaseServer";
+// import AdminLayout from "@/components/AdminLayout";
+// import { Pencil } from "lucide-react";
+// import { HiPencil } from "react-icons/hi";
+// import { FiTrash2 } from "react-icons/fi";
+
+// export default function PagesDashboard() {
+//   const [pages, setPages] = useState([]);
+
+//   const fetchPages = async () => {
+//     const { data } = await supabaseServer.from("pages").select("*");
+//     setPages(data || []);
+//   };
+
+//   useEffect(() => {
+//     fetchPages();
+//   }, []);
+
+//   return (
+//     <div className="p-6">
+//       <h1 className="text-2xl font-bold mb-4">Pages</h1>
+
+//       <Link href="/dashboard/pages/create">
+//         <button className="bg-primary text-white px-4 py-2 mb-4">
+//           + New Page
+//         </button>
+//       </Link>
+
+//       {pages.map((p) => (
+//         <div key={p.id} className="border p-3 mb-2 flex justify-between">
+//           <div>
+//             <p className="font-semibold">{p.title}</p>
+//             <p className="text-sm text-gray-500">{p.slug}</p>
+//           </div>
+//           <td className="p-3 border">
+//             <div className="flex justify-center gap-2">
+//               {/* VIEW */}
+//               <Link href={`/${p.slug}`} target="_blank">
+//                 <button className="bg-green-100 p-2 rounded hover:bg-green-200 text-green-700">
+//                   View
+//                 </button>
+//               </Link>
+
+//               {/* MANAGE SECTIONS */}
+//               <Link href={`/admin/pages/${p.slug}`}>
+//                 <button className="bg-purple-100 p-2 rounded hover:bg-purple-200 text-purple-700">
+//                   Manage
+//                 </button>
+//               </Link>
+
+//               {/* EDIT */}
+//               <button
+//                 onClick={() => {
+//                   setEditId(p.id);
+//                   setEditTitle(p.title);
+//                 }}
+//                 className="bg-blue-100 p-2 rounded hover:bg-blue-200"
+//               >
+//                 <HiPencil size={16} className="text-blue-600" />
+//               </button>
+
+//               {/* DELETE */}
+//               <button
+//                 onClick={() => handleDelete(p.id)}
+//                 className="bg-red-100 p-2 rounded hover:bg-red-200"
+//               >
+//                 <FiTrash2 size={16} className="text-red-600" />
+//               </button>
+//             </div>
+//           </td>
+//         </div>
+//       ))}
+//     </div>
+//   );
+// }
+
+// PagesDashboard.getLayout = (page) => <AdminLayout>{page}</AdminLayout>;
+
 "use client";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { supabaseServer } from "@/lib/supabaseServer";
 import AdminLayout from "@/components/AdminLayout";
+import { Pencil, Trash2, Eye } from "lucide-react";
 
 export default function PagesDashboard() {
   const [pages, setPages] = useState([]);
 
   const fetchPages = async () => {
-    const { data } = await supabaseServer.from("pages").select("*");
+    const { data } = await supabaseServer
+      .from("pages")
+      .select("*")
+      .order("created_at", { ascending: false });
+
     setPages(data || []);
   };
 
@@ -197,34 +284,56 @@ export default function PagesDashboard() {
     fetchPages();
   }, []);
 
+  const handleDelete = async (id) => {
+    if (!confirm("Delete this page?")) return;
+    await supabaseServer.from("pages").delete().eq("id", id);
+    fetchPages();
+  };
+
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Pages</h1>
+    <div className="p-6 max-w-6xl mx-auto">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Pages</h1>
 
-      <Link href="/dashboard/pages/create">
-        <button className="bg-primary text-white px-4 py-2 mb-4">
-          + New Page
-        </button>
-      </Link>
+        <Link href="/dashboard/pages/create">
+          <button className="bg-primary text-white px-4 py-2 rounded-lg">
+            + New Page
+          </button>
+        </Link>
+      </div>
 
-      {pages.map((p) => (
-        <div key={p.id} className="border p-3 mb-2 flex justify-between">
-          <div>
-            <p className="font-semibold">{p.title}</p>
-            <p className="text-sm text-gray-500">{p.slug}</p>
+      <div className="space-y-3">
+        {pages.map((p) => (
+          <div
+            key={p.id}
+            className="border rounded-xl p-4 flex justify-between items-center"
+          >
+            <div>
+              <p className="font-semibold">{p.title}</p>
+              <p className="text-sm text-gray-500">{p.slug}</p>
+            </div>
+
+            <div className="flex gap-2">
+              <Link href={`/dashboard/pages/view/${p.slug}`} target="_blank">
+                <button className="bg-green-100 p-2 rounded">
+                  <Eye size={16} />
+                </button>
+              </Link>
+
+              <Link href={`/dashboard/pages/${p.slug}`}>
+                <button className="bg-purple-100 p-2 rounded">Manage</button>
+              </Link>
+
+              <button
+                onClick={() => handleDelete(p.id)}
+                className="bg-red-100 p-2 rounded"
+              >
+                <Trash2 size={16} />
+              </button>
+            </div>
           </div>
-
-          <Link href={`/dashboard/pages/${p.slug}`}>
-            <button className="text-blue-500">Edit</button>
-          </Link>
-
-          <Link href={`/dashboard/pages/${p.slug}`}>
-            <button className="bg-green-100 px-3 py-1 rounded text-green-700">
-              Manage
-            </button>
-          </Link>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 }

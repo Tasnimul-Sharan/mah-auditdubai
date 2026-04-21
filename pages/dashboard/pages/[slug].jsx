@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -7,13 +6,21 @@ import AdminLayout from "@/components/AdminLayout";
 
 export default function PageEditor({ slug }) {
   const [sections, setSections] = useState([]);
-  const [type, setType] = useState("");
+  const [types, setTypes] = useState([]);
+  const [typeId, setTypeId] = useState("");
   const [content, setContent] = useState("");
 
+  // FETCH TYPES
+  const fetchTypes = async () => {
+    const { data } = await supabaseServer.from("types").select("*");
+    setTypes(data || []);
+  };
+
+  // FETCH SECTIONS
   const fetchSections = async () => {
     const { data } = await supabaseServer
       .from("sections")
-      .select("*")
+      .select("*, types(name, slug)")
       .eq("page_slug", slug)
       .order("position");
 
@@ -21,53 +28,36 @@ export default function PageEditor({ slug }) {
   };
 
   useEffect(() => {
-    if (slug) fetchSections();
+    if (slug) {
+      fetchSections();
+      fetchTypes();
+    }
   }, [slug]);
 
-  // const addSection = async () => {
-  //   if (!type) return alert("Select type");
-
-  //   await supabaseServer.from("sections").insert([
-  //     {
-  //       page_slug: slug,
-  //       type,
-  //       content: { text: content },
-  //       position: sections.length + 1,
-  //     },
-  //   ]);
-
-  //   setType("");
-  //   setContent("");
-  //   fetchSections();
-  // };
-
-
+  // ADD SECTION
   const addSection = async () => {
-    if (!type) return alert("Select type");
+    if (!typeId) return alert("Select type");
 
-    const { data, error } = await supabaseServer
-      .from("sections")
-      .insert([
-        {
-          page_slug: slug,
-          type,
-          content: { text: content },
-          position: sections.length + 1,
-        },
-      ])
-      .select();
+    const { error } = await supabaseServer.from("sections").insert([
+      {
+        page_slug: slug,
+        type_id: typeId,
+        content: { text: content },
+        position: sections.length + 1,
+      },
+    ]);
 
     if (error) {
-      console.error("Insert Error:", error);
       alert(error.message);
       return;
     }
 
-    setType("");
+    setTypeId("");
     setContent("");
     fetchSections();
   };
 
+  // DELETE
   const deleteSection = async (id) => {
     await supabaseServer.from("sections").delete().eq("id", id);
     fetchSections();
@@ -80,15 +70,16 @@ export default function PageEditor({ slug }) {
       {/* ADD */}
       <div className="flex gap-3">
         <select
-          value={type}
-          onChange={(e) => setType(e.target.value)}
+          value={typeId}
+          onChange={(e) => setTypeId(e.target.value)}
           className="border p-2"
         >
           <option value="">Select Type</option>
-          <option value="hero">Hero</option>
-          <option value="about">About</option>
-          <option value="why">Why Us</option>
-          <option value="services">Services</option>
+          {types.map((t) => (
+            <option key={t.id} value={t.id}>
+              {t.name}
+            </option>
+          ))}
         </select>
 
         <input
@@ -107,7 +98,7 @@ export default function PageEditor({ slug }) {
       {sections.map((sec) => (
         <div key={sec.id} className="border p-4 flex justify-between">
           <div>
-            <p className="font-bold">{sec.type}</p>
+            <p className="font-bold">{sec.types?.name}</p>
             <p className="text-gray-500">{sec.content?.text}</p>
           </div>
 

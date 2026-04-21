@@ -16,6 +16,13 @@ export default function CreatePage() {
     meta_author: "",
   });
 
+  // const generateSlug = (text) =>
+  //   text
+  //     .toLowerCase()
+  //     .trim()
+  //     .replace(/[^a-z0-9\s-]/g, "")
+  //     .replace(/\s+/g, "-");
+
   const generateSlug = (text) =>
     text
       .toLowerCase()

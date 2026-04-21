@@ -103,7 +103,7 @@ export default function Sidebar() {
       icon: <FaLayerGroup />,
     },
     // { name: "Categories", href: "/dashboard/categories", icon: <FaTags /> },
-    // { name: "Types", href: "/dashboard/types", icon: <FaLayerGroup /> },
+    { name: "Types", href: "/dashboard/types", icon: <FaLayerGroup /> },
   ];
 
   const isActiveRoute = (href) => router.pathname === href;

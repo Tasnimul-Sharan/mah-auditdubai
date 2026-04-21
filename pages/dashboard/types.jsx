@@ -77,7 +77,7 @@ function TypesPage() {
   const handleDelete = async (id) => {
     if (!confirm("Delete this type?")) return;
 
-    await supabase.from("types").delete().eq("id", id);
+    await supabaseServer.from("types").delete().eq("id", id);
     fetchTypes();
   };
 
@@ -186,170 +186,127 @@ export default TypesPage;
 
 // "use client";
 
-// import AdminLayout from "@/components/AdminLayout";
 // import { useEffect, useState } from "react";
-// import { Pencil, Trash2, Plus } from "lucide-react";
+// import { supabaseServer } from "@/lib/supabaseServer";
+// import AdminLayout from "@/components/AdminLayout";
 
-// function TypesPage() {
-//   const [name, setName] = useState("");
+// export default function PageEditor({ slug }) {
+//   const [sections, setSections] = useState([]);
 //   const [types, setTypes] = useState([]);
-//   const [loading, setLoading] = useState(true);
+//   const [typeId, setTypeId] = useState("");
+//   const [content, setContent] = useState("");
 
-//   const [editId, setEditId] = useState(null);
-//   const [editName, setEditName] = useState("");
+//   // FETCH TYPES
+//   const fetchTypes = async () => {
+//     const { data } = await supabaseServer.from("types").select("*");
+//     setTypes(data || []);
+//   };
+
+//   // FETCH SECTIONS
+//   const fetchSections = async () => {
+//     const { data } = await supabaseServer
+//       .from("sections")
+//       .select("*, types(name, slug)")
+//       .eq("page_slug", slug)
+//       .order("position");
+
+//     setSections(data || []);
+//   };
 
 //   useEffect(() => {
-//     fetchTypes();
-//   }, []);
-
-//   const fetchTypes = async () => {
-//     setLoading(true);
-//     const res = await fetch("/api/types");
-//     const data = await res.json();
-//     setTypes(data || []);
-//     setLoading(false);
-//   };
-
-//   const generateSlug = (text) => text.toLowerCase().trim().replace(/\s+/g, "-");
-
-//   const handleSave = async () => {
-//     const value = editId ? editName : name;
-
-//     if (!value.trim()) {
-//       alert("Type name required");
-//       return;
+//     if (slug) {
+//       fetchSections();
+//       fetchTypes();
 //     }
+//   }, [slug]);
 
-//     const res = await fetch("/api/types/save", {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
+//   // ADD SECTION
+//   const addSection = async () => {
+//     if (!typeId) return alert("Select type");
+
+//     const { error } = await supabaseServer.from("sections").insert([
+//       {
+//         page_slug: slug,
+//         type_id: typeId,
+//         content: { text: content },
+//         position: sections.length + 1,
 //       },
-//       body: JSON.stringify({
-//         id: editId,
-//         name: value,
-//         slug: generateSlug(value),
-//       }),
-//     });
+//     ]);
 
-//     const result = await res.json();
-
-//     if (!res.ok) {
-//       alert(result.message);
+//     if (error) {
+//       alert(error.message);
 //       return;
 //     }
 
-//     setName("");
-//     setEditId(null);
-//     setEditName("");
-//     fetchTypes();
+//     setTypeId("");
+//     setContent("");
+//     fetchSections();
 //   };
 
-//   const handleDelete = async (id) => {
-//     if (!confirm("Delete this type?")) return;
-
-//     await fetch(`/api/types/delete?id=${id}`, {
-//       method: "DELETE",
-//     });
-
-//     fetchTypes();
+//   // DELETE
+//   const deleteSection = async (id) => {
+//     await supabaseServer.from("sections").delete().eq("id", id);
+//     fetchSections();
 //   };
 
 //   return (
-//     <div className="max-w-4xl mx-auto space-y-6">
-//       <h1 className="text-2xl font-bold">Manage Types</h1>
+//     <div className="max-w-5xl mx-auto space-y-6">
+//       <h1 className="text-xl font-bold">Manage Sections: {slug}</h1>
 
-//       <div className="bg-white p-4 rounded-xl border flex gap-3">
+//       {/* ADD */}
+//       <div className="flex gap-3">
+//         <select
+//           value={typeId}
+//           onChange={(e) => setTypeId(e.target.value)}
+//           className="border p-2"
+//         >
+//           <option value="">Select Type</option>
+//           {types.map((t) => (
+//             <option key={t.id} value={t.id}>
+//               {t.name}
+//             </option>
+//           ))}
+//         </select>
+
 //         <input
-//           type="text"
-//           placeholder="Enter type name..."
-//           className="border w-full px-4 py-2 rounded-lg"
-//           value={editId ? editName : name}
-//           onChange={(e) =>
-//             editId ? setEditName(e.target.value) : setName(e.target.value)
-//           }
+//           value={content}
+//           onChange={(e) => setContent(e.target.value)}
+//           placeholder="Content text"
+//           className="border p-2 w-full"
 //         />
 
-//         <button
-//           onClick={handleSave}
-//           className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg"
-//         >
-//           <Plus size={16} />
-//           {editId ? "Update" : "Add"}
+//         <button onClick={addSection} className="bg-primary text-white px-4">
+//           Add
 //         </button>
+//       </div>
 
-//         {editId && (
+//       {/* LIST */}
+//       {sections.map((sec) => (
+//         <div key={sec.id} className="border p-4 flex justify-between">
+//           <div>
+//             <p className="font-bold">{sec.types?.name}</p>
+//             <p className="text-gray-500">{sec.content?.text}</p>
+//           </div>
+
 //           <button
-//             onClick={() => {
-//               setEditId(null);
-//               setEditName("");
-//             }}
-//             className="px-4 py-2 bg-gray-300 rounded-lg"
+//             onClick={() => deleteSection(sec.id)}
+//             className="text-red-500"
 //           >
-//             Cancel
+//             Delete
 //           </button>
-//         )}
-//       </div>
-
-//       <div className="bg-white rounded-xl border overflow-hidden">
-//         {loading ? (
-//           <div className="p-6 text-center text-gray-500">Loading types...</div>
-//         ) : (
-//           <table className="w-full text-sm border-collapse">
-//             <thead className="bg-primary text-white">
-//               <tr>
-//                 <th className="p-3 border">S/L</th>
-//                 <th className="p-3 border">Name</th>
-//                 <th className="p-3 border">Slug</th>
-//                 <th className="p-3 border text-center">Action</th>
-//               </tr>
-//             </thead>
-
-//             <tbody>
-//               {types.map((type, i) => (
-//                 <tr key={type.id} className="even:bg-gray-50">
-//                   <td className="p-3 border">{i + 1}</td>
-//                   <td className="p-3 border">{type.name}</td>
-//                   <td className="p-3 border">{type.slug}</td>
-
-//                   <td className="p-3 border">
-//                     <div className="flex justify-center gap-2">
-//                       <button
-//                         onClick={() => {
-//                           setEditId(type.id);
-//                           setEditName(type.name);
-//                         }}
-//                         className="bg-blue-100 p-2 rounded"
-//                       >
-//                         <Pencil size={14} />
-//                       </button>
-
-//                       <button
-//                         onClick={() => handleDelete(type.id)}
-//                         className="bg-red-100 p-2 rounded"
-//                       >
-//                         <Trash2 size={14} />
-//                       </button>
-//                     </div>
-//                   </td>
-//                 </tr>
-//               ))}
-
-//               {types.length === 0 && (
-//                 <tr>
-//                   <td colSpan="4" className="p-6 text-center text-gray-400">
-//                     No types found
-//                   </td>
-//                 </tr>
-//               )}
-//             </tbody>
-//           </table>
-//         )}
-//       </div>
+//         </div>
+//       ))}
 //     </div>
 //   );
 // }
 
-// TypesPage.getLayout = (page) => <AdminLayout>{page}</AdminLayout>;
+// // SSR
+// export async function getServerSideProps({ params }) {
+//   return {
+//     props: {
+//       slug: params.slug,
+//     },
+//   };
+// }
 
-// export default TypesPage;
+// PageEditor.getLayout = (page) => <AdminLayout>{page}</AdminLayout>;

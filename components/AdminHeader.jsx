@@ -194,13 +194,13 @@ export default function AdminHeader() {
         {/* Utility Icons */}
         <div className="flex items-center gap-2 border-r border-white/10 pr-6 mr-2">
           {/* Notification */}
-          <button className="relative p-2 text-gray-400 hover:text-secondary transition-colors">
+          {/* <button className="relative p-2 text-gray-400 hover:text-secondary transition-colors">
             <FaBell size={18} />
             <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-secondary rounded-full border-2 border-primary"></span>
-          </button>
+          </button> */}
 
           {/* Settings */}
-          <button className="p-2 text-gray-400 hover:text-secondary transition-colors">
+          <button className="p-2 text-gray-400 hover:text-primary transition-colors">
             <Settings size={18} />
           </button>
         </div>

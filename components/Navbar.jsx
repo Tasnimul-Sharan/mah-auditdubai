@@ -403,6 +403,10 @@ export default function Navbar() {
 
   if (!data) return null;
 
+  const menuLinks = links.filter(
+    (item) => item.name.toLowerCase() !== "contact",
+  );
+
   return (
     <header className="w-full">
       {/* ================= TOPBAR ================= */}
@@ -417,37 +421,50 @@ export default function Navbar() {
               {data.address}
             </p>
 
-            <p className="flex items-center gap-2 border-r pr-4">
-              <FaEnvelope />
-              <a href={`mailto:${data.email}`}>{data.email}</a>
+            <p className="flex items-center gap-2 border-r pr-4 group cursor-pointer">
+              <FaEnvelope className="transition duration-300 group-hover:text-secondary" />
+              <a
+                href={`mailto:${data.email}`}
+                className="transition duration-300 group-hover:text-secondary"
+              >
+                {data.email}
+              </a>
             </p>
 
-            <p className="flex items-center gap-2">
-              <FaPhoneAlt />
-              <a href={`tel:${data.phone}`}>{data.phone}</a>
+            <p className="flex items-center gap-2 group cursor-pointer">
+              <FaPhoneAlt className="transition duration-300 group-hover:text-secondary" />
+              <a
+                href={`tel:${data.phone}`}
+                className="transition duration-300 group-hover:text-secondary"
+              >
+                {data.phone}
+              </a>
             </p>
           </div>
 
           {/* SOCIAL */}
           <div className="flex gap-4">
             {data.facebook && (
-              <Link href={data.facebook}>
-                <FaFacebookF />
+              <Link href={data.facebook} target="_blank" className="text-base">
+                <FaFacebookF className="transition duration-300 hover:text-secondary hover:scale-110" />
               </Link>
             )}
+
             {data.youtube && (
-              <Link href={data.youtube}>
-                <FaYoutube />
+              <Link href={data.youtube} target="_blank" className="text-base">
+                <FaYoutube className="transition duration-300 hover:text-secondary hover:scale-110" />
               </Link>
             )}
+
             {data.linkedin && (
-              <Link href={data.linkedin}>
-                <FaLinkedinIn />
+              <Link href={data.linkedin} target="_blank" className="text-base">
+                <FaLinkedinIn className="transition duration-300 hover:text-secondary hover:scale-110" />
               </Link>
             )}
+
             {data.instagram && (
-              <Link href={data.instagram}>
-                <FaInstagram />
+              <Link href={data.instagram} target="_blank" className="text-base">
+                <FaInstagram className="transition duration-300 hover:text-secondary hover:scale-110" />
               </Link>
             )}
           </div>
@@ -473,7 +490,7 @@ export default function Navbar() {
 
           {/* MENU */}
           <ul className="hidden lg:flex gap-8 font-semibold text-Secound_primary">
-            {links.map((item) => (
+            {menuLinks.map((item) => (
               <li key={item.id} className="relative group">
                 <Link
                   href={item.path}
@@ -512,7 +529,7 @@ export default function Navbar() {
         className="fixed top-0 left-0 w-0 h-0 opacity-0 bg-primary text-white z-30 overflow-hidden flex flex-col justify-center items-center lg:hidden"
       >
         <ul className="flex flex-col gap-8 text-2xl font-semibold text-center">
-          {links.map((item) => (
+          {menuLinks.map((item) => (
             <li key={item.id}>
               <Link href={item.path} onClick={() => setIsMenuOpen(false)}>
                 {item.name}

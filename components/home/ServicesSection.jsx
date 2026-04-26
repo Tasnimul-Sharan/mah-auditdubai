@@ -1,6 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { FaArrowRight } from "react-icons/fa";
+import SectionBadge from "../SectionBadge";
+import { FaPhoenixFramework } from "react-icons/fa6";
 
 const services = [
   {
@@ -55,9 +57,11 @@ export default function ServicesSection() {
         <div className="absolute top-0 left-0 w-full h-96 bg-primary/5 blur-3xl -z-10" />
 
         <div className="custom-container text-center max-w-4xl mx-auto">
-          <p className="uppercase tracking-widest text-sm text-primary mb-4">
-            Our Expertise
-          </p>
+          <div className="mb-4 flex justify-center">
+            <SectionBadge icon={FaPhoenixFramework} className="mb-0">
+              Our Expertise
+            </SectionBadge>
+          </div>
 
           <h1 className="text-4xl md:text-5xl font-bold leading-tight">
             Audit & Advisory Solutions

@@ -11,7 +11,7 @@ import WhoWeWorkWith from "@/components/WhoWeWorkWith";
 import ContactSection from "@/components/ContactSection";
 import { supabaseServer } from "@/lib/supabaseServer";
 
-export default function Home({ meta, about }) {
+export default function Home({ meta, about, services }) {
   return (
     <div>
       {/* SEO */}
@@ -69,7 +69,7 @@ export default function Home({ meta, about }) {
       {/* Sections */}
       <LandingPage />
       <AboutUsSection data={about} />
-      <ServicesSection />
+      <ServicesSection services={services} />
       <StatsSection />
       <WhyChooseUs />
       <WhoWeWorkWith />
@@ -82,22 +82,26 @@ export default function Home({ meta, about }) {
 }
 
 export async function getServerSideProps() {
-  // Fetch Home Meta
   const { data: homeData } = await supabaseServer
     .from("home_page")
     .select("*")
     .single();
 
-  // Fetch About Section
   const { data: aboutData } = await supabaseServer
     .from("about_section")
     .select("*")
     .single();
 
+  const { data: servicesData } = await supabaseServer
+    .from("services")
+    .select("*")
+    .order("created_at", { ascending: true });
+
   return {
     props: {
       meta: homeData || null,
       about: aboutData || null,
+      services: servicesData || [],
     },
   };
 }

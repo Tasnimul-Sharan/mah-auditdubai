@@ -3,7 +3,7 @@ import React from "react";
 function StatCard({ number, label }) {
   return (
     <div
-      className="bg-white/10 backdrop-blur-lg border border-white/20 
+      className="bg-white/10 backdrop-blur-lg border border-secondary/20 text-center 
       rounded-2xl py-5 px-6 hover:bg-white/20 transition-all duration-300"
     >
       <div className="text-2xl font-bold">{number}</div>
@@ -14,7 +14,7 @@ function StatCard({ number, label }) {
 
 export default function ContactHero() {
   return (
-    <section className="relative py-32 text-white overflow-hidden bg-gradient-to-r from-secondary to-primary">
+    <section className="relative py-32 text-secondary_two overflow-hidden bg-white/5">
       {/* grid texture */}
       <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
 

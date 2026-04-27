@@ -412,30 +412,30 @@ export default function Navbar() {
       {/* ================= TOPBAR ================= */}
       <div
         ref={topbarRef}
-        className="hidden lg:block fixed top-0 left-0 w-full z-40 bg-primary text-white py-6"
+        className="hidden lg:block fixed top-0 left-0 w-full z-40 bg-secondary text-white py-6"
       >
         <div className="custom-container mx-auto flex items-center justify-between">
-          <div className="flex flex-1 items-center gap-6 text-base">
+          <div className="flex flex-1 items-center gap-6 text-base text-white/75">
             <p className="flex items-center gap-2 border-r pr-4">
-              <FaMapMarkerAlt />
+              <FaMapMarkerAlt className="text-primary" />
               {data.address}
             </p>
 
             <p className="flex items-center gap-2 border-r pr-4 group cursor-pointer">
-              <FaEnvelope className="transition duration-300 group-hover:text-secondary" />
+              <FaEnvelope className="transition duration-300 group-hover:text-primary text-primary" />
               <a
                 href={`mailto:${data.email}`}
-                className="transition duration-300 group-hover:text-secondary"
+                className="transition duration-300 group-hover:text-primary"
               >
                 {data.email}
               </a>
             </p>
 
             <p className="flex items-center gap-2 group cursor-pointer">
-              <FaPhoneAlt className="transition duration-300 group-hover:text-secondary" />
+              <FaPhoneAlt className="transition duration-300 group-hover:text-primary text-primary" />
               <a
                 href={`tel:${data.phone}`}
-                className="transition duration-300 group-hover:text-secondary"
+                className="transition duration-300 group-hover:text-primary"
               >
                 {data.phone}
               </a>

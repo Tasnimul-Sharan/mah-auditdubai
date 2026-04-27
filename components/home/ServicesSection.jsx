@@ -110,7 +110,7 @@
 //       <div className="relative custom-container mx-auto">
 //         <div className="mx-auto max-w-4xl text-center">
 //           <div className="mb-4 flex justify-center">
-//             <SectionBadge icon={FaPhoenixFramework} className="mb-0">
+//             <SectionBadge className="mb-0">
 //               Our Expertise
 //             </SectionBadge>
 //           </div>

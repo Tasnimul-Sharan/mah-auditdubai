@@ -11,7 +11,14 @@ import WhoWeWorkWith from "@/components/WhoWeWorkWith";
 import ContactSection from "@/components/ContactSection";
 import { supabaseServer } from "@/lib/supabaseServer";
 
-export default function Home({ meta, about, services }) {
+export default function Home({
+  meta,
+  about,
+  services,
+  whyChooseUs,
+  whyChoosePoints,
+  industries,
+}) {
   return (
     <div>
       {/* SEO */}
@@ -66,13 +73,12 @@ export default function Home({ meta, about, services }) {
         />
       </Head>
 
-      {/* Sections */}
       <LandingPage />
       <AboutUsSection data={about} />
       <ServicesSection services={services} />
       <StatsSection />
-      <WhyChooseUs />
-      <WhoWeWorkWith />
+      <WhyChooseUs data={whyChooseUs} points={whyChoosePoints} />
+      <WhoWeWorkWith industries={industries} />
       <ClientsSection />
       <TestimonialsSection />
       <BlogSection />
@@ -80,6 +86,31 @@ export default function Home({ meta, about, services }) {
     </div>
   );
 }
+
+// export async function getServerSideProps() {
+//   const { data: homeData } = await supabaseServer
+//     .from("home_page")
+//     .select("*")
+//     .single();
+
+//   const { data: aboutData } = await supabaseServer
+//     .from("about_section")
+//     .select("*")
+//     .single();
+
+//   const { data: servicesData } = await supabaseServer
+//     .from("services")
+//     .select("*")
+//     .order("created_at", { ascending: true });
+
+//   return {
+//     props: {
+//       meta: homeData || null,
+//       about: aboutData || null,
+//       services: servicesData || [],
+//     },
+//   };
+// }
 
 export async function getServerSideProps() {
   const { data: homeData } = await supabaseServer
@@ -97,11 +128,39 @@ export async function getServerSideProps() {
     .select("*")
     .order("created_at", { ascending: true });
 
+  const { data: whyChooseUsData } = await supabaseServer
+    .from("why_choose_us")
+    .select("id, title, subtitle, description, image, button_text, button_link")
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  let whyChoosePoints = [];
+
+  if (whyChooseUsData?.id) {
+    const { data: pointRows } = await supabaseServer
+      .from("why_choose_points")
+      .select("point")
+      .eq("why_id", whyChooseUsData.id)
+      .order("created_at", { ascending: true });
+
+    whyChoosePoints = (pointRows || [])
+      .map((item) => item.point)
+      .filter(Boolean);
+  }
+  const { data: industriesData } = await supabaseServer
+    .from("industries")
+    .select("*")
+    .order("created_at", { ascending: true });
+
   return {
     props: {
       meta: homeData || null,
       about: aboutData || null,
       services: servicesData || [],
+      whyChooseUs: whyChooseUsData || null,
+      whyChoosePoints,
+      industries: industriesData || [],
     },
   };
 }

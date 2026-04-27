@@ -113,7 +113,7 @@ export default function AboutUsSection({ data }) {
               </div>
             </div>
 
-            <div className="absolute -right-4 -top-4 hidden h-24 w-24 rounded-2xl border border-primary/20 bg-primary/10 lg:block" />
+            {/* <div className="absolute -right-4 -top-4 hidden h-24 w-24 rounded-2xl border border-primary/20 bg-primary/10 lg:block" /> */}
             {/* <div className="absolute -left-5 bottom-16 hidden h-16 w-16 rounded-xl border border-gray-200 bg-white shadow-lg lg:block" /> */}
           </motion.div>
         </div>

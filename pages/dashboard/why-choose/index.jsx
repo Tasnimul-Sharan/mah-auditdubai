@@ -17,6 +17,9 @@ export default function WhyChooseAdmin() {
     subtitle: "",
     description: "",
     image: "",
+    public_id: "",
+    button_text: "",
+    button_link: "",
   });
 
   const [file, setFile] = useState(null);
@@ -103,6 +106,8 @@ export default function WhyChooseAdmin() {
             description: form.description,
             image: imageUrl,
             public_id: publicId,
+            button_text: form.button_text,
+            button_link: form.button_link,
           })
           .eq("id", section.id);
       }
@@ -115,6 +120,8 @@ export default function WhyChooseAdmin() {
             description: form.description,
             image: imageUrl,
             public_id: publicId,
+            button_text: form.button_text,
+            button_link: form.button_link,
           },
         ]);
       }
@@ -223,6 +230,20 @@ export default function WhyChooseAdmin() {
           className="border p-2 w-full"
         />
 
+        <input
+          placeholder="Button Text"
+          value={form.button_text}
+          onChange={(e) => setForm({ ...form, button_text: e.target.value })}
+          className="border p-2 w-full"
+        />
+
+        <input
+          placeholder="Button Link"
+          value={form.button_link}
+          onChange={(e) => setForm({ ...form, button_link: e.target.value })}
+          className="border p-2 w-full"
+        />
+
         <input type="file" onChange={handleFileChange} />
 
         {preview ? (
@@ -247,38 +268,6 @@ export default function WhyChooseAdmin() {
             </button>
           </div>
         ) : null}
-
-        {/* <div className="relative w-fit">
-          <img
-            src={preview || form.image}
-            className="w-40 h-28 object-cover rounded border"
-          />
-
-          {(preview || form.image) && (
-            <button
-              onClick={deleteImage}
-              className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded"
-            >
-              <Trash2 size={14} />
-            </button>
-          )}
-        </div> */}
-
-        {/* {form.image && (
-          <div className="relative w-fit">
-            <img
-              src={form.image}
-              className="w-40 h-28 object-cover rounded border"
-            />
-
-            <button
-              onClick={deleteImage}
-              className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded"
-            >
-              <Trash2 size={14} />
-            </button>
-          </div>
-        )} */}
 
         <button
           onClick={handleSave}

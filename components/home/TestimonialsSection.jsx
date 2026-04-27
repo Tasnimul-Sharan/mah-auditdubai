@@ -103,12 +103,19 @@ export default function TestimonialsSection() {
         <Slider {...settings}>
           {testimonials.map((item, i) => (
             <div key={i} className="px-4">
-              <div
+              {/* <div
                 className="group h-full bg-white p-8 rounded-3xl 
                 border border-gray-100
                 shadow-[0_10px_30px_rgba(0,0,0,0.05)]
                 hover:shadow-[0_25px_60px_rgba(0,0,0,0.12)]
                 transition-all duration-500 hover:-translate-y-2"
+              > */}
+              <div
+                className="group relative h-full bg-white p-8 rounded-3xl 
+  border border-gray-100
+  shadow-[0_10px_30px_rgba(0,0,0,0.05)]
+  hover:shadow-[0_25px_60px_rgba(0,0,0,0.12)]
+  transition-all duration-500 hover:-translate-y-2"
               >
                 {/* Top Row */}
                 <div className="flex justify-between mb-6">
@@ -120,7 +127,17 @@ export default function TestimonialsSection() {
                     <FaStar />
                   </div>
 
-                  <FaQuoteRight className="md:text-5xl text-3xl text-primary opacity-20 group-hover:opacity-40 transition-all transform-gpu duration-500" />
+                  <FaQuoteRight
+                    className="
+  absolute -top-6 right-6
+  md:text-6xl text-4xl
+  text-primary/80
+  group-hover:opacity-90
+  transition-all duration-500
+  "
+                  />
+
+                  {/* <FaQuoteRight className="md:text-5xl text-3xl text-primary opacity-20 group-hover:opacity-40 transition-all transform-gpu duration-500" /> */}
                 </div>
 
                 {/* Text */}

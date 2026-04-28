@@ -144,12 +144,107 @@
 //   );
 // }
 
+// "use client";
+
+// import { supabaseServer } from "@/lib/supabaseServer";
+// import { useRouter } from "next/router";
+// import { useEffect, useState } from "react";
+// import { FaUserShield, FaBell } from "react-icons/fa";
+// import { LogOut, Settings } from "lucide-react";
+
+// export default function AdminHeader() {
+//   const router = useRouter();
+//   const [user, setUser] = useState(null);
+
+//   useEffect(() => {
+//     const getUser = async () => {
+//       const { data } = await supabaseServer.auth.getUser();
+//       setUser(data.user);
+//     };
+
+//     getUser();
+//   }, []);
+
+//   const logout = async () => {
+//     await supabaseServer.auth.signOut();
+//     router.push("/login");
+//   };
+
+//   const username = user?.email?.split("@")[0] || "Auditor";
+
+//   return (
+//     <header className="h-24 bg-secondary border-b border-white/10 flex items-center justify-between px-10 sticky top-0 z-50">
+//       {/* Left Section */}
+//       <div className="flex items-center gap-4">
+//         <div className="h-8 w-[2px] bg-secondary/60 hidden md:block"></div>
+
+//         <div>
+//           <h1 className="text-sm font-bold text-white uppercase tracking-[0.2em]">
+//             Audit Management Portal
+//           </h1>
+
+//           <p className="text-[10px] text-gray-400 uppercase tracking-widest font-medium mt-1">
+//             Confidential • Dubai, UAE
+//           </p>
+//         </div>
+//       </div>
+
+//       {/* Right Section */}
+//       <div className="flex items-center gap-6">
+//         {/* Utility Icons */}
+//         <div className="flex items-center gap-2 border-r border-white/10 pr-6 mr-2">
+//           {/* Notification */}
+//           {/* <button className="relative p-2 text-gray-400 hover:text-secondary transition-colors">
+//             <FaBell size={18} />
+//             <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-secondary rounded-full border-2 border-primary"></span>
+//           </button> */}
+
+//           {/* Settings */}
+//           <button className="p-2 text-gray-400 hover:text-primary transition-colors">
+//             <Settings size={18} />
+//           </button>
+//         </div>
+
+//         {/* Profile */}
+//         <div className="flex items-center gap-4">
+//           {/* Text */}
+//           <div className="text-right hidden sm:block">
+//             <p className="text-sm font-semibold text-white leading-none capitalize">
+//               {username}
+//             </p>
+//             <p className="text-[10px] text-secondary font-semibold uppercase mt-1 tracking-wider">
+//               MAH Admin
+//             </p>
+//           </div>
+
+//           {/* Avatar */}
+//           <div className="h-10 w-10 rounded-lg bg-primary/40 border border-white/10 flex items-center justify-center text-secondary shadow-sm backdrop-blur-sm hover:border-secondary transition-all">
+//             <FaUserShield size={18} />
+//           </div>
+//         </div>
+
+//         {/* Logout */}
+//         <button
+//           onClick={logout}
+//           className="group flex items-center gap-2 bg-red-500 text-white px-5 py-2.5 rounded-lg hover:bg-red-600 transition-all text-[11px] font-bold uppercase tracking-widest shadow-md"
+//         >
+//           <LogOut
+//             size={14}
+//             className="group-hover:translate-x-1 transition-transform"
+//           />
+//           Log Out
+//         </button>
+//       </div>
+//     </header>
+//   );
+// }
+
 "use client";
 
 import { supabaseServer } from "@/lib/supabaseServer";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { FaUserShield, FaBell } from "react-icons/fa";
+import { FaUserShield } from "react-icons/fa";
 import { LogOut, Settings } from "lucide-react";
 
 export default function AdminHeader() {
@@ -173,67 +268,49 @@ export default function AdminHeader() {
   const username = user?.email?.split("@")[0] || "Auditor";
 
   return (
-    <header className="h-24 bg-secondary border-b border-white/10 flex items-center justify-between px-10 sticky top-0 z-50">
-      {/* Left Section */}
-      <div className="flex items-center gap-4">
-        <div className="h-8 w-[2px] bg-secondary/60 hidden md:block"></div>
-
+    <header className="sticky top-0 z-30 border-b border-gray-100 bg-white/90 backdrop-blur-xl">
+      <div className="flex h-20 items-center justify-between px-8">
         <div>
-          <h1 className="text-sm font-bold text-white uppercase tracking-[0.2em]">
+          <h1 className="text-sm font-bold uppercase tracking-[0.22em] text-gray-900">
             Audit Management Portal
           </h1>
 
-          <p className="text-[10px] text-gray-400 uppercase tracking-widest font-medium mt-1">
+          <p className="mt-1 text-[10px] font-semibold uppercase tracking-widest text-gray-400">
             Confidential • Dubai, UAE
           </p>
         </div>
-      </div>
 
-      {/* Right Section */}
-      <div className="flex items-center gap-6">
-        {/* Utility Icons */}
-        <div className="flex items-center gap-2 border-r border-white/10 pr-6 mr-2">
-          {/* Notification */}
-          {/* <button className="relative p-2 text-gray-400 hover:text-secondary transition-colors">
-            <FaBell size={18} />
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-secondary rounded-full border-2 border-primary"></span>
-          </button> */}
-
-          {/* Settings */}
-          <button className="p-2 text-gray-400 hover:text-primary transition-colors">
+        <div className="flex items-center gap-5">
+          <button className="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100 text-gray-500 transition-all duration-500 hover:bg-primary hover:text-white">
             <Settings size={18} />
           </button>
-        </div>
 
-        {/* Profile */}
-        <div className="flex items-center gap-4">
-          {/* Text */}
-          <div className="text-right hidden sm:block">
-            <p className="text-sm font-semibold text-white leading-none capitalize">
-              {username}
-            </p>
-            <p className="text-[10px] text-secondary font-semibold uppercase mt-1 tracking-wider">
-              MAH Admin
-            </p>
+          <div className="hidden items-center gap-3 sm:flex">
+            <div className="text-right">
+              <p className="text-sm font-semibold capitalize leading-none text-gray-900">
+                {username}
+              </p>
+              <p className="mt-1 text-[10px] font-semibold uppercase tracking-wider text-primary">
+                MAH Admin
+              </p>
+            </div>
+
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-gray-100 bg-primary/10 text-primary">
+              <FaUserShield size={18} />
+            </div>
           </div>
 
-          {/* Avatar */}
-          <div className="h-10 w-10 rounded-lg bg-primary/40 border border-white/10 flex items-center justify-center text-secondary shadow-sm backdrop-blur-sm hover:border-secondary transition-all">
-            <FaUserShield size={18} />
-          </div>
+          <button
+            onClick={logout}
+            className="group flex items-center gap-2 rounded-xl bg-red-500 px-4 py-2.5 text-[11px] font-bold uppercase tracking-widest text-white shadow-md transition-all duration-500 hover:bg-red-600"
+          >
+            <LogOut
+              size={14}
+              className="transition-transform duration-500 group-hover:translate-x-1"
+            />
+            Log Out
+          </button>
         </div>
-
-        {/* Logout */}
-        <button
-          onClick={logout}
-          className="group flex items-center gap-2 bg-red-500 text-white px-5 py-2.5 rounded-lg hover:bg-red-600 transition-all text-[11px] font-bold uppercase tracking-widest shadow-md"
-        >
-          <LogOut
-            size={14}
-            className="group-hover:translate-x-1 transition-transform"
-          />
-          Log Out
-        </button>
       </div>
     </header>
   );

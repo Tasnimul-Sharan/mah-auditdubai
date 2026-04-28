@@ -87,31 +87,6 @@ export default function Home({
   );
 }
 
-// export async function getServerSideProps() {
-//   const { data: homeData } = await supabaseServer
-//     .from("home_page")
-//     .select("*")
-//     .single();
-
-//   const { data: aboutData } = await supabaseServer
-//     .from("about_section")
-//     .select("*")
-//     .single();
-
-//   const { data: servicesData } = await supabaseServer
-//     .from("services")
-//     .select("*")
-//     .order("created_at", { ascending: true });
-
-//   return {
-//     props: {
-//       meta: homeData || null,
-//       about: aboutData || null,
-//       services: servicesData || [],
-//     },
-//   };
-// }
-
 export async function getServerSideProps() {
   const { data: homeData } = await supabaseServer
     .from("home_page")

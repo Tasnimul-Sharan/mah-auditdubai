@@ -1,318 +1,18 @@
-// "use client";
-
-// import { useEffect, useState } from "react";
-// import { useRouter } from "next/router";
-// import { supabaseServer } from "@/lib/supabaseServer";
-// import AdminLayout from "@/components/AdminLayout";
-
-// export default function EditService() {
-//   const router = useRouter();
-//   const { id } = router.query;
-
-//   const [form, setForm] = useState(null);
-//   const [loading, setLoading] = useState(true);
-
-//   useEffect(() => {
-//     if (!id) return;
-
-//     supabaseServer
-//       .from("services")
-//       .select("*")
-//       .eq("id", id)
-//       .single()
-//       .then(({ data }) => {
-//         setForm({
-//           ...data,
-//           footerNote: data.footer_note,
-//         });
-//         setLoading(false);
-//       });
-//   }, [id]);
-
-//   // ================= IMAGE UPLOAD =================
-//   const uploadImage = async (e) => {
-//     const file = e.target.files[0];
-//     if (!file) return;
-
-//     const reader = new FileReader();
-
-//     reader.onloadend = async () => {
-//       const res = await fetch("/api/upload-services", {
-//         method: "POST",
-//         headers: {
-//           "Content-Type": "application/json",
-//         },
-//         body: JSON.stringify({ file: reader.result }),
-//       });
-
-//       const data = await res.json();
-
-//       if (!data.url) {
-//         alert("Upload failed");
-//         return;
-//       }
-
-//       setForm({ ...form, image: data.url });
-
-//       await supabaseServer
-//         .from("services")
-//         .update({ image: data.url })
-//         .eq("id", id);
-//     };
-
-//     reader.readAsDataURL(file);
-//   };
-
-//   // ================= SECTION LOGIC =================
-//   const addSection = () => {
-//     setForm({
-//       ...form,
-//       sections: [
-//         ...(form.sections || []),
-//         { title: "", description: "", items: [""] },
-//       ],
-//     });
-//   };
-
-//   const updateSection = (i, field, value) => {
-//     const updated = [...form.sections];
-//     updated[i][field] = value;
-//     setForm({ ...form, sections: updated });
-//   };
-
-//   const removeSection = (i) => {
-//     const updated = form.sections.filter((_, idx) => idx !== i);
-//     setForm({ ...form, sections: updated });
-//   };
-
-//   const addItem = (i) => {
-//     const updated = [...form.sections];
-//     updated[i].items.push("");
-//     setForm({ ...form, sections: updated });
-//   };
-
-//   const updateItem = (i, idx, value) => {
-//     const updated = [...form.sections];
-//     updated[i].items[idx] = value;
-//     setForm({ ...form, sections: updated });
-//   };
-
-//   const removeItem = (i, idx) => {
-//     const updated = [...form.sections];
-//     updated[i].items.splice(idx, 1);
-//     setForm({ ...form, sections: updated });
-//   };
-
-//   // ================= UPDATE =================
-//   const handleUpdate = async () => {
-//     const payload = {
-//       title: form.title,
-//       slug: form.slug,
-//       description: form.description,
-//       image: form.image,
-//       hero: form.hero,
-//       sections: form.sections,
-//       footer_note: form.footerNote,
-//       cta: form.cta,
-//     };
-
-//     const { error } = await supabaseServer
-//       .from("services")
-//       .update(payload)
-//       .eq("id", id);
-
-//     if (!error) {
-//       alert("✅ Updated successfully");
-//       router.push("/dashboard/services");
-//     } else {
-//       alert("❌ Update failed");
-//     }
-//   };
-
-//   if (loading) return <div className="p-6">Loading...</div>;
-//   if (!form) return <div className="p-6">Service not found</div>;
-
-//   return (
-//     <div className="max-w-5xl mx-auto bg-white p-6 rounded-xl border space-y-6">
-//       <h1 className="text-2xl font-bold">Edit Service</h1>
-
-//       {/* BASIC */}
-//       <input
-//         value={form.title}
-//         onChange={(e) => setForm({ ...form, title: e.target.value })}
-//         className="input"
-//         placeholder="Title"
-//       />
-
-//       <input value={form.slug} readOnly className="input bg-gray-100" />
-
-//       <textarea
-//         value={form.description}
-//         onChange={(e) => setForm({ ...form, description: e.target.value })}
-//         className="input"
-//         placeholder="Description"
-//       />
-
-//       {/* IMAGE */}
-//       <div className="space-y-2">
-//         <input type="file" onChange={uploadImage} />
-
-//         {form.image && (
-//           <img src={form.image} className="w-40 h-40 object-cover rounded" />
-//         )}
-//       </div>
-
-//       {/* HERO */}
-//       <div className="space-y-3">
-//         <h2 className="font-semibold">Hero</h2>
-
-//         <input
-//           value={form.hero?.title || ""}
-//           onChange={(e) =>
-//             setForm({ ...form, hero: { ...form.hero, title: e.target.value } })
-//           }
-//           className="input"
-//           placeholder="Hero Title"
-//         />
-
-//         <textarea
-//           value={form.hero?.description1 || ""}
-//           onChange={(e) =>
-//             setForm({
-//               ...form,
-//               hero: { ...form.hero, description1: e.target.value },
-//             })
-//           }
-//           className="input"
-//         />
-
-//         <textarea
-//           value={form.hero?.description2 || ""}
-//           onChange={(e) =>
-//             setForm({
-//               ...form,
-//               hero: { ...form.hero, description2: e.target.value },
-//             })
-//           }
-//           className="input"
-//         />
-//       </div>
-
-//       {/* SECTIONS */}
-//       <div className="space-y-4">
-//         <h2 className="font-semibold">Sections</h2>
-
-//         {form.sections?.map((sec, i) => (
-//           <div key={i} className="border p-4 rounded space-y-3">
-//             <input
-//               value={sec.title}
-//               onChange={(e) => updateSection(i, "title", e.target.value)}
-//               className="input"
-//               placeholder="Section Title"
-//             />
-
-//             <textarea
-//               value={sec.description}
-//               onChange={(e) => updateSection(i, "description", e.target.value)}
-//               className="input"
-//             />
-
-//             {sec.items.map((item, idx) => (
-//               <div key={idx} className="flex gap-2">
-//                 <input
-//                   value={item}
-//                   onChange={(e) => updateItem(i, idx, e.target.value)}
-//                   className="input"
-//                 />
-//                 <button
-//                   onClick={() => removeItem(i, idx)}
-//                   className="text-red-500"
-//                 >
-//                   X
-//                 </button>
-//               </div>
-//             ))}
-
-//             <button onClick={() => addItem(i)}>+ Item</button>
-//             <button onClick={() => removeSection(i)} className="text-red-500">
-//               Remove Section
-//             </button>
-//           </div>
-//         ))}
-
-//         <button onClick={addSection} className="btn">
-//           + Add Section
-//         </button>
-//       </div>
-
-//       {/* CTA */}
-//       <div className="space-y-3">
-//         <h2 className="font-semibold">CTA</h2>
-
-//         <input
-//           value={form.cta?.title || ""}
-//           onChange={(e) =>
-//             setForm({ ...form, cta: { ...form.cta, title: e.target.value } })
-//           }
-//           className="input"
-//         />
-
-//         <textarea
-//           value={form.cta?.description || ""}
-//           onChange={(e) =>
-//             setForm({
-//               ...form,
-//               cta: { ...form.cta, description: e.target.value },
-//             })
-//           }
-//           className="input"
-//         />
-
-//         <input
-//           value={form.cta?.buttonText || ""}
-//           onChange={(e) =>
-//             setForm({
-//               ...form,
-//               cta: { ...form.cta, buttonText: e.target.value },
-//             })
-//           }
-//           className="input"
-//         />
-//       </div>
-
-//       {/* FOOTER */}
-//       <textarea
-//         value={form.footerNote || ""}
-//         onChange={(e) => setForm({ ...form, footerNote: e.target.value })}
-//         className="input"
-//         placeholder="Footer Note"
-//       />
-
-//       {/* ACTION */}
-//       <button
-//         onClick={handleUpdate}
-//         className="bg-primary text-white px-6 py-3 rounded"
-//       >
-//         Update Service
-//       </button>
-//     </div>
-//   );
-// }
-
-// EditService.getLayout = (page) => (
-//   <AdminLayout title="Edit Service">{page}</AdminLayout>
-// );
-
 "use client";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { supabaseServer } from "@/lib/supabaseServer";
 import AdminLayout from "@/components/AdminLayout";
+import { FaPlus, FaSave, FaTrash } from "react-icons/fa";
+import { useUpload } from "@/Hooks/useUpload";
 
 export default function EditService() {
   const router = useRouter();
   const { id } = router.query;
+  const { uploadFile } = useUpload();
+  const [file, setFile] = useState(null);
+  const [preview, setPreview] = useState("");
 
   const [form, setForm] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -328,83 +28,168 @@ export default function EditService() {
       .then(({ data }) => {
         setForm({
           ...data,
-          footerNote: data.footer_note,
+          footerNote: data?.footer_note || "",
         });
         setLoading(false);
       });
   }, [id]);
 
-  // ================= IMAGE UPLOAD =================
-  const uploadImage = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+  const inputClass = "border p-3 w-full rounded";
+  const cardClass = "bg-white p-6 border rounded-xl space-y-4";
 
-    const reader = new FileReader();
+  // const uploadImage = async (e) => {
+  //   const file = e.target.files[0];
+  //   if (!file) return;
 
-    reader.onloadend = async () => {
-      try {
-        const res = await fetch("/api/upload-services", {
+  //   const reader = new FileReader();
+
+  //   reader.onloadend = async () => {
+  //     try {
+  //       const res = await fetch("/api/upload-services", {
+  //         method: "POST",
+  //         headers: { "Content-Type": "application/json" },
+  //         body: JSON.stringify({ file: reader.result }),
+  //       });
+
+  //       const data = await res.json();
+
+  //       if (!data.url) return alert("Upload failed");
+
+  //       setForm({ ...form, image: data.url });
+
+  //       await supabaseServer
+  //         .from("services")
+  //         .update({ image: data.url })
+  //         .eq("id", id);
+  //     } catch (err) {
+  //       console.error(err);
+  //       alert("Upload error");
+  //     }
+  //   };
+
+  //   reader.readAsDataURL(file);
+  // };
+
+  // const removeImage = async () => {
+  //   try {
+  //     if (!form.image) return;
+
+  //     const public_id = form.image
+  //       .split("/upload/")[1]
+  //       ?.split(".")[0]
+  //       ?.replace(/^v\d+\//, "");
+
+  //     if (public_id) {
+  //       await fetch("/api/delete-image", {
+  //         method: "POST",
+  //         headers: { "Content-Type": "application/json" },
+  //         body: JSON.stringify({ public_id }),
+  //       });
+  //     }
+
+  //     setForm({ ...form, image: "" });
+
+  //     await supabaseServer.from("services").update({ image: "" }).eq("id", id);
+  //   } catch (err) {
+  //     console.error(err);
+  //     alert("Delete failed");
+  //   }
+  // };
+
+  const handleFileChange = async (e) => {
+    const selected = e.target.files[0];
+    if (!selected) return;
+
+    setFile(selected);
+    setPreview(URL.createObjectURL(selected));
+
+    try {
+      let oldPublicId = form.public_id || null;
+
+      if (!oldPublicId && form.image) {
+        oldPublicId = form.image
+          .split("/upload/")[1]
+          ?.split(".")[0]
+          ?.replace(/^v\d+\//, "");
+      }
+
+      if (oldPublicId) {
+        await fetch("/api/delete-image", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ file: reader.result }),
+          body: JSON.stringify({ public_id: oldPublicId }),
         });
-
-        const data = await res.json();
-
-        if (!data.url) {
-          alert("Upload failed");
-          return;
-        }
-
-        // update UI instantly
-        setForm({ ...form, image: data.url });
-
-        // update DB instantly (same as blog)
-        await supabaseServer
-          .from("services")
-          .update({ image: data.url })
-          .eq("id", id);
-      } catch (err) {
-        console.error(err);
-        alert("Upload error");
       }
-    };
 
-    reader.readAsDataURL(file);
-  };
+      const res = await uploadFile(selected, "services");
 
-  // ================= REMOVE IMAGE =================
-  const removeImage = async () => {
-    try {
-      const imageUrl = form.image;
+      if (!res?.url) {
+        alert("Upload failed");
+        return;
+      }
 
-      if (!imageUrl) return;
-
-      const public_id = imageUrl
-        .split("/upload/")[1]
-        .split(".")[0]
-        .replace(/^v\d+\//, "");
-
-      await fetch("/api/delete-image", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ public_id }),
+      setForm({
+        ...form,
+        image: res.url,
+        public_id: res.public_id || null,
       });
 
-      // update UI
-      setForm({ ...form, image: "" });
+      await supabaseServer
+        .from("services")
+        .update({
+          image: res.url,
+          public_id: res.public_id || null,
+        })
+        .eq("id", id);
+    } catch (err) {
+      console.error(err);
+      alert("Upload error");
+    }
+  };
 
-      // update DB
-      await supabaseServer.from("services").update({ image: "" }).eq("id", id);
+  const removeImage = async () => {
+    try {
+      if (!form.image && !form.public_id) return;
+
+      let public_id = form.public_id;
+
+      if (!public_id && form.image) {
+        public_id = form.image
+          .split("/upload/")[1]
+          ?.split(".")[0]
+          ?.replace(/^v\d+\//, "");
+      }
+
+      if (public_id) {
+        await fetch("/api/delete-image", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ public_id }),
+        });
+      }
+
+      setForm({
+        ...form,
+        image: "",
+        public_id: null,
+      });
+
+      setFile(null);
+      setPreview("");
+
+      await supabaseServer
+        .from("services")
+        .update({
+          image: "",
+          public_id: null,
+        })
+        .eq("id", id);
     } catch (err) {
       console.error(err);
       alert("Delete failed");
     }
   };
 
-  // ================= SECTION LOGIC =================
   const addSection = () => {
     setForm({
       ...form,
@@ -416,36 +201,37 @@ export default function EditService() {
   };
 
   const updateSection = (i, field, value) => {
-    const updated = [...form.sections];
+    const updated = [...(form.sections || [])];
     updated[i][field] = value;
     setForm({ ...form, sections: updated });
   };
 
   const removeSection = (i) => {
-    const updated = form.sections.filter((_, idx) => idx !== i);
+    const updated = (form.sections || []).filter((_, idx) => idx !== i);
     setForm({ ...form, sections: updated });
   };
 
   const addItem = (i) => {
-    const updated = [...form.sections];
-    updated[i].items.push("");
+    const updated = [...(form.sections || [])];
+    updated[i].items = [...(updated[i].items || []), ""];
     setForm({ ...form, sections: updated });
   };
 
   const updateItem = (i, idx, value) => {
-    const updated = [...form.sections];
+    const updated = [...(form.sections || [])];
     updated[i].items[idx] = value;
     setForm({ ...form, sections: updated });
   };
 
   const removeItem = (i, idx) => {
-    const updated = [...form.sections];
+    const updated = [...(form.sections || [])];
     updated[i].items.splice(idx, 1);
     setForm({ ...form, sections: updated });
   };
 
-  // ================= UPDATE =================
-  const handleUpdate = async () => {
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+
     const payload = {
       title: form.title,
       slug: form.slug,
@@ -462,198 +248,253 @@ export default function EditService() {
       .update(payload)
       .eq("id", id);
 
-    if (!error) {
-      alert("✅ Updated successfully");
-      router.push("/dashboard/services");
-    } else {
+    if (error) {
       alert("❌ Update failed");
+      return;
     }
+
+    alert("✅ Updated successfully");
+    router.push("/dashboard/services");
   };
 
   if (loading) return <div className="p-6">Loading...</div>;
   if (!form) return <div className="p-6">Service not found</div>;
 
   return (
-    <div className="max-w-5xl mx-auto bg-white p-6 rounded-xl border space-y-6">
+    <div className="max-w-4xl mx-auto p-6 space-y-6">
       <h1 className="text-2xl font-bold">Edit Service</h1>
 
-      {/* BASIC */}
-      <input
-        value={form.title}
-        onChange={(e) => setForm({ ...form, title: e.target.value })}
-        className="input"
-        placeholder="Title"
-      />
+      <form onSubmit={handleUpdate} className="space-y-6">
+        {/* BASIC */}
+        <div className={cardClass}>
+          <h2 className="font-semibold">Basic Information</h2>
 
-      <input value={form.slug} readOnly className="input bg-gray-100" />
+          <input
+            value={form.title || ""}
+            onChange={(e) => setForm({ ...form, title: e.target.value })}
+            className={inputClass}
+            placeholder="Title"
+          />
 
-      <textarea
-        value={form.description}
-        onChange={(e) => setForm({ ...form, description: e.target.value })}
-        className="input"
-        placeholder="Description"
-      />
+          <input
+            value={form.slug || ""}
+            readOnly
+            className={`${inputClass} bg-gray-100`}
+            placeholder="Slug"
+          />
 
-      {/* IMAGE SECTION */}
-      <div className="space-y-4">
-        <label className="text-xs text-gray-500 uppercase">Service Image</label>
+          <textarea
+            value={form.description || ""}
+            onChange={(e) => setForm({ ...form, description: e.target.value })}
+            className={inputClass}
+            placeholder="Description"
+          />
 
-        <input
-          type="file"
-          accept="image/*"
-          onChange={uploadImage}
-          className="border p-2 rounded"
-        />
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            className={inputClass}
+          />
 
-        {/* Preview */}
-        {form.image && (
-          <div className="relative w-40">
-            <img
-              src={form.image}
-              className="w-40 h-40 object-cover rounded border"
-            />
+          {/* {form.image && (
+            <div className="relative w-40">
+              <img
+                src={form.image}
+                className="w-40 h-40 object-cover rounded-lg border"
+              />
 
-            {/* REMOVE BUTTON */}
-            <button
-              onClick={removeImage}
-              className="absolute top-1 right-1 bg-red-500 text-white text-xs px-2 py-1 rounded"
-            >
-              Remove
-            </button>
-          </div>
-        )}
-      </div>
+              <button
+                type="button"
+                onClick={removeImage}
+                className="absolute top-1 right-1 flex items-center justify-center w-8 h-8 rounded-lg bg-red-500 text-white"
+              >
+                <FaTrash size={12} />
+              </button>
+            </div>
+          )} */}
 
-      {/* HERO */}
-      <div className="space-y-3">
-        <h2 className="font-semibold">Hero</h2>
+          {(preview || form.image) && (
+            <div className="relative w-40">
+              <img
+                src={preview || form.image}
+                className="w-40 h-40 object-cover rounded-lg border"
+                alt=""
+              />
 
-        <input
-          value={form.hero?.title || ""}
-          onChange={(e) =>
-            setForm({ ...form, hero: { ...form.hero, title: e.target.value } })
-          }
-          className="input"
-        />
+              <button
+                type="button"
+                onClick={removeImage}
+                className="absolute top-1 right-1 flex items-center justify-center w-8 h-8 rounded-lg bg-red-500 text-white"
+              >
+                <FaTrash size={12} />
+              </button>
+            </div>
+          )}
+        </div>
 
+        {/* HERO */}
+        <div className={cardClass}>
+          <h2 className="font-semibold">Hero</h2>
+
+          <input
+            value={form.hero?.title || ""}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                hero: { ...form.hero, title: e.target.value },
+              })
+            }
+            className={inputClass}
+            placeholder="Hero Title"
+          />
+
+          <textarea
+            value={form.hero?.description1 || ""}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                hero: { ...form.hero, description1: e.target.value },
+              })
+            }
+            className={inputClass}
+            placeholder="Desc 1"
+          />
+
+          <textarea
+            value={form.hero?.description2 || ""}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                hero: { ...form.hero, description2: e.target.value },
+              })
+            }
+            className={inputClass}
+            placeholder="Desc 2"
+          />
+        </div>
+
+        {/* SECTIONS */}
+        <div className={cardClass}>
+          <h2 className="font-semibold">Sections</h2>
+
+          {(form.sections || []).map((sec, i) => (
+            <div key={i} className="border p-4 rounded space-y-3">
+              <input
+                value={sec.title || ""}
+                onChange={(e) => updateSection(i, "title", e.target.value)}
+                className={inputClass}
+                placeholder="Title"
+              />
+
+              <textarea
+                value={sec.description || ""}
+                onChange={(e) =>
+                  updateSection(i, "description", e.target.value)
+                }
+                className={inputClass}
+                placeholder="Desc"
+              />
+
+              {(sec.items || []).map((item, idx) => (
+                <div key={idx} className="flex gap-2">
+                  <input
+                    value={item || ""}
+                    onChange={(e) => updateItem(i, idx, e.target.value)}
+                    className={inputClass}
+                    placeholder="Item"
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => removeItem(i, idx)}
+                    className="flex items-center justify-center w-10 h-10 rounded-lg bg-red-100 text-red-500 hover:bg-red-500 hover:text-white transition"
+                  >
+                    <FaTrash size={12} />
+                  </button>
+                </div>
+              ))}
+
+              <button
+                type="button"
+                onClick={() => addItem(i)}
+                className="flex items-center gap-2 text-sm px-4 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary hover:text-white transition"
+              >
+                <FaPlus size={12} /> Add Item
+              </button>
+
+              <button
+                type="button"
+                onClick={() => removeSection(i)}
+                className="text-red-500 text-sm"
+              >
+                Remove Section
+              </button>
+            </div>
+          ))}
+
+          <button
+            type="button"
+            onClick={addSection}
+            className="flex items-center gap-2 text-sm px-5 py-2.5 rounded-xl bg-primary text-white hover:opacity-90 transition"
+          >
+            <FaPlus size={12} /> Add Section
+          </button>
+        </div>
+
+        {/* CTA */}
+        <div className={cardClass}>
+          <h2 className="font-semibold">CTA</h2>
+
+          <input
+            value={form.cta?.title || ""}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                cta: { ...form.cta, title: e.target.value },
+              })
+            }
+            className={inputClass}
+            placeholder="CTA Title"
+          />
+
+          <textarea
+            value={form.cta?.description || ""}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                cta: { ...form.cta, description: e.target.value },
+              })
+            }
+            className={inputClass}
+            placeholder="CTA Desc"
+          />
+
+          <input
+            value={form.cta?.buttonText || ""}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                cta: { ...form.cta, buttonText: e.target.value },
+              })
+            }
+            className={inputClass}
+            placeholder="Button Text"
+          />
+        </div>
+
+        {/* FOOTER */}
         <textarea
-          value={form.hero?.description1 || ""}
-          onChange={(e) =>
-            setForm({
-              ...form,
-              hero: { ...form.hero, description1: e.target.value },
-            })
-          }
-          className="input"
+          value={form.footerNote || ""}
+          onChange={(e) => setForm({ ...form, footerNote: e.target.value })}
+          className={inputClass}
+          placeholder="Footer Note"
         />
 
-        <textarea
-          value={form.hero?.description2 || ""}
-          onChange={(e) =>
-            setForm({
-              ...form,
-              hero: { ...form.hero, description2: e.target.value },
-            })
-          }
-          className="input"
-        />
-      </div>
-
-      {/* SECTIONS */}
-      <div className="space-y-4">
-        <h2 className="font-semibold">Sections</h2>
-
-        {form.sections?.map((sec, i) => (
-          <div key={i} className="border p-4 rounded space-y-3">
-            <input
-              value={sec.title}
-              onChange={(e) => updateSection(i, "title", e.target.value)}
-              className="input"
-            />
-
-            <textarea
-              value={sec.description}
-              onChange={(e) => updateSection(i, "description", e.target.value)}
-              className="input"
-            />
-
-            {sec.items.map((item, idx) => (
-              <div key={idx} className="flex gap-2">
-                <input
-                  value={item}
-                  onChange={(e) => updateItem(i, idx, e.target.value)}
-                  className="input"
-                />
-                <button
-                  onClick={() => removeItem(i, idx)}
-                  className="text-red-500"
-                >
-                  X
-                </button>
-              </div>
-            ))}
-
-            <button onClick={() => addItem(i)}>+ Item</button>
-            <button onClick={() => removeSection(i)} className="text-red-500">
-              Remove Section
-            </button>
-          </div>
-        ))}
-
-        <button onClick={addSection} className="btn">
-          + Add Section
+        <button className="w-full flex items-center justify-center gap-2 bg-primary text-white py-3 rounded-xl text-sm font-medium hover:opacity-90 transition">
+          <FaSave size={14} /> Update Service
         </button>
-      </div>
-
-      {/* CTA */}
-      <div className="space-y-3">
-        <h2 className="font-semibold">CTA</h2>
-
-        <input
-          value={form.cta?.title || ""}
-          onChange={(e) =>
-            setForm({ ...form, cta: { ...form.cta, title: e.target.value } })
-          }
-          className="input"
-        />
-
-        <textarea
-          value={form.cta?.description || ""}
-          onChange={(e) =>
-            setForm({
-              ...form,
-              cta: { ...form.cta, description: e.target.value },
-            })
-          }
-          className="input"
-        />
-
-        <input
-          value={form.cta?.buttonText || ""}
-          onChange={(e) =>
-            setForm({
-              ...form,
-              cta: { ...form.cta, buttonText: e.target.value },
-            })
-          }
-          className="input"
-        />
-      </div>
-
-      {/* FOOTER */}
-      <textarea
-        value={form.footerNote || ""}
-        onChange={(e) => setForm({ ...form, footerNote: e.target.value })}
-        className="input"
-      />
-
-      {/* ACTION */}
-      <button
-        onClick={handleUpdate}
-        className="bg-primary text-white px-6 py-3 rounded"
-      >
-        Update Service
-      </button>
+      </form>
     </div>
   );
 }

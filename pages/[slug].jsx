@@ -1,188 +1,99 @@
-// import { supabaseServer } from "@/lib/supabaseServer";
-// import Head from "next/head";
-
-// export default function DynamicPage({ page, sections }) {
-//   if (!page) return <p>Page not found</p>;
-
-//   return (
-//     <>
-//       {/* ================= SEO ================= */}
-// <Head>
-//   <title>{page.meta_title || page.title}</title>
-
-//   <meta name="description" content={page.meta_description || ""} />
-
-//   <meta name="keywords" content={page.meta_keywords || ""} />
-
-//   <meta name="author" content={page.meta_author || ""} />
-
-//   {/* OPEN GRAPH */}
-//   <meta property="og:title" content={page.meta_title || page.title} />
-//   <meta property="og:description" content={page.meta_description || ""} />
-//   <meta property="og:image" content={page.meta_image || ""} />
-//   <meta property="og:url" content={page.meta_url || ""} />
-
-//   {/* TWITTER */}
-//   <meta name="twitter:card" content="summary_large_image" />
-//   <meta name="twitter:title" content={page.meta_title || page.title} />
-//   <meta
-//     name="twitter:description"
-//     content={page.meta_description || ""}
-//   />
-//   <meta name="twitter:image" content={page.meta_image || ""} />
-
-//   {/* CANONICAL */}
-//   <link rel="canonical" href={page.meta_url || ""} />
-// </Head>
-
-//       {/* ================= PAGE CONTENT ================= */}
-//       <div>
-//         <h1>{page.title}</h1>
-
-//         {sections.map((sec) => {
-//           switch (sec.type) {
-//             case "hero":
-//               return <div key={sec.id}>🔥 Hero: {sec.content?.text}</div>;
-
-//             case "about":
-//               return <div key={sec.id}>📘 About: {sec.content?.text}</div>;
-
-//             case "why":
-//               return <div key={sec.id}>💡 Why: {sec.content?.text}</div>;
-
-//             case "services":
-//               return <div key={sec.id}>🛠 Services: {sec.content?.text}</div>;
-
-//             default:
-//               return null;
-//           }
-//         })}
-//       </div>
-//     </>
-//   );
-// }
-
-// export async function getServerSideProps({ params }) {
-//   const { slug } = params;
-
-//   const { data: page } = await supabaseServer
-//     .from("pages")
-//     .select("*")
-//     .eq("slug", slug)
-//     .single();
-
-//   const { data: sections } = await supabaseServer
-//     .from("sections")
-//     .select("*")
-//     .eq("page_slug", slug)
-//     .order("position");
-
-//   return {
-//     props: {
-//       page: page || null,
-//       sections: sections || [],
-//     },
-//   };
-// }
-
-// import { supabaseServer } from "@/lib/supabaseServer";
-// import HeroSection from "@/components/HeroSection";
-// import Head from "next/head";
-
-// export default function DynamicPage({ page }) {
-//   if (!page) return <p>Page not found</p>;
-
-//   return (
-//     <>
-//       <Head>
-//         <title>{page.meta_title || page.title}</title>
-
-//         <meta name="description" content={page.meta_description || ""} />
-
-//         <meta name="keywords" content={page.meta_keywords || ""} />
-
-//         <meta name="author" content={page.meta_author || ""} />
-
-//         {/* OPEN GRAPH */}
-//         <meta property="og:title" content={page.meta_title || page.title} />
-//         <meta property="og:description" content={page.meta_description || ""} />
-//         <meta property="og:image" content={page.meta_image || ""} />
-//         <meta property="og:url" content={page.meta_url || ""} />
-
-//         {/* TWITTER */}
-//         <meta name="twitter:card" content="summary_large_image" />
-//         <meta name="twitter:title" content={page.meta_title || page.title} />
-//         <meta
-//           name="twitter:description"
-//           content={page.meta_description || ""}
-//         />
-//         <meta name="twitter:image" content={page.meta_image || ""} />
-
-//         {/* CANONICAL */}
-//         <link rel="canonical" href={page.meta_url || ""} />
-//       </Head>
-//       <HeroSection
-//         hero={{
-//           title: page.title,
-//           backgroundImage: page.hero_image || "/default.jpg",
-//         }}
-//       />
-
-//       <div className="p-10">
-//         <h1 className="text-3xl font-bold">{page.title}</h1>
-//       </div>
-//     </>
-//   );
-// }
-
 import HeroSection from "@/components/HeroSection";
 import DynamicBlock from "@/components/sections/DynamicBlock";
 import { supabaseServer } from "@/lib/supabaseServer";
 import Head from "next/head";
 
 export default function DynamicPage({ page, sections }) {
-  if (!page) return <p>Page not found</p>;
+  if (!page) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-slate-50">
+        <div className="rounded-3xl border border-slate-200 bg-white px-10 py-8 text-center shadow-xl">
+          <h1 className="text-2xl font-bold text-slate-900">Page not found</h1>
+          <p className="mt-2 text-slate-500">
+            The page you are looking for does not exist.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  const pageUrl =
+    page.meta_url || `https://mah-auditdubai.ae/${page.slug || ""}`;
+
+  const metaTitle = page.meta_title || `${page.title} | MAH Audit Dubai`;
+  const metaDescription =
+    page.meta_description ||
+    "Professional audit, accounting, tax and advisory services in Dubai, UAE.";
+  const metaImage =
+    page.meta_image ||
+    page.hero_image ||
+    "https://mah-auditdubai.ae/services/services-og.jpg";
 
   return (
     <>
-      {/* ================= SEO ================= */}
       <Head>
-        <title>{page.meta_title || page.title}</title>
-        <meta name="description" content={page.meta_description || ""} />
-      </Head>
-      {/* ================= HERO ================= */}
-      <HeroSection
-        hero={{
-          title: page.title,
-          backgroundImage: page.hero_image || "/default.jpg",
-        }}
-      />
-        {/* ================= DYNAMIC SECTIONS ================= */}
-      <div className="space-y-6 py-12">
-        {sections.map((sec) => (
-          <DynamicBlock key={sec.id} section={sec} />
-        ))}
-      </div>
+        <title>{metaTitle}</title>
 
+        <meta name="description" content={metaDescription} />
+        <meta name="keywords" content={page.meta_keywords || ""} />
+        <meta name="author" content={page.meta_author || "MAH Audit Dubai"} />
+        <meta name="robots" content="index, follow" />
+
+        <link rel="canonical" href={pageUrl} />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={metaTitle} />
+        <meta property="og:description" content={metaDescription} />
+        <meta property="og:url" content={pageUrl} />
+        <meta property="og:image" content={metaImage} />
+        <meta property="og:site_name" content="MAH Audit Dubai" />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={metaTitle} />
+        <meta name="twitter:description" content={metaDescription} />
+        <meta name="twitter:image" content={metaImage} />
+      </Head>
+
+      <main className="overflow-hidden bg-white">
+        <HeroSection
+          hero={{
+            title: page.title,
+            backgroundImage: page.hero_image || "/default.jpg",
+          }}
+        />
+
+        <section className="relative bg-gradient-to-b from-white via-slate-50 to-white py-20">
+          <div className="absolute left-0 top-0 h-96 w-96 rounded-full bg-primary/5 blur-3xl" />
+          <div className="absolute bottom-0 right-0 h-96 w-96 rounded-full bg-primary/5 blur-3xl" />
+
+          <div className="relative mx-auto max-w-7xl px-6">
+            {sections.length > 0 ? (
+              <div className="space-y-20">
+                {sections.map((sec) => (
+                  <div
+                    key={sec.id}
+                    className="rounded-[2rem] border border-slate-100 bg-white/80 p-6 shadow-[0_20px_70px_rgba(15,23,42,0.06)] backdrop-blur-sm md:p-10"
+                  >
+                    <DynamicBlock section={sec} />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="rounded-[2rem] border border-dashed border-slate-300 bg-white p-12 text-center shadow-sm">
+                <h2 className="text-2xl font-bold text-slate-900">
+                  No sections added yet
+                </h2>
+                <p className="mt-3 text-slate-500">
+                  Add sections from the page editor to build this page.
+                </p>
+              </div>
+            )}
+          </div>
+        </section>
+      </main>
     </>
   );
 }
-
-// export async function getServerSideProps({ params }) {
-//   const { slug } = params;
-
-//   const { data: page } = await supabaseServer
-//     .from("pages")
-//     .select("*")
-//     .eq("slug", slug)
-//     .single();
-
-//   return {
-//     props: {
-//       page: page || null,
-//     },
-//   };
-// }
 
 export async function getServerSideProps({ params }) {
   const { slug } = params;
@@ -197,7 +108,9 @@ export async function getServerSideProps({ params }) {
     .from("sections")
     .select("*, types(name, slug)")
     .eq("page_slug", slug)
-    .order("position");
+    .eq("is_visible", true)
+    .eq("status", "active")
+    .order("position", { ascending: true });
 
   return {
     props: {

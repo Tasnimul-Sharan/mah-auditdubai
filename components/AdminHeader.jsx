@@ -281,7 +281,10 @@ export default function AdminHeader() {
         </div>
 
         <div className="flex items-center gap-5">
-          <button className="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100 text-gray-500 transition-all duration-500 hover:bg-primary hover:text-white">
+          <button
+            onClick={() => router.push("/dashboard/settings")}
+            className="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100 text-gray-500 transition-all duration-500 hover:bg-primary hover:text-white"
+          >
             <Settings size={18} />
           </button>
 

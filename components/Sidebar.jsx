@@ -301,7 +301,7 @@ export default function Sidebar() {
             alt="Logo"
             width={1650}
             height={1024}
-            className="h-14 w-auto object-contain"
+            className="h-14 w-full object-contain"
             priority
           />
         </div>

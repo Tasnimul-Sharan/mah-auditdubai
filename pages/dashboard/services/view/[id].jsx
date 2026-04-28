@@ -117,7 +117,7 @@ export default function ViewService() {
 
 ViewService.getLayout = (page) => (
   <AdminLayout title="View Service">{page}</AdminLayout>
-// );
+);
 
 // "use client";
 

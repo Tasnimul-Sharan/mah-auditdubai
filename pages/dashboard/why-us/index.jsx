@@ -1,9 +1,40 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Plus, Trash2, Save } from "lucide-react";
+import {
+  Plus,
+  Trash2,
+  Save,
+  Sparkles,
+  ShieldCheck,
+  BarChart3,
+  User,
+  Globe2,
+} from "lucide-react";
 import AdminLayout from "@/components/AdminLayout";
 import { supabaseServer } from "@/lib/supabaseServer";
+
+const inputClass =
+  "w-full rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition-all duration-500 focus:border-primary focus:shadow-[0_0_0_4px_rgba(0,0,0,0.04)]";
+
+const cardClass =
+  "rounded-[1.5rem] border border-gray-100 bg-white p-6 shadow-[0_18px_50px_rgba(0,0,0,0.05)] space-y-4";
+
+const primaryBtn =
+  "flex items-center justify-center gap-2 rounded-2xl bg-primary px-6 py-4 font-semibold text-white shadow-[0_20px_50px_rgba(0,0,0,0.16)] transition-all duration-500 hover:-translate-y-1 hover:bg-secondary disabled:opacity-60";
+
+const iconOptions = [
+  { label: "Shield", value: "FaShieldAlt", icon: ShieldCheck },
+  { label: "Chart", value: "FaChartLine", icon: BarChart3 },
+  { label: "User", value: "FaUserTie", icon: User },
+  { label: "Globe", value: "FaGlobe", icon: Globe2 },
+];
+
+const getIcon = (iconName) => {
+  const found = iconOptions.find((item) => item.value === iconName);
+  const Icon = found?.icon || ShieldCheck;
+  return <Icon size={18} />;
+};
 
 export default function WhyUsAdmin() {
   const [form, setForm] = useState({
@@ -14,8 +45,8 @@ export default function WhyUsAdmin() {
   });
 
   const [id, setId] = useState(null);
+  const [saving, setSaving] = useState(false);
 
-  // ================= FETCH =================
   const fetchData = async () => {
     const { data } = await supabaseServer.from("why_us").select("*").single();
 
@@ -24,7 +55,7 @@ export default function WhyUsAdmin() {
         title: data.title || "",
         subtitle: data.subtitle || "",
         description: data.description || "",
-        points: data.points || [],
+        points: Array.isArray(data.points) ? data.points : [],
       });
       setId(data.id);
     }
@@ -34,7 +65,6 @@ export default function WhyUsAdmin() {
     fetchData();
   }, []);
 
-  // ================= ADD POINT =================
   const addPoint = () => {
     setForm({
       ...form,
@@ -42,113 +72,184 @@ export default function WhyUsAdmin() {
     });
   };
 
-  // ================= UPDATE POINT =================
   const updatePoint = (index, field, value) => {
     const updated = [...form.points];
-    updated[index][field] = value;
+
+    updated[index] = {
+      ...updated[index],
+      [field]: value,
+    };
 
     setForm({ ...form, points: updated });
   };
 
-  // ================= DELETE POINT =================
   const deletePoint = (index) => {
     const updated = form.points.filter((_, i) => i !== index);
     setForm({ ...form, points: updated });
   };
 
-  // ================= SAVE =================
   const handleSave = async () => {
-    if (id) {
-      await supabaseServer.from("why_us").update(form).eq("id", id);
-    } else {
-      const { data } = await supabaseServer
-        .from("why_us")
-        .insert([form])
-        .select()
-        .single();
+    try {
+      setSaving(true);
 
-      setId(data.id);
+      const payload = {
+        title: form.title,
+        subtitle: form.subtitle,
+        description: form.description,
+        points: form.points,
+      };
+
+      if (id) {
+        await supabaseServer.from("why_us").update(payload).eq("id", id);
+      } else {
+        const { data } = await supabaseServer
+          .from("why_us")
+          .insert([payload])
+          .select()
+          .single();
+
+        setId(data.id);
+      }
+
+      alert("Saved Successfully");
+      fetchData();
+    } catch (err) {
+      console.error(err);
+      alert("Save failed");
+    } finally {
+      setSaving(false);
     }
-
-    alert("Saved Successfully");
   };
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
-      <h1 className="text-2xl font-bold">Why Us Section</h1>
+    <div className="max-w-6xl mx-auto space-y-8">
+      <div>
+        <h1 className="flex items-center gap-2 text-3xl font-bold text-gray-900">
+          <Sparkles className="text-primary" size={28} />
+          Why Us Section
+        </h1>
 
-      {/* SECTION INFO */}
-      <div className="bg-white p-6 rounded-xl border space-y-4">
+        <p className="mt-1 text-gray-500">
+          Manage section content, icon cards and feature points.
+        </p>
+      </div>
+
+      <div className={cardClass}>
+        <h2 className="text-xl font-bold text-gray-900">Section Content</h2>
+
         <input
           placeholder="Title"
           value={form.title}
           onChange={(e) => setForm({ ...form, title: e.target.value })}
-          className="border p-2 w-full"
+          className={inputClass}
         />
 
         <input
           placeholder="Subtitle"
           value={form.subtitle}
           onChange={(e) => setForm({ ...form, subtitle: e.target.value })}
-          className="border p-2 w-full"
+          className={inputClass}
         />
 
         <textarea
+          rows={4}
           placeholder="Description"
           value={form.description}
           onChange={(e) => setForm({ ...form, description: e.target.value })}
-          className="border p-2 w-full"
+          className={inputClass}
         />
 
         <button
+          type="button"
           onClick={handleSave}
-          className="bg-primary text-white px-4 py-2 rounded flex gap-2"
+          disabled={saving}
+          className={primaryBtn}
         >
-          <Save size={16} /> Save Section
+          <Save size={18} />
+          {saving ? "Saving..." : "Save Section"}
         </button>
       </div>
 
-      {/* POINTS */}
-      <div className="bg-white p-6 rounded-xl border space-y-4">
-        <div className="flex justify-between items-center">
-          <h3 className="font-semibold">Points</h3>
+      <div className={cardClass}>
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div>
+            <h2 className="text-xl font-bold text-gray-900">Points</h2>
+            <p className="text-sm text-gray-500">
+              Add premium icon-based reasons for the frontend section.
+            </p>
+          </div>
 
           <button
+            type="button"
             onClick={addPoint}
-            className="bg-green-500 text-white px-3 py-2 rounded flex gap-2"
+            className="flex items-center justify-center gap-2 rounded-2xl bg-primary/10 px-5 py-3 font-semibold text-primary transition-all duration-500 hover:bg-primary hover:text-white"
           >
-            <Plus size={16} /> Add Point
+            <Plus size={16} />
+            Add Point
           </button>
         </div>
 
-        {form.points.map((item, index) => (
-          <div key={index} className="border p-4 rounded flex flex-col gap-3">
-            <input
-              placeholder="Point Text"
-              value={item.text}
-              onChange={(e) => updatePoint(index, "text", e.target.value)}
-              className="border p-2 w-full"
-            />
-
-            <select
-              value={item.icon}
-              onChange={(e) => updatePoint(index, "icon", e.target.value)}
-              className="border p-2"
-            >
-              <option value="FaShieldAlt">Shield</option>
-              <option value="FaChartLine">Chart</option>
-              <option value="FaUserTie">User</option>
-              <option value="FaGlobe">Globe</option>
-            </select>
-
-            <button
-              onClick={() => deletePoint(index)}
-              className="bg-red-100 text-red-600 px-3 py-2 rounded w-fit flex gap-2"
-            >
-              <Trash2 size={14} /> Delete
-            </button>
+        {form.points.length === 0 ? (
+          <div className="rounded-2xl bg-gray-50 p-8 text-center text-gray-400">
+            No points added yet.
           </div>
-        ))}
+        ) : (
+          <div className="space-y-4">
+            {form.points.map((item, index) => (
+              <div
+                key={index}
+                className="group rounded-2xl border border-gray-100 bg-gray-50 p-4 transition-all duration-500 hover:bg-white hover:shadow-sm"
+              >
+                <div className="grid gap-4 md:grid-cols-[64px_1fr_220px_48px] md:items-center">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-all duration-500 group-hover:bg-primary group-hover:text-white">
+                    {getIcon(item.icon)}
+                  </div>
+
+                  <input
+                    placeholder="Point Text"
+                    value={item.text || ""}
+                    onChange={(e) =>
+                      updatePoint(index, "text", e.target.value)
+                    }
+                    className={inputClass}
+                  />
+
+                  <select
+                    value={item.icon || "FaShieldAlt"}
+                    onChange={(e) =>
+                      updatePoint(index, "icon", e.target.value)
+                    }
+                    className={inputClass}
+                  >
+                    {iconOptions.map((icon) => (
+                      <option key={icon.value} value={icon.value}>
+                        {icon.label}
+                      </option>
+                    ))}
+                  </select>
+
+                  <button
+                    type="button"
+                    onClick={() => deletePoint(index)}
+                    className="flex h-12 w-12 items-center justify-center rounded-xl bg-red-100 text-red-600 transition-all duration-500 hover:bg-red-500 hover:text-white"
+                  >
+                    <Trash2 size={15} />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <button
+          type="button"
+          onClick={handleSave}
+          disabled={saving}
+          className={primaryBtn}
+        >
+          <Save size={18} />
+          {saving ? "Saving..." : "Save All Changes"}
+        </button>
       </div>
     </div>
   );

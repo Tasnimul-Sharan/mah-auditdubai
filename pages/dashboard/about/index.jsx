@@ -2,7 +2,16 @@
 
 import { useEffect, useState } from "react";
 import AdminLayout from "@/components/AdminLayout";
-import { Save, Trash2 } from "lucide-react";
+import {
+  Save,
+  Trash2,
+  ImageIcon,
+  Search,
+  Layers,
+  ArrowRight,
+  LayoutDashboard,
+} from "lucide-react";
+import Link from "next/link";
 import { supabaseServer } from "@/lib/supabaseServer";
 import { useUpload } from "@/Hooks/useUpload";
 
@@ -24,6 +33,13 @@ export default function AboutDashboard() {
   const [rowId, setRowId] = useState(null);
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  const inputClass =
+    "w-full rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition-all duration-500 focus:border-primary focus:shadow-[0_0_0_4px_rgba(0,0,0,0.04)]";
+
+  const cardClass =
+    "rounded-[1.5rem] border border-gray-100 bg-white p-6 shadow-[0_18px_50px_rgba(0,0,0,0.05)] space-y-4";
 
   // ================= FETCH =================
   const fetchData = async () => {
@@ -33,7 +49,18 @@ export default function AboutDashboard() {
       .single();
 
     if (data) {
-      setMeta(data);
+      setMeta({
+        meta_title: data.meta_title || "",
+        meta_description: data.meta_description || "",
+        meta_keywords: data.meta_keywords || "",
+        meta_author: data.meta_author || "",
+        meta_url: data.meta_url || "",
+        meta_image: data.meta_image || "",
+        hero_title: data.hero_title || "",
+        hero_image: data.hero_image || "",
+        public_id: data.public_id || null,
+      });
+
       setRowId(data.id);
     }
   };
@@ -42,201 +69,194 @@ export default function AboutDashboard() {
     fetchData();
   }, []);
 
-  // ================= IMAGE CHANGE =================
+  // ================= IMAGE =================
   const handleFileChange = (e) => {
-    const selected = e.target.files[0];
+    const selected = e.target.files?.[0];
     if (!selected) return;
 
     setFile(selected);
     setPreview(URL.createObjectURL(selected));
   };
 
-  // ================= DELETE IMAGE =================
   const deleteImage = async () => {
-    if (!meta?.public_id) return;
+    if (!meta?.public_id || !rowId) return;
 
-    try {
-      await fetch("/api/delete-image", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ public_id: meta.public_id }),
-      });
+    await fetch("/api/delete-image", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ public_id: meta.public_id }),
+    });
 
-      await supabaseServer
-        .from("about_page")
-        .update({ hero_image: null, public_id: null })
-        .eq("id", rowId);
+    await supabaseServer
+      .from("about_page")
+      .update({ hero_image: null, public_id: null })
+      .eq("id", rowId);
 
-      setPreview("");
-      fetchData();
-    } catch (err) {
-      console.error(err);
-      alert("Image delete failed");
-    }
+    setPreview("");
+    setFile(null);
+    fetchData();
   };
 
   // ================= SAVE =================
-//   const saveData = async () => {
-//     try {
-//       let imageUrl = meta.hero_image;
-//       let publicId = meta.public_id;
+  const saveData = async () => {
+    try {
+      setSaving(true);
 
-//       // 🔥 upload new image
-//       if (file) {
-//         // delete old
-//         if (meta.public_id) {
-//           await fetch("/api/delete-image", {
-//             method: "POST",
-//             headers: { "Content-Type": "application/json" },
-//             body: JSON.stringify({ public_id: meta.public_id }),
-//           });
-//         }
+      let imageUrl = meta.hero_image;
+      let publicId = meta.public_id;
 
-//         const res = await uploadFile(file, "about");
-//         imageUrl = res.url;
-//         publicId = res.public_id;
-//       }
-
-//       if (rowId) {
-//         await supabaseServer
-//           .from("about_page")
-//           .update({
-//             meta_title: meta.meta_title,
-//             meta_description: meta.meta_description,
-//             meta_keywords: meta.meta_keywords,
-//             meta_author: meta.meta_author,
-//             meta_url: meta.meta_url,
-//             meta_image: meta.meta_image,
-//             hero_title: meta.hero_title,
-//             hero_image: imageUrl,
-//             public_id: publicId,
-//           })
-//           .eq("id", rowId);
-//       } else {
-//         const { data } = await supabaseServer
-//           .from("about_page")
-//           .insert([
-//             {
-//               ...meta,
-//               hero_image: imageUrl,
-//               public_id: publicId,
-//             },
-//           ])
-//           .select()
-//           .single();
-
-//         setRowId(data.id);
-//       }
-
-//       setFile(null);
-//       setPreview("");
-//       alert("Saved successfully");
-//       fetchData();
-//     } catch (err) {
-//       console.error(err);
-//       alert("Save failed");
-//     }
-    //   };
-    
-    const saveData = async () => {
-      try {
-        let imageUrl = meta.hero_image;
-        let publicId = meta.public_id;
-
-        if (file) {
-          if (meta.public_id) {
-            await fetch("/api/delete-image", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ public_id: meta.public_id }),
-            });
-          }
-
-          const res = await uploadFile(file, "about");
-          imageUrl = res.url;
-          publicId = res.public_id;
+      if (file) {
+        if (meta.public_id) {
+          await fetch("/api/delete-image", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ public_id: meta.public_id }),
+          });
         }
 
-        const { error } = await supabaseServer
-          .from("about_page")
-          .update({
-            meta_title: meta.meta_title,
-            meta_description: meta.meta_description,
-            meta_keywords: meta.meta_keywords,
-            meta_author: meta.meta_author,
-            meta_url: meta.meta_url,
-            meta_image: meta.meta_image,
-            hero_title: meta.hero_title,
-            hero_image: imageUrl,
-            public_id: publicId,
-          })
-          .eq("id", rowId);
-
-        if (error) throw error;
-
-        setFile(null);
-        setPreview("");
-        alert("Saved successfully");
-        fetchData();
-      } catch (err) {
-        console.error(err);
-        alert("Save failed");
+        const res = await uploadFile(file, "about");
+        imageUrl = res.url;
+        publicId = res.public_id;
       }
-    };
+
+      const payload = {
+        meta_title: meta.meta_title,
+        meta_description: meta.meta_description,
+        meta_keywords: meta.meta_keywords,
+        meta_author: meta.meta_author,
+        meta_url: meta.meta_url,
+        meta_image: meta.meta_image,
+        hero_title: meta.hero_title,
+        hero_image: imageUrl,
+        public_id: publicId,
+      };
+
+      if (rowId) {
+        await supabaseServer.from("about_page").update(payload).eq("id", rowId);
+      }
+
+      setFile(null);
+      setPreview("");
+      alert("Saved successfully");
+      fetchData();
+    } catch (err) {
+      console.error(err);
+      alert("Save failed");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const sections = [
+    { name: "About Section", link: "/dashboard/about-section" },
+    { name: "Why Us", link: "/dashboard/why-us" },
+    { name: "Vision Mission", link: "/dashboard/vision-mission" },
+    { name: "Testimonials", link: "/dashboard/testimonials" },
+    { name: "FAQ", link: "/dashboard/faq" },
+    { name: "Clients", link: "/dashboard/clients" },
+    { name: "Team Section", link: "/dashboard/team-section" },
+  ];
 
   return (
     <div className="max-w-6xl mx-auto space-y-8">
-      <h1 className="text-3xl font-bold">About Page Management</h1>
+      {/* HEADER */}
+      <div>
+        <h1 className="text-3xl font-bold flex items-center gap-2 text-gray-900">
+          <Layers className="text-primary" size={28} />
+          About Page Management
+        </h1>
+        <p className="text-gray-500 mt-1">
+          Manage about page hero content and SEO metadata.
+        </p>
+      </div>
 
-      {/* ================= HERO SECTION ================= */}
-      <div className="bg-white p-6 rounded-xl border space-y-4">
-        <h2 className="text-xl font-semibold">Hero Section</h2>
+      <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        {sections.map((section, i) => (
+          <Link key={i} href={section.link}>
+            <div className="group relative h-full overflow-hidden rounded-[1.5rem] border border-gray-100 bg-white p-6 shadow-[0_14px_40px_rgba(0,0,0,0.04)] transition-all duration-700 hover:-translate-y-1 hover:shadow-[0_25px_70px_rgba(0,0,0,0.1)]">
+              <div className="absolute inset-0 opacity-0 transition-opacity duration-700 group-hover:opacity-100 bg-gradient-to-br from-primary/8 via-white to-secondary/8" />
+
+              <div className="relative flex items-start justify-between gap-4">
+                <div>
+                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-all duration-700 group-hover:bg-primary group-hover:text-white">
+                    <LayoutDashboard size={20} />
+                  </div>
+
+                  <h2 className="text-lg font-bold text-gray-900">
+                    {section.name}
+                  </h2>
+
+                  <p className="mt-2 text-sm text-gray-500">
+                    Manage {section.name} content
+                  </p>
+                </div>
+
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-500 transition-all duration-700 group-hover:bg-primary group-hover:text-white group-hover:translate-x-1">
+                  <ArrowRight size={18} />
+                </div>
+              </div>
+
+              <div className="relative mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary">
+                Edit Section
+                <ArrowRight
+                  size={15}
+                  className="transition-transform duration-500 group-hover:translate-x-1"
+                />
+              </div>
+            </div>
+          </Link>
+        ))}
+      </div>
+
+      {/* HERO */}
+      <div className={cardClass}>
+        <h2 className="flex items-center gap-2 text-xl font-bold">
+          <ImageIcon size={20} className="text-primary" />
+          Hero Section
+        </h2>
 
         <input
           placeholder="Hero Title"
           value={meta.hero_title || ""}
           onChange={(e) => setMeta({ ...meta, hero_title: e.target.value })}
-          className="border p-3 w-full rounded"
+          className={inputClass}
         />
 
-        <input type="file" onChange={handleFileChange} />
+        <input type="file" onChange={handleFileChange} className={inputClass} />
 
-        {/* PREVIEW */}
-        {preview ? (
-          <div className="relative w-fit">
+        {(preview || meta.hero_image) && (
+          <div className="relative w-fit rounded-2xl border bg-gray-50 p-3">
             <img
-              src={preview}
-              className="w-48 h-32 object-cover rounded border"
-            />
-          </div>
-        ) : meta.hero_image ? (
-          <div className="relative w-fit">
-            <img
-              src={meta.hero_image}
-              className="w-48 h-32 object-cover rounded border"
+              src={preview || meta.hero_image}
+              className="w-72 h-44 object-cover rounded-xl"
             />
 
-            <button
-              onClick={deleteImage}
-              className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded"
-            >
-              <Trash2 size={14} />
-            </button>
+            {!preview && meta.hero_image && (
+              <button
+                onClick={deleteImage}
+                className="absolute top-4 right-4 bg-red-500 text-white p-2 rounded-lg hover:bg-red-600"
+              >
+                <Trash2 size={14} />
+              </button>
+            )}
           </div>
-        ) : null}
+        )}
       </div>
 
-      {/* ================= SEO META ================= */}
-      <div className="bg-white p-8 rounded-2xl border shadow-sm space-y-4">
-        <h2 className="text-2xl font-bold">SEO Meta Tags</h2>
+      {/* SEO */}
+      <div className={cardClass}>
+        <h2 className="flex items-center gap-2 text-xl font-bold">
+          <Search size={20} className="text-primary" />
+          SEO Meta
+        </h2>
 
         <input
           placeholder="Meta Title"
           value={meta.meta_title}
           onChange={(e) => setMeta({ ...meta, meta_title: e.target.value })}
-          className="border p-3 w-full rounded"
+          className={inputClass}
         />
 
         <textarea
@@ -245,44 +265,49 @@ export default function AboutDashboard() {
           onChange={(e) =>
             setMeta({ ...meta, meta_description: e.target.value })
           }
-          className="border p-3 w-full rounded"
+          className={inputClass}
         />
 
         <textarea
           placeholder="Meta Keywords"
           value={meta.meta_keywords}
           onChange={(e) => setMeta({ ...meta, meta_keywords: e.target.value })}
-          className="border p-3 w-full rounded"
+          className={inputClass}
         />
 
-        <input
-          placeholder="Meta Author"
-          value={meta.meta_author}
-          onChange={(e) => setMeta({ ...meta, meta_author: e.target.value })}
-          className="border p-3 w-full rounded"
-        />
+        <div className="grid md:grid-cols-2 gap-4">
+          <input
+            placeholder="Meta Author"
+            value={meta.meta_author}
+            onChange={(e) => setMeta({ ...meta, meta_author: e.target.value })}
+            className={inputClass}
+          />
 
-        <input
-          placeholder="Meta URL"
-          value={meta.meta_url}
-          onChange={(e) => setMeta({ ...meta, meta_url: e.target.value })}
-          className="border p-3 w-full rounded"
-        />
+          <input
+            placeholder="Meta URL"
+            value={meta.meta_url}
+            onChange={(e) => setMeta({ ...meta, meta_url: e.target.value })}
+            className={inputClass}
+          />
+        </div>
 
         <input
           placeholder="Meta Image"
           value={meta.meta_image}
           onChange={(e) => setMeta({ ...meta, meta_image: e.target.value })}
-          className="border p-3 w-full rounded"
+          className={inputClass}
         />
-
-        <button
-          onClick={saveData}
-          className="bg-primary text-white px-6 py-3 rounded-lg flex gap-2"
-        >
-          <Save size={18} /> Save Changes
-        </button>
       </div>
+
+      {/* SAVE BUTTON */}
+      <button
+        onClick={saveData}
+        disabled={saving}
+        className="sticky bottom-6 w-full flex items-center justify-center gap-2 bg-primary text-white py-4 rounded-2xl shadow-xl hover:-translate-y-1 transition"
+      >
+        <Save size={18} />
+        {saving ? "Saving..." : "Save About Page"}
+      </button>
     </div>
   );
 }

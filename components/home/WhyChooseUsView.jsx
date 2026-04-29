@@ -30,7 +30,7 @@ export default function WhyChooseUsView({ data, points }) {
                 priority
               />
 
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0B1C2D]/75 via-[#0B1C2D]/15 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-secondary/75 via-secondary/15 to-transparent" />
 
               <div className="absolute bottom-5 left-5 right-5 flex items-center gap-4 rounded-2xl border border-white/30 bg-white/90 p-4 shadow-xl backdrop-blur-md">
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
@@ -38,7 +38,7 @@ export default function WhyChooseUsView({ data, points }) {
                 </div>
 
                 <div>
-                  <p className="font-semibold text-[#0B1C2D]">
+                  <p className="font-semibold text-secondary">
                     Confidential by design
                   </p>
                   <p className="mt-1 text-sm leading-5 text-slate-600">
@@ -52,13 +52,11 @@ export default function WhyChooseUsView({ data, points }) {
 
         <div className={!data.image ? "md:col-span-2 max-w-3xl" : ""}>
           {data.subtitle && (
-            <SectionBadge className="mb-5">
-              {data.subtitle}
-            </SectionBadge>
+            <SectionBadge className="mb-5">{data.subtitle}</SectionBadge>
           )}
 
           {data.title && (
-            <h2 className="max-w-xl text-4xl font-bold leading-tight text-[#0B1C2D] sm:text-5xl">
+            <h2 className="max-w-xl text-4xl font-bold leading-tight text-secondary sm:text-5xl">
               {data.title}
             </h2>
           )}

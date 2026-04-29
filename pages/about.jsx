@@ -9,8 +9,9 @@ import StatsSection from "@/components/StatsSection";
 import ClientsSection from "@/components/home/ClientsSection";
 import TestimonialsSection from "@/components/home/TestimonialsSection";
 import { supabaseServer } from "@/lib/supabaseServer";
+import TeamSection from "@/components/TeamSection";
 
-export default function AboutPage({ data, about }) {
+export default function AboutPage({ data, about, teamSection, teamMembers }) {
   return (
     <div className="w-full relative">
       {/* ================= SEO ================= */}
@@ -79,6 +80,7 @@ export default function AboutPage({ data, about }) {
       <WhyUs />
       <StatsSection />
       <ClientsSection />
+      <TeamSection section={teamSection} members={teamMembers} />
       <TestimonialsSection />
       <FAQ />
       <PremiumCTA />
@@ -88,22 +90,33 @@ export default function AboutPage({ data, about }) {
 
 // ================= SSR =================
 export async function getServerSideProps() {
-  // SEO + HERO
   const { data: pageData } = await supabaseServer
     .from("about_page")
     .select("*")
     .single();
 
-  // ABOUT SECTION CONTENT
   const { data: aboutData } = await supabaseServer
     .from("about_section")
     .select("*")
     .single();
 
+  // ✅ TEAM SECTION
+  const { data: teamSection } = await supabaseServer
+    .from("team_section")
+    .select("*")
+    .single();
+
+  const { data: teamMembers } = await supabaseServer
+    .from("team_members")
+    .select("*")
+    .order("created_at", { ascending: true });
+
   return {
     props: {
       data: pageData || null,
       about: aboutData || null,
+      teamSection: teamSection || null,
+      teamMembers: teamMembers || [],
     },
   };
 }

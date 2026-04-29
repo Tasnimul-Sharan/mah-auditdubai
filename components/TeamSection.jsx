@@ -1,105 +1,114 @@
 import Image from "next/image";
-import { FaFacebookF, FaInstagram, FaLinkedinIn } from "react-icons/fa";
+import {
+  FaFacebookF,
+  FaInstagram,
+  FaLinkedinIn,
+} from "react-icons/fa";
 
-const team = [
-  {
-    name: "Md Mozammel Haque",
-    role: "Managing Director",
-    img: "/team/ceo.jpg",
-    socials: {
-      facebook: "https://facebook.com/",
-      linkedin: "https://linkedin.com/",
-      instagram: "https://instagram.com/",
-    },
-  },
-  {
-    name: "Masud Khan",
-    role: "Operations Manager",
-    img: "/team/operations.jpg",
-    socials: {
-      facebook: "https://facebook.com/",
-      linkedin: "https://linkedin.com/",
-      instagram: "https://instagram.com/",
-    },
-  },
-  {
-    name: "Mahmud Hasan",
-    role: "Community & Wellness Coordinator",
-    img: "/team/community.jpg",
-    socials: {
-      facebook: "https://facebook.com/",
-      linkedin: "https://linkedin.com/",
-      instagram: "https://instagram.com/",
-    },
-  },
-];
-export default function TeamSection() {
+import SectionBadge from "./SectionBadge";
+import { FaXTwitter } from "react-icons/fa6";
+
+export default function TeamSection({ section, members = [] }) {
+  const getSocialIcon = (type = "") => {
+    const t = type.toLowerCase();
+
+    if (t === "facebook") return <FaFacebookF />;
+    if (t === "linkedin") return <FaLinkedinIn />;
+    if (t === "instagram") return <FaInstagram />;
+    if (t === "twitter" || t === "x") return <FaXTwitter />;
+
+    return null;
+  };
+
   return (
-    <section className="relative">
-      <div className="bg-primary/50 pt-20 pb-32 relative overflow-hidden">
-        <div className="max-w-[1280px] mx-auto px-4 relative z-0">
-          <div className="text-center mb-12">
-            <p className="uppercase text-white/80 tracking-[0.15em] text-sm">
-              Meet Our Team
-            </p>
-            <h2 className="text-white text-4xl font-bold mt-2">Our Team</h2>
+    <section className="relative overflow-hidden bg-white py-24">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(0,0,0,0.05),transparent_35%),linear-gradient(180deg,#ffffff_0%,#f8fafc_100%)]" />
+
+      <div className="relative mx-auto max-w-7xl px-6">
+        {/* HEADER */}
+        <div className="mx-auto mb-16 max-w-3xl text-center">
+          <div className="mb-5 flex justify-center">
+            <SectionBadge>
+              {section?.badge || "Meet Our Leadership"}
+            </SectionBadge>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 justify-items-center">
-            {team.map((member, idx) => (
-              <div
-                key={idx}
-                className="group relative rounded-lg overflow-hidden max-w-full text-center bg-primary/20"
-              >
-                {/* Image */}
-                <div className="w-full relative">
+          <h2 className="text-4xl font-bold leading-tight text-secondary md:text-5xl">
+            {section?.title || "Our Expert Team"}
+          </h2>
+
+          <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-slate-600">
+            {section?.subtitle ||
+              "Professional audit & advisory specialists guiding your business growth."}
+          </p>
+        </div>
+
+        {/* MEMBERS */}
+        <div className="grid gap-8 md:grid-cols-3">
+          {members.map((member, index) => (
+            <div
+              key={member.id}
+              className="group relative overflow-hidden rounded-[2rem] border border-slate-100 bg-white p-3 shadow-[0_18px_55px_rgba(15,23,42,0.08)] transition-all duration-700 hover:-translate-y-2 hover:shadow-[0_32px_90px_rgba(15,23,42,0.14)]"
+            >
+              <div className="relative overflow-hidden rounded-[1.6rem] bg-slate-100">
+                <div className="relative h-[500px]">
                   <Image
-                    src={member.img}
+                    src={member.image || "/team/default.jpg"}
                     alt={member.name}
-                    width={1200}
-                    height={800}
-                    className="object-cover w-full h-[300px] group-hover:scale-105 transition duration-500"
+                    fill
+                    className={`object-cover ${
+                      member.position || "object-center"
+                    } transition duration-700 group-hover:scale-105`}
                   />
-                  {/* Hover Social Icons */}
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-4 transition duration-500">
-                    <a
-                      href={member.socials.facebook}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="bg-white text-primary p-2 rounded-full hover:bg-primary hover:text-white transition"
-                    >
-                      <FaFacebookF />
-                    </a>
-                    <a
-                      href={member.socials.linkedin}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="bg-white text-primary p-2 rounded-full hover:bg-primary hover:text-white transition"
-                    >
-                      <FaLinkedinIn />
-                    </a>
-                    <a
-                      href={member.socials.instagram}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="bg-white text-primary p-2 rounded-full hover:bg-primary hover:text-white transition"
-                    >
-                      <FaInstagram />
-                    </a>
+
+                  <div className="absolute inset-0 bg-gradient-to-t from-secondary/75 via-secondary/5 to-transparent" />
+
+                  <div className="absolute left-5 top-5 rounded-full border border-white/30 bg-secondary/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-white backdrop-blur-md">
+                    {member.role || "Team Member"}
                   </div>
                 </div>
 
-                <div className="py-4">
-                  <h3 className="text-white text-lg font-semibold">
-                    {member.name}
-                  </h3>
-                  <p className="text-white/70 text-sm">{member.role}</p>
+                {/* CONTENT */}
+                <div className="absolute inset-x-5 bottom-5">
+                  <div className="rounded-3xl border border-white/40 bg-white/95 p-5 shadow-xl backdrop-blur-xl">
+                    <h3 className="text-xl font-bold text-secondary">
+                      {member.name}
+                    </h3>
+
+                    <p className="mt-1 text-sm font-semibold text-primary">
+                      {member.role}
+                    </p>
+
+                    {/* SOCIALS */}
+                    <div className="mt-5 flex gap-3">
+                      {member.socials?.map((s, i) => (
+                        <SocialIcon key={i} href={s.url}>
+                          {getSocialIcon(s.type)}
+                        </SocialIcon>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
-            ))}
-          </div>
+
+              <div className="pointer-events-none absolute inset-0 rounded-[2rem] opacity-0 transition-opacity duration-700 group-hover:opacity-100 bg-gradient-to-br from-primary/10 via-transparent to-secondary/10" />
+            </div>
+          ))}
         </div>
       </div>
     </section>
+  );
+}
+
+function SocialIcon({ href, children }) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary transition-all duration-500 hover:-translate-y-1 hover:bg-primary hover:text-white"
+    >
+      {children}
+    </a>
   );
 }

@@ -477,35 +477,36 @@ export default function Navbar() {
         className="fixed top-0 left-0 w-full z-50 bg-white transition-all duration-500"
       >
         <div className="custom-container mx-auto md:h-24 h-20 flex items-center justify-between">
-          {/* LOGO */}
+          {/* LEFT - LOGO */}
           <Link href="/">
             <Image
               src={data.logo || "/logo.png"}
               alt="Logo"
               width={1200}
               height={1200}
-              className="md:h-32 h-28 w-auto object-contain"
+              className="md:h-28 h-20 w-auto object-contain"
             />
           </Link>
 
-          {/* MENU */}
-          <ul className="hidden lg:flex gap-8 font-semibold text-Secound_primary">
-            {menuLinks.map((item) => (
-              <li key={item.id} className="relative group">
-                <Link
-                  href={item.path}
-                  className="hover:text-primary transition"
-                >
-                  {item.name}
-                </Link>
+          {/* RIGHT SIDE */}
+          <div className="hidden lg:flex items-center gap-10">
+            {/* MENU */}
+            <ul className="flex items-center gap-8 font-semibold text-Secound_primary">
+              {menuLinks.map((item) => (
+                <li key={item.id} className="relative group">
+                  <Link
+                    href={item.path}
+                    className="hover:text-primary transition"
+                  >
+                    {item.name}
+                  </Link>
 
-                <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-primary transition-all duration-500 group-hover:w-full"></span>
-              </li>
-            ))}
-          </ul>
+                  <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-primary transition-all duration-500 group-hover:w-full"></span>
+                </li>
+              ))}
+            </ul>
 
-          {/* BUTTON */}
-          <div className="hidden lg:block">
+            {/* BUTTON */}
             <Link href="/contact">
               <button className="bg-primary text-white px-6 py-3 rounded font-semibold hover:bg-secondary transition">
                 Contact Us

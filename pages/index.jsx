@@ -7,9 +7,9 @@ import ClientsSection from "@/components/home/ClientsSection";
 import TestimonialsSection from "@/components/home/TestimonialsSection";
 import ServicesSection from "@/components/home/ServicesSection";
 import WhyChooseUs from "@/components/WhyChooseUs";
-import WhoWeWorkWith from "@/components/WhoWeWorkWith";
 import ContactSection from "@/components/ContactSection";
 import { supabaseServer } from "@/lib/supabaseServer";
+import IndustrySection from "@/components/IndustrySection";
 
 export default function Home({
   meta,
@@ -17,7 +17,8 @@ export default function Home({
   services,
   whyChooseUs,
   whyChoosePoints,
-  industries,
+  industrySection,
+  industryItems,
 }) {
   return (
     <div>
@@ -78,7 +79,10 @@ export default function Home({
       <ServicesSection services={services} />
       <StatsSection />
       <WhyChooseUs data={whyChooseUs} points={whyChoosePoints} />
-      <WhoWeWorkWith industries={industries} />
+      <IndustrySection
+        industrySection={industrySection}
+        industryItems={industryItems}
+      />
       <ClientsSection />
       <TestimonialsSection />
       <BlogSection />
@@ -123,10 +127,25 @@ export async function getServerSideProps() {
       .map((item) => item.point)
       .filter(Boolean);
   }
-  const { data: industriesData } = await supabaseServer
+
+  const { data: industrySection } = await supabaseServer
     .from("industries")
     .select("*")
-    .order("created_at", { ascending: true });
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  let industryItems = [];
+
+  if (industrySection?.id) {
+    const { data: itemRows } = await supabaseServer
+      .from("industry_items")
+      .select("*")
+      .eq("industry_id", industrySection.id)
+      .order("created_at", { ascending: true });
+
+    industryItems = itemRows || [];
+  }
 
   return {
     props: {
@@ -135,7 +154,8 @@ export async function getServerSideProps() {
       services: servicesData || [],
       whyChooseUs: whyChooseUsData || null,
       whyChoosePoints,
-      industries: industriesData || [],
+      industrySection: industrySection || null,
+      industryItems,
     },
   };
 }

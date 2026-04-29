@@ -1,6 +1,6 @@
 export default function CTASection() {
   return (
-    <section className="py-20 bg-gradient-to-r from-[#0B1C2D] to-[#1a2d45] text-white">
+    <section className="py-20 bg-gradient-to-r from-secondary to-[#1a2d45] text-white">
       <div className="max-w-5xl mx-auto text-center px-6">
         <h2 className="text-3xl md:text-4xl font-bold">
           Ready to Strengthen Your Financial Compliance?

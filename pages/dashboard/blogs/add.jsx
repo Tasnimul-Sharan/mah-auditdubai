@@ -3,6 +3,16 @@
 import { useState } from "react";
 import { supabaseServer } from "@/lib/supabaseServer";
 import AdminLayout from "@/components/AdminLayout";
+import {
+  Save,
+  Trash2,
+  Newspaper,
+  ImageIcon,
+  FileText,
+  Quote,
+  ListChecks,
+  Tags,
+} from "lucide-react";
 
 export default function AddBlogPage() {
   const [form, setForm] = useState({
@@ -15,21 +25,32 @@ export default function AddBlogPage() {
     image: "",
     checklist: "",
     highlights: "",
-    subImages: [], // ✅ FIXED
+    subImages: [],
     postTags: "",
   });
 
-  const generateSlug = (text) => {
-    return text
+  const [selectedMainImage, setSelectedMainImage] = useState(null);
+  const [selectedSubImages, setSelectedSubImages] = useState([]);
+  const [saving, setSaving] = useState(false);
+
+  const inputClass =
+    "w-full rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition-all duration-500 focus:border-primary focus:shadow-[0_0_0_4px_rgba(0,0,0,0.04)]";
+
+  const cardClass =
+    "rounded-[1.5rem] border border-gray-100 bg-white p-6 shadow-[0_18px_50px_rgba(0,0,0,0.05)] space-y-4";
+
+  const generateSlug = (text) =>
+    text
       .toLowerCase()
       .trim()
       .replace(/[^a-z0-9\s-]/g, "")
       .replace(/\s+/g, "-");
-  };
 
-  const formatArray = (value) => {
-    return value.split("\n").filter(Boolean);
-  };
+  const formatArray = (value) =>
+    value
+      .split("\n")
+      .map((item) => item.trim())
+      .filter(Boolean);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -41,7 +62,10 @@ export default function AddBlogPage() {
         slug: generateSlug(value),
       });
     } else {
-      setForm({ ...form, [name]: value });
+      setForm({
+        ...form,
+        [name]: value,
+      });
     }
   };
 
@@ -56,7 +80,9 @@ export default function AddBlogPage() {
 
     const res = await fetch("/api/upload-blogs", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({ file: base64 }),
     });
 
@@ -66,25 +92,29 @@ export default function AddBlogPage() {
     return data.url;
   };
 
-  const [selectedMainImage, setSelectedMainImage] = useState(null);
-  const [selectedSubImages, setSelectedSubImages] = useState([]);
-
   const handleMainImage = (e) => {
-    const file = e.target.files[0];
+    const file = e.target.files?.[0];
     if (!file) return;
 
     setSelectedMainImage(file);
 
-    const preview = URL.createObjectURL(file);
-
     setForm((prev) => ({
       ...prev,
-      image: preview,
+      image: URL.createObjectURL(file),
     }));
   };
 
+  const removeMainImage = () => {
+    setSelectedMainImage(null);
+
+    setForm({
+      ...form,
+      image: "",
+    });
+  };
+
   const handleSubImages = (e) => {
-    const files = Array.from(e.target.files);
+    const files = Array.from(e.target.files || []);
     if (!files.length) return;
 
     setSelectedSubImages(files);
@@ -97,21 +127,36 @@ export default function AddBlogPage() {
     }));
   };
 
+  const removeSubImage = (index) => {
+    setSelectedSubImages((prev) => prev.filter((_, i) => i !== index));
+
+    setForm({
+      ...form,
+      subImages: form.subImages.filter((_, i) => i !== index),
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!form.title.trim()) {
+      alert("Blog title is required");
+      return;
+    }
+
     try {
-      // 🔥 Upload Main Image
+      setSaving(true);
+
       let mainImageUrl = "";
+
       if (selectedMainImage) {
         mainImageUrl = await uploadToCloudinary(selectedMainImage);
       }
 
-      // 🔥 Upload Sub Images
-      let subImageUrls = [];
+      const subImageUrls = [];
 
       if (selectedSubImages.length > 0) {
-        for (let file of selectedSubImages) {
+        for (const file of selectedSubImages) {
           const url = await uploadToCloudinary(file);
           subImageUrls.push(url);
         }
@@ -124,9 +169,7 @@ export default function AddBlogPage() {
         date: form.date,
         description: form.description,
         quote: form.quote,
-
         image: mainImageUrl,
-
         checklist: formatArray(form.checklist),
         highlights: formatArray(form.highlights),
         subimages: subImageUrls,
@@ -138,129 +181,231 @@ export default function AddBlogPage() {
       if (error) throw error;
 
       alert("Blog added successfully");
+
+      setForm({
+        slug: "",
+        title: "",
+        author: "",
+        date: "",
+        description: "",
+        quote: "",
+        image: "",
+        checklist: "",
+        highlights: "",
+        subImages: [],
+        postTags: "",
+      });
+
+      setSelectedMainImage(null);
+      setSelectedSubImages([]);
     } catch (err) {
       console.error(err);
       alert("Error adding blog");
+    } finally {
+      setSaving(false);
     }
   };
 
-  //   const handleSubmit = async (e) => {
-  //     e.preventDefault();
-
-  //     const payload = {
-  //       ...form,
-  //       checklist: formatArray(form.checklist),
-  //       highlights: formatArray(form.highlights),
-  //       subimages: formatArray(form.subImages),
-  //       posttags: formatArray(form.postTags),
-  //     };
-
-  //     const { error } = await supabaseServer.from("blogs").insert([payload]);
-
-  //     if (error) {
-  //       alert("Error adding blog");
-  //     } else {
-  //       alert("Blog added successfully");
-  //     }
-  //   };
-
   return (
-    <div className="max-w-4xl mx-auto">
-      <h1 className="text-xl mb-4">Add Blog</h1>
+    <div className="max-w-6xl mx-auto space-y-8">
+      <div>
+        <h1 className="flex items-center gap-2 text-3xl font-bold text-gray-900">
+          <Newspaper className="text-primary" size={28} />
+          Add Blog
+        </h1>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          name="slug"
-          value={form.slug}
-          placeholder="Slug"
-          readOnly
-          className="border p-2 w-full bg-gray-100"
-        />
-        <input
-          name="title"
-          onChange={handleChange}
-          placeholder="Title"
-          className="border p-2 w-full"
-        />
-        <input
-          name="author"
-          onChange={handleChange}
-          placeholder="Author"
-          className="border p-2 w-full"
-        />
-        <input
-          type="date"
-          name="date"
-          onChange={handleChange}
-          placeholder="Date"
-          className="border p-2 w-full"
-        />
-        {/* Main Image */}
-        <input
-          type="file"
-          onChange={handleMainImage}
-          className="border p-2 w-full"
-        />
+        <p className="mt-1 text-gray-500">
+          Create blog content, images, checklist, highlights and tags.
+        </p>
+      </div>
 
-        {/* Preview */}
-        {form.image && (
-          <img src={form.image} className="w-32 h-32 object-cover rounded" />
-        )}
+      <form onSubmit={handleSubmit} className="space-y-8">
+        <div className={cardClass}>
+          <h2 className="flex items-center gap-2 text-xl font-bold text-gray-900">
+            <FileText size={20} className="text-primary" />
+            Basic Information
+          </h2>
 
-        <textarea
-          name="description"
-          onChange={handleChange}
-          placeholder="Description"
-          className="border p-2 w-full"
-        />
-        <textarea
-          name="quote"
-          onChange={handleChange}
-          placeholder="Quote"
-          className="border p-2 w-full"
-        />
+          <input
+            name="title"
+            value={form.title}
+            onChange={handleChange}
+            placeholder="Blog Title"
+            className={inputClass}
+          />
 
-        <textarea
-          name="checklist"
-          placeholder="Checklist (one per line)"
-          onChange={handleChange}
-          className="border p-2 w-full"
-        />
-        <textarea
-          name="highlights"
-          placeholder="Highlights (one per line)"
-          onChange={handleChange}
-          className="border p-2 w-full"
-        />
-        {/* <textarea
-          name="subImages"
-          placeholder="Sub Images URLs (one per line)"
-          onChange={handleChange}
-          className="border p-2 w-full"
-        /> */}
-        <input
-          type="file"
-          multiple
-          onChange={handleSubImages}
-          className="border p-2 w-full"
-        />
+          <input
+            name="slug"
+            value={form.slug}
+            readOnly
+            placeholder="Auto generated slug"
+            className={`${inputClass} bg-gray-50 text-gray-500`}
+          />
 
-        {/* Preview */}
-        <div className="flex gap-2 flex-wrap">
-          {form.subImages?.map((img, i) => (
-            <img key={i} src={img} className="w-20 h-20 object-cover rounded" />
-          ))}
+          <div className="grid gap-4 md:grid-cols-2">
+            <input
+              name="author"
+              value={form.author}
+              onChange={handleChange}
+              placeholder="Author"
+              className={inputClass}
+            />
+
+            <input
+              type="date"
+              name="date"
+              value={form.date}
+              onChange={handleChange}
+              className={inputClass}
+            />
+          </div>
+
+          <textarea
+            name="description"
+            value={form.description}
+            onChange={handleChange}
+            placeholder="Description"
+            rows={5}
+            className={inputClass}
+          />
         </div>
 
-        <textarea
-          name="postTags"
-          placeholder="Tags (one per line)"
-          onChange={handleChange}
-          className="border p-2 w-full"
-        />
+        <div className={cardClass}>
+          <h2 className="flex items-center gap-2 text-xl font-bold text-gray-900">
+            <ImageIcon size={20} className="text-primary" />
+            Main Image
+          </h2>
 
-        <button className="bg-black text-white px-4 py-2 rounded">
-          Add Blog
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleMainImage}
+            className={inputClass}
+          />
+
+          {form.image && (
+            <div className="relative w-fit rounded-2xl border bg-gray-50 p-3">
+              <img
+                src={form.image}
+                className="h-44 w-72 rounded-xl object-cover"
+                alt=""
+              />
+
+              <button
+                type="button"
+                onClick={removeMainImage}
+                className="absolute right-4 top-4 rounded-lg bg-red-500 p-2 text-white transition-all duration-500 hover:bg-red-600"
+              >
+                <Trash2 size={14} />
+              </button>
+            </div>
+          )}
+        </div>
+
+        <div className={cardClass}>
+          <h2 className="flex items-center gap-2 text-xl font-bold text-gray-900">
+            <Quote size={20} className="text-primary" />
+            Quote
+          </h2>
+
+          <textarea
+            name="quote"
+            value={form.quote}
+            onChange={handleChange}
+            placeholder="Quote"
+            rows={4}
+            className={inputClass}
+          />
+        </div>
+
+        <div className={cardClass}>
+          <h2 className="flex items-center gap-2 text-xl font-bold text-gray-900">
+            <ListChecks size={20} className="text-primary" />
+            Checklist & Highlights
+          </h2>
+
+          <textarea
+            name="checklist"
+            value={form.checklist}
+            placeholder="Checklist - one item per line"
+            onChange={handleChange}
+            rows={5}
+            className={inputClass}
+          />
+
+          <textarea
+            name="highlights"
+            value={form.highlights}
+            placeholder="Highlights - one item per line"
+            onChange={handleChange}
+            rows={5}
+            className={inputClass}
+          />
+        </div>
+
+        <div className={cardClass}>
+          <h2 className="flex items-center gap-2 text-xl font-bold text-gray-900">
+            <ImageIcon size={20} className="text-primary" />
+            Sub Images
+          </h2>
+
+          <input
+            type="file"
+            multiple
+            accept="image/*"
+            onChange={handleSubImages}
+            className={inputClass}
+          />
+
+          {form.subImages?.length > 0 && (
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+              {form.subImages.map((img, i) => (
+                <div
+                  key={i}
+                  className="relative rounded-2xl border bg-gray-50 p-2"
+                >
+                  <img
+                    src={img}
+                    className="h-28 w-full rounded-xl object-cover"
+                    alt=""
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => removeSubImage(i)}
+                    className="absolute right-3 top-3 rounded-lg bg-red-500 p-1.5 text-white transition-all duration-500 hover:bg-red-600"
+                  >
+                    <Trash2 size={12} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className={cardClass}>
+          <h2 className="flex items-center gap-2 text-xl font-bold text-gray-900">
+            <Tags size={20} className="text-primary" />
+            Tags
+          </h2>
+
+          <textarea
+            name="postTags"
+            value={form.postTags}
+            placeholder="Tags - one tag per line"
+            onChange={handleChange}
+            rows={4}
+            className={inputClass}
+          />
+        </div>
+
+        <button
+          type="submit"
+          disabled={saving}
+          className="sticky bottom-6 z-20 flex w-full items-center justify-center gap-2 rounded-2xl bg-primary px-6 py-4 font-semibold text-white shadow-[0_20px_50px_rgba(0,0,0,0.18)] transition-all duration-500 hover:-translate-y-1 hover:bg-secondary disabled:opacity-60"
+        >
+          <Save size={18} />
+          {saving ? "Saving..." : "Add Blog"}
         </button>
       </form>
     </div>

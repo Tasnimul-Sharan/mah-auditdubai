@@ -73,10 +73,10 @@ export default function DynamicBlock({ section }) {
 
   const bgClass =
     settings.bg === "dark"
-      ? "bg-[#0B1C2D] text-white"
+      ? "bg-secondary text-white"
       : settings.bg === "gray"
-        ? "bg-slate-50 text-[#0B1C2D]"
-        : "bg-white text-[#0B1C2D]";
+        ? "bg-slate-50 text-secondary"
+        : "bg-white text-secondary";
 
   const alignClass =
     settings.align === "center" ? "text-center mx-auto" : "text-left";
@@ -164,7 +164,7 @@ export default function DynamicBlock({ section }) {
                 )}
 
                 {item.title && (
-                  <h3 className="mb-3 text-xl font-bold text-[#0B1C2D]">
+                  <h3 className="mb-3 text-xl font-bold text-secondary">
                     {item.title}
                   </h3>
                 )}

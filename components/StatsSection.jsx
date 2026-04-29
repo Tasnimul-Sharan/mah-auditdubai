@@ -3,7 +3,7 @@ import { FaBriefcase, FaGlobe, FaUsers, FaAward } from "react-icons/fa";
 
 export default function StatsSection() {
   return (
-    <section className="py-24 bg-[#0B1C2D] text-primary">
+    <section className="py-24 bg-secondary text-primary">
       <div className="max-w-6xl mx-auto px-6">
         <div className="grid md:grid-cols-4 gap-12 text-center">
           {/* Experience */}
@@ -61,7 +61,7 @@ export default function StatsSection() {
             </h3>
             <p className="mt-3 text-gray-300">Industry Awards</p>
           </div>
-        </div> 
+        </div>
       </div>
     </section>
   );

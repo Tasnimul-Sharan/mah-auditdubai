@@ -4,11 +4,26 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import AdminLayout from "@/components/AdminLayout";
 import { supabaseServer } from "@/lib/supabaseServer";
+import {
+  ArrowLeft,
+  CalendarDays,
+  CheckCircle,
+  Edit,
+  ImageIcon,
+  Newspaper,
+  Quote,
+  Tags,
+  User,
+} from "lucide-react";
 
 const Field = ({ label, value }) => (
-  <div className="space-y-1">
-    <p className="text-xs text-gray-500 uppercase">{label}</p>
-    <p className="text-sm text-gray-800 whitespace-pre-line">{value || "—"}</p>
+  <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
+    <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-gray-400">
+      {label}
+    </p>
+    <p className="whitespace-pre-line text-sm leading-7 text-gray-700">
+      {value || "—"}
+    </p>
   </div>
 );
 
@@ -34,7 +49,8 @@ export default function ViewBlogPage() {
   }, [id]);
 
   const formatDate = (dateStr) => {
-    if (!dateStr) return "";
+    if (!dateStr) return "No date";
+
     return new Date(dateStr).toLocaleDateString("en-US", {
       year: "numeric",
       month: "long",
@@ -42,91 +58,210 @@ export default function ViewBlogPage() {
     });
   };
 
-  if (loading) return <div className="p-6">Loading...</div>;
-  if (!blog) return <div className="p-6">Blog not found</div>;
+  if (loading) {
+    return <div className="p-10 text-center text-gray-500">Loading...</div>;
+  }
+
+  if (!blog) {
+    return <div className="p-10 text-center text-gray-500">Blog not found</div>;
+  }
 
   return (
-    <div className="max-w-5xl mx-auto bg-white p-6 rounded-xl border space-y-6">
-      <h1 className="text-2xl font-bold">Blog Details</h1>
+    <div className="max-w-6xl mx-auto space-y-8">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div>
+          <h1 className="flex items-center gap-2 text-3xl font-bold text-gray-900">
+            <Newspaper className="text-primary" size={28} />
+            Blog Details
+          </h1>
 
-      <div className="grid grid-cols-2 gap-6">
-        <Field label="Title" value={blog.title} />
-        <Field label="Slug" value={blog.slug} />
-        <Field label="Author" value={blog.author} />
-        <Field label="Date" value={formatDate(blog.date)} />
+          <p className="mt-1 text-gray-500">
+            Preview blog content, images, checklist and tags.
+          </p>
+        </div>
+
+        <div className="flex gap-3">
+          <button
+            type="button"
+            onClick={() => router.back()}
+            className="flex items-center gap-2 rounded-2xl border border-gray-200 bg-white px-5 py-3 text-sm font-semibold text-gray-700 transition-all duration-500 hover:bg-gray-50"
+          >
+            <ArrowLeft size={16} />
+            Back
+          </button>
+
+          <button
+            type="button"
+            onClick={() => router.push(`/dashboard/blogs/edit/${blog.id}`)}
+            className="flex items-center gap-2 rounded-2xl bg-primary px-5 py-3 text-sm font-semibold text-white shadow-[0_14px_35px_rgba(0,0,0,0.14)] transition-all duration-500 hover:-translate-y-1 hover:bg-secondary"
+          >
+            <Edit size={16} />
+            Edit Blog
+          </button>
+        </div>
       </div>
 
-      <Field label="Description" value={blog.description} />
-      <Field label="Quote" value={blog.quote} />
-
-      {/* Main Image */}
       {blog.image && (
-        <div>
-          <p className="text-xs text-gray-500 mb-2">Main Image</p>
+        <div className="relative overflow-hidden rounded-[2rem] border border-gray-100 bg-white shadow-[0_25px_80px_rgba(0,0,0,0.08)]">
           <img
             src={blog.image}
-            className="w-48 h-48 object-cover rounded border"
+            alt={blog.title || "Blog image"}
+            className="h-[420px] w-full object-cover"
           />
+
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent" />
+
+          <div className="absolute bottom-0 left-0 right-0 p-8 md:p-10">
+            <span className="mb-4 inline-flex rounded-full bg-white/15 px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-white backdrop-blur-md">
+              Blog Preview
+            </span>
+
+            <h2 className="max-w-4xl text-3xl font-bold leading-tight text-white md:text-5xl">
+              {blog.title}
+            </h2>
+
+            <div className="mt-5 flex flex-wrap gap-3">
+              <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-2 text-sm text-white backdrop-blur-md">
+                <User size={15} />
+                {blog.author || "Unknown"}
+              </span>
+
+              <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-2 text-sm text-white backdrop-blur-md">
+                <CalendarDays size={15} />
+                {formatDate(blog.date)}
+              </span>
+            </div>
+          </div>
         </div>
       )}
 
-      {/* Sub Images */}
+      {!blog.image && (
+        <div className="rounded-[2rem] border border-gray-100 bg-white p-8 shadow-[0_18px_50px_rgba(0,0,0,0.05)]">
+          <h2 className="text-3xl font-bold text-gray-900">{blog.title}</h2>
+
+          <div className="mt-4 flex flex-wrap gap-3">
+            <span className="inline-flex items-center gap-2 rounded-full bg-gray-100 px-4 py-2 text-sm text-gray-600">
+              <User size={15} className="text-primary" />
+              {blog.author || "Unknown"}
+            </span>
+
+            <span className="inline-flex items-center gap-2 rounded-full bg-gray-100 px-4 py-2 text-sm text-gray-600">
+              <CalendarDays size={15} className="text-primary" />
+              {formatDate(blog.date)}
+            </span>
+          </div>
+        </div>
+      )}
+
+      <div className="grid gap-5 md:grid-cols-2">
+        <Field label="Slug" value={`/${blog.slug || ""}`} />
+        <Field label="Date" value={formatDate(blog.date)} />
+      </div>
+
+      <div className="rounded-[1.5rem] border border-gray-100 bg-white p-6 shadow-[0_18px_50px_rgba(0,0,0,0.05)]">
+        <h2 className="mb-4 flex items-center gap-2 text-xl font-bold text-gray-900">
+          <Newspaper size={20} className="text-primary" />
+          Description
+        </h2>
+
+        <p className="whitespace-pre-line leading-8 text-gray-600">
+          {blog.description || "—"}
+        </p>
+      </div>
+
+      {blog.quote && (
+        <div className="relative overflow-hidden rounded-[1.5rem] border border-primary/10 bg-primary/5 p-7">
+          <Quote className="absolute -top-3 -left-3 h-16 w-16 text-primary/15" />
+
+          <p className="relative whitespace-pre-line text-lg italic leading-8 text-gray-700">
+            {blog.quote}
+          </p>
+        </div>
+      )}
+
       {blog.subimages?.length > 0 && (
-        <div>
-          <p className="text-xs text-gray-500 mb-2">Sub Images</p>
-          <div className="grid grid-cols-4 gap-4">
+        <div className="rounded-[1.5rem] border border-gray-100 bg-white p-6 shadow-[0_18px_50px_rgba(0,0,0,0.05)]">
+          <h2 className="mb-5 flex items-center gap-2 text-xl font-bold text-gray-900">
+            <ImageIcon size={20} className="text-primary" />
+            Sub Images
+          </h2>
+
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
             {blog.subimages.map((img, i) => (
               <img
                 key={i}
                 src={img}
-                className="w-full h-32 object-cover rounded border"
+                alt=""
+                className="h-36 w-full rounded-2xl border object-cover transition-all duration-500 hover:-translate-y-1 hover:shadow-lg"
               />
             ))}
           </div>
         </div>
       )}
 
-      {/* Checklist */}
       {blog.checklist?.length > 0 && (
-        <div>
-          <p className="text-xs text-gray-500 mb-2">Checklist</p>
-          <ul className="list-disc pl-5 text-sm">
+        <div className="rounded-[1.5rem] border border-gray-100 bg-white p-6 shadow-[0_18px_50px_rgba(0,0,0,0.05)]">
+          <h2 className="mb-5 flex items-center gap-2 text-xl font-bold text-gray-900">
+            <CheckCircle size={20} className="text-primary" />
+            Checklist
+          </h2>
+
+          <div className="grid gap-3 md:grid-cols-2">
             {blog.checklist.map((item, i) => (
-              <li key={i}>{item}</li>
+              <div
+                key={i}
+                className="flex items-start gap-3 rounded-2xl bg-gray-50 p-4 text-sm text-gray-700"
+              >
+                <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                <span>{item}</span>
+              </div>
             ))}
-          </ul>
+          </div>
         </div>
       )}
 
-      {/* Tags */}
+      {blog.highlights?.length > 0 && (
+        <div className="rounded-[1.5rem] border border-gray-100 bg-white p-6 shadow-[0_18px_50px_rgba(0,0,0,0.05)]">
+          <h2 className="mb-5 flex items-center gap-2 text-xl font-bold text-gray-900">
+            <CheckCircle size={20} className="text-primary" />
+            Highlights
+          </h2>
+
+          <div className="space-y-3">
+            {blog.highlights.map((item, i) => (
+              <div
+                key={i}
+                className="flex items-start gap-3 rounded-2xl bg-gray-50 p-4 text-sm text-gray-700"
+              >
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
+                  {i + 1}
+                </span>
+                <span>{item}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {blog.posttags?.length > 0 && (
-        <div>
-          <p className="text-xs text-gray-500 mb-2">Tags</p>
-          <div className="flex gap-2 flex-wrap">
+        <div className="rounded-[1.5rem] border border-gray-100 bg-white p-6 shadow-[0_18px_50px_rgba(0,0,0,0.05)]">
+          <h2 className="mb-5 flex items-center gap-2 text-xl font-bold text-gray-900">
+            <Tags size={20} className="text-primary" />
+            Tags
+          </h2>
+
+          <div className="flex flex-wrap gap-2">
             {blog.posttags.map((tag, i) => (
-              <span key={i} className="px-2 py-1 bg-gray-200 text-xs rounded">
+              <span
+                key={i}
+                className="rounded-full bg-primary/10 px-4 py-2 text-sm font-semibold text-primary"
+              >
                 {tag}
               </span>
             ))}
           </div>
         </div>
       )}
-
-      <div className="flex gap-3 pt-4">
-        <button
-          onClick={() => router.push(`/dashboard/blogs/edit/${blog.id}`)}
-          className="bg-primary text-white px-4 py-2 rounded"
-        >
-          Edit Blog
-        </button>
-
-        <button
-          onClick={() => router.back()}
-          className="border px-4 py-2 rounded"
-        >
-          Back
-        </button>
-      </div>
     </div>
   );
 }

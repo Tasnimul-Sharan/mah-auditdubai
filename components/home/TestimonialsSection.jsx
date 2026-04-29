@@ -155,7 +155,7 @@
 //                       </div>
 
 //                       <div>
-//                         <h4 className="font-semibold text-[#0B1C2D]">
+//                         <h4 className="font-semibold text-secondary">
 //                           {item.name}
 //                         </h4>
 //                         <p className="text-sm text-gray-500">{item.role}</p>
@@ -355,7 +355,7 @@ export default function TestimonialsSection() {
                       </div>
 
                       <div>
-                        <h4 className="font-semibold text-[#0B1C2D]">
+                        <h4 className="font-semibold text-secondary">
                           {item.name}
                         </h4>
                         <p className="text-sm text-gray-500">{item.role}</p>

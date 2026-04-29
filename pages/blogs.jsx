@@ -7,7 +7,7 @@ export default function BlogsPage({ data }) {
   return (
     <div className="w-full relative">
       <Head>
-        <title>{data?.meta_title || "Blogs"}</title>
+        <title>{data?.meta_title}</title>
 
         <meta name="description" content={data?.meta_description} />
         <meta name="keywords" content={data?.meta_keywords} />

@@ -11,10 +11,9 @@ import TestimonialsSection from "@/components/home/TestimonialsSection";
 import { supabaseServer } from "@/lib/supabaseServer";
 import TeamSection from "@/components/TeamSection";
 
-export default function AboutPage({ data, about, teamSection, teamMembers }) {
+export default function AboutPage({ data, about, teamSection, teamMembers, whyUs }) {
   return (
     <div className="w-full relative">
-      {/* ================= SEO ================= */}
       <Head>
         <title>{data?.meta_title}</title>
 
@@ -23,10 +22,7 @@ export default function AboutPage({ data, about, teamSection, teamMembers }) {
         <meta name="author" content={data?.meta_author} />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-        {/* Canonical */}
         <link rel="canonical" href={data?.meta_url} />
-
-        {/* Open Graph */}
         <meta property="og:title" content={data?.meta_title} />
         <meta property="og:description" content={data?.meta_description} />
         <meta property="og:type" content="website" />
@@ -34,17 +30,14 @@ export default function AboutPage({ data, about, teamSection, teamMembers }) {
         <meta property="og:image" content={data?.meta_image} />
         <meta property="og:site_name" content="MAH Audit Dubai" />
 
-        {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={data?.meta_title} />
         <meta name="twitter:description" content={data?.meta_description} />
         <meta name="twitter:image" content={data?.meta_image} />
 
-        {/* Extra SEO */}
         <meta name="robots" content="index, follow" />
         <meta property="og:locale" content="en_US" />
 
-        {/* Structured Data */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -66,7 +59,6 @@ export default function AboutPage({ data, about, teamSection, teamMembers }) {
         />
       </Head>
 
-      {/* ================= HERO ================= */}
       <HeroSection
         hero={{
           title: data?.hero_title || "About Us",
@@ -74,10 +66,9 @@ export default function AboutPage({ data, about, teamSection, teamMembers }) {
         }}
       />
 
-      {/* ================= SECTIONS ================= */}
       <AboutUsSection data={about} />
       <VisionMission />
-      <WhyUs />
+      <WhyUs whyUs={whyUs} />
       <StatsSection />
       <ClientsSection />
       <TeamSection section={teamSection} members={teamMembers} />
@@ -88,7 +79,7 @@ export default function AboutPage({ data, about, teamSection, teamMembers }) {
   );
 }
 
-// ================= SSR =================
+
 export async function getServerSideProps() {
   const { data: pageData } = await supabaseServer
     .from("about_page")
@@ -100,7 +91,6 @@ export async function getServerSideProps() {
     .select("*")
     .single();
 
-  // ✅ TEAM SECTION
   const { data: teamSection } = await supabaseServer
     .from("team_section")
     .select("*")
@@ -111,12 +101,18 @@ export async function getServerSideProps() {
     .select("*")
     .order("created_at", { ascending: true });
 
+    const { data: whyUs } = await supabaseServer
+      .from("why_us")
+      .select("*")
+      .single();
+  
   return {
     props: {
       data: pageData || null,
       about: aboutData || null,
       teamSection: teamSection || null,
       teamMembers: teamMembers || [],
+      whyUs: whyUs || null,
     },
   };
 }

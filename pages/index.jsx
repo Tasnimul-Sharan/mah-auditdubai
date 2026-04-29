@@ -19,6 +19,7 @@ export default function Home({
   whyChoosePoints,
   industrySection,
   industryItems,
+  contactPage,
 }) {
   return (
     <div>
@@ -86,7 +87,7 @@ export default function Home({
       <ClientsSection />
       <TestimonialsSection />
       <BlogSection />
-      <ContactSection />
+      <ContactSection data={contactPage} />
     </div>
   );
 }
@@ -147,6 +148,11 @@ export async function getServerSideProps() {
     industryItems = itemRows || [];
   }
 
+  const { data: contactPage } = await supabaseServer
+    .from("contact_page")
+    .select("*")
+    .single();
+
   return {
     props: {
       meta: homeData || null,
@@ -156,6 +162,7 @@ export async function getServerSideProps() {
       whyChoosePoints,
       industrySection: industrySection || null,
       industryItems,
+      contactPage: contactPage || null,
     },
   };
 }

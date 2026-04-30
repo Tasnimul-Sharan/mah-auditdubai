@@ -11,7 +11,14 @@ import TestimonialsSection from "@/components/home/TestimonialsSection";
 import { supabaseServer } from "@/lib/supabaseServer";
 import TeamSection from "@/components/TeamSection";
 
-export default function AboutPage({ data, about, teamSection, teamMembers, whyUs }) {
+export default function AboutPage({
+  data,
+  about,
+  teamSection,
+  teamMembers,
+  whyUs,
+  premiumCTA,
+}) {
   return (
     <div className="w-full relative">
       <Head>
@@ -74,11 +81,10 @@ export default function AboutPage({ data, about, teamSection, teamMembers, whyUs
       <TeamSection section={teamSection} members={teamMembers} />
       <TestimonialsSection />
       <FAQ />
-      <PremiumCTA />
+      <PremiumCTA data={premiumCTA} />
     </div>
   );
 }
-
 
 export async function getServerSideProps() {
   const { data: pageData } = await supabaseServer
@@ -101,15 +107,20 @@ export async function getServerSideProps() {
     .select("*")
     .order("created_at", { ascending: true });
 
-    const { data: whyUs } = await supabaseServer
-      .from("why_us")
-      .select("*")
-      .single();
-  
+  const { data: whyUs } = await supabaseServer
+    .from("why_us")
+    .select("*")
+    .single();
+  const { data: premiumCTA } = await supabaseServer
+    .from("premium_cta")
+    .select("*")
+    .single();
+
   return {
     props: {
       data: pageData || null,
       about: aboutData || null,
+      premiumCTA: premiumCTA || null,
       teamSection: teamSection || null,
       teamMembers: teamMembers || [],
       whyUs: whyUs || null,

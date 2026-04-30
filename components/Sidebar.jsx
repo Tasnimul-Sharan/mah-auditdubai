@@ -61,7 +61,7 @@ export default function Sidebar() {
       ],
     },
     {
-  title: "Pages",
+  title: "About",
   items: [
     { name: "About Page", href: "/dashboard/about", icon: <FaRegFileAlt /> },
   ],

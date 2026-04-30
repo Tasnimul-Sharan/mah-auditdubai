@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Plus, Trash2, Pencil, Save, Star, ImageIcon } from "lucide-react";
+import { Plus, Trash2, Pencil, Save, Star, ImageIcon, X } from "lucide-react";
 import AdminLayout from "@/components/AdminLayout";
 import { supabaseServer } from "@/lib/supabaseServer";
 import { useUpload } from "@/Hooks/useUpload";
+import StatusModal from "@/components/StatusModal";
+import ConfirmModal from "@/components/ConfirmModal";
 
 export default function WhyChooseAdmin() {
   const { uploadFile } = useUpload();
@@ -29,6 +31,23 @@ export default function WhyChooseAdmin() {
   const [pointText, setPointText] = useState("");
   const [preview, setPreview] = useState("");
   const [saving, setSaving] = useState(false);
+  const [savingPoint, setSavingPoint] = useState(false);
+
+  const [deleteTarget, setDeleteTarget] = useState({
+    type: null,
+    id: null,
+  });
+
+  const [modal, setModal] = useState({
+    show: false,
+    type: "success",
+    message: "",
+  });
+
+  const [confirmModal, setConfirmModal] = useState({
+    show: false,
+    loading: false,
+  });
 
   const inputClass =
     "w-full rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition-all duration-500 focus:border-primary focus:shadow-[0_0_0_4px_rgba(0,0,0,0.04)]";
@@ -36,11 +55,45 @@ export default function WhyChooseAdmin() {
   const cardClass =
     "rounded-[1.5rem] border border-gray-100 bg-white p-6 shadow-[0_18px_50px_rgba(0,0,0,0.05)] space-y-4";
 
+  const showModal = (type, message) => {
+    setModal({
+      show: true,
+      type,
+      message,
+    });
+  };
+
+  const closeModal = () => {
+    setModal({
+      show: false,
+      type: "success",
+      message: "",
+    });
+  };
+
+  const closeConfirmModal = () => {
+    setConfirmModal({
+      show: false,
+      loading: false,
+    });
+
+    setDeleteTarget({
+      type: null,
+      id: null,
+    });
+  };
+
   const fetchData = async () => {
-    const { data } = await supabaseServer
+    const { data, error } = await supabaseServer
       .from("why_choose_us")
       .select("*")
       .single();
+
+    if (error && error.code !== "PGRST116") {
+      console.error(error);
+      showModal("error", "Why Choose Us data fetch failed.");
+      return;
+    }
 
     if (data) {
       setSection(data);
@@ -56,10 +109,16 @@ export default function WhyChooseAdmin() {
         overlay_description: data.overlay_description || "",
       });
 
-      const { data: pts } = await supabaseServer
+      const { data: pts, error: ptsError } = await supabaseServer
         .from("why_choose_points")
         .select("*")
         .eq("why_id", data.id);
+
+      if (ptsError) {
+        console.error(ptsError);
+        showModal("error", "Feature points fetch failed.");
+        return;
+      }
 
       setPoints(pts || []);
     }
@@ -123,11 +182,12 @@ export default function WhyChooseAdmin() {
 
       setFile(null);
       setPreview("");
-      alert("Section saved successfully");
+
+      showModal("success", "Why Choose Us section saved successfully.");
       fetchData();
     } catch (err) {
       console.error(err);
-      alert("Save failed");
+      showModal("error", "Save failed. Please check your data and try again.");
     } finally {
       setSaving(false);
     }
@@ -141,12 +201,67 @@ export default function WhyChooseAdmin() {
     setPreview(URL.createObjectURL(selected));
   };
 
-  const deleteImage = async () => {
+  const requestDeleteImage = () => {
     const publicId = form.public_id || section?.public_id;
 
-    if (!publicId || !section?.id) return;
+    if (!publicId || !section?.id) {
+      showModal("error", "No image found to delete.");
+      return;
+    }
+
+    setDeleteTarget({
+      type: "image",
+      id: null,
+    });
+
+    setConfirmModal({
+      show: true,
+      loading: false,
+    });
+  };
+
+  const requestDeletePoint = (id) => {
+    setDeleteTarget({
+      type: "point",
+      id,
+    });
+
+    setConfirmModal({
+      show: true,
+      loading: false,
+    });
+  };
+
+  const confirmDelete = async () => {
+    if (deleteTarget.type === "image") {
+      await confirmDeleteImage();
+      return;
+    }
+
+    if (deleteTarget.type === "point") {
+      await confirmDeletePoint();
+      return;
+    }
+
+    showModal("error", "No delete action selected.");
+    closeConfirmModal();
+  };
+
+  const confirmDeleteImage = async () => {
+    const publicId = form.public_id || section?.public_id;
+
+    if (!publicId || !section?.id) {
+      showModal("error", "No image found to delete.");
+      closeConfirmModal();
+      return;
+    }
 
     try {
+      setConfirmModal({
+        show: true,
+        loading: true,
+      });
+
       await fetch("/api/delete-image", {
         method: "POST",
         headers: {
@@ -155,10 +270,15 @@ export default function WhyChooseAdmin() {
         body: JSON.stringify({ public_id: publicId }),
       });
 
-      await supabaseServer
+      const { error } = await supabaseServer
         .from("why_choose_us")
-        .update({ image: null, public_id: null })
+        .update({
+          image: null,
+          public_id: null,
+        })
         .eq("id", section.id);
+
+      if (error) throw error;
 
       setForm({
         ...form,
@@ -168,263 +288,382 @@ export default function WhyChooseAdmin() {
 
       setPreview("");
       setFile(null);
+
+      closeConfirmModal();
+      showModal("success", "Image deleted successfully.");
       fetchData();
     } catch (err) {
       console.error(err);
-      alert("Image delete failed");
+      closeConfirmModal();
+      showModal("error", "Image delete failed. Please try again.");
     }
   };
 
   const addPoint = async () => {
-    if (!pointText.trim()) return alert("Point is required");
+    if (!pointText.trim()) {
+      showModal("error", "Point is required.");
+      return;
+    }
 
     if (!section?.id) {
-      alert("Please save section first");
+      showModal("error", "Please save section first.");
       return;
     }
 
-    const { error } = await supabaseServer.from("why_choose_points").insert([
-      {
-        why_id: section.id,
-        point: pointText,
-      },
-    ]);
+    try {
+      setSavingPoint(true);
 
-    if (error) {
-      console.error(error);
-      alert("Point add failed");
-      return;
+      const { error } = await supabaseServer.from("why_choose_points").insert([
+        {
+          why_id: section.id,
+          point: pointText,
+        },
+      ]);
+
+      if (error) throw error;
+
+      setPointText("");
+      showModal("success", "Point added successfully.");
+      fetchData();
+    } catch (err) {
+      console.error(err);
+      showModal("error", "Point add failed. Please try again.");
+    } finally {
+      setSavingPoint(false);
     }
-
-    setPointText("");
-    fetchData();
   };
 
-  const deletePoint = async (id) => {
-    if (!confirm("Delete this point?")) return;
-
-    const { error } = await supabaseServer
-      .from("why_choose_points")
-      .delete()
-      .eq("id", id);
-
-    if (error) {
-      console.error(error);
-      alert("Delete failed");
+  const confirmDeletePoint = async () => {
+    if (!deleteTarget.id) {
+      showModal("error", "No point selected to delete.");
+      closeConfirmModal();
       return;
     }
 
-    fetchData();
+    try {
+      setConfirmModal({
+        show: true,
+        loading: true,
+      });
+
+      const { error } = await supabaseServer
+        .from("why_choose_points")
+        .delete()
+        .eq("id", deleteTarget.id);
+
+      if (error) throw error;
+
+      if (editingPoint === deleteTarget.id) {
+        setEditingPoint(null);
+        setPointText("");
+      }
+
+      closeConfirmModal();
+      showModal("success", "Point deleted successfully.");
+      fetchData();
+    } catch (err) {
+      console.error(err);
+      closeConfirmModal();
+      showModal("error", "Point delete failed. Please try again.");
+    }
   };
 
   const updatePoint = async (id) => {
-    if (!pointText.trim()) return alert("Point is required");
-
-    const { error } = await supabaseServer
-      .from("why_choose_points")
-      .update({ point: pointText })
-      .eq("id", id);
-
-    if (error) {
-      console.error(error);
-      alert("Update failed");
+    if (!pointText.trim()) {
+      showModal("error", "Point is required.");
       return;
     }
 
-    setEditingPoint(null);
-    setPointText("");
-    fetchData();
+    try {
+      setSavingPoint(true);
+
+      const { error } = await supabaseServer
+        .from("why_choose_points")
+        .update({ point: pointText })
+        .eq("id", id);
+
+      if (error) throw error;
+
+      setEditingPoint(null);
+      setPointText("");
+
+      showModal("success", "Point updated successfully.");
+      fetchData();
+    } catch (err) {
+      console.error(err);
+      showModal("error", "Point update failed. Please try again.");
+    } finally {
+      setSavingPoint(false);
+    }
   };
 
-  return (
-    <div className="max-w-6xl mx-auto space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
-          <Star className="text-primary" size={28} />
-          Why Choose Us
-        </h1>
+  const cancelEditPoint = () => {
+    setEditingPoint(null);
+    setPointText("");
+  };
 
-        <p className="text-gray-500 mt-1">
-          Manage section content, image, CTA button and feature points.
-        </p>
-      </div>
+  const startEditPoint = (item) => {
+    setEditingPoint(item.id);
+    setPointText(item.point || "");
+  };
 
-      <div className={cardClass}>
-        <h2 className="flex items-center gap-2 text-xl font-bold text-gray-900">
-          <ImageIcon size={20} className="text-primary" />
-          Section Content
-        </h2>
-
-        <input
-          placeholder="Title"
-          value={form.title || ""}
-          onChange={(e) => setForm({ ...form, title: e.target.value })}
-          className={inputClass}
-        />
-
-        <input
-          placeholder="Subtitle"
-          value={form.subtitle || ""}
-          onChange={(e) => setForm({ ...form, subtitle: e.target.value })}
-          className={inputClass}
-        />
-
-        <textarea
-          placeholder="Description"
-          value={form.description || ""}
-          onChange={(e) => setForm({ ...form, description: e.target.value })}
-          rows={4}
-          className={inputClass}
-        />
-
-        <input
-          placeholder="Overlay Title"
-          value={form.overlay_title || ""}
-          onChange={(e) => setForm({ ...form, overlay_title: e.target.value })}
-          className={inputClass}
-        />
-
-        <textarea
-          placeholder="Overlay Description"
-          value={form.overlay_description || ""}
-          onChange={(e) =>
-            setForm({ ...form, overlay_description: e.target.value })
+  const confirmContent =
+    deleteTarget.type === "image"
+      ? {
+          title: "Delete Image?",
+          message:
+            "Are you sure you want to delete this section image? This action cannot be undone.",
+          confirmText: "Delete Image",
+        }
+      : deleteTarget.type === "point"
+        ? {
+            title: "Delete Point?",
+            message:
+              "Are you sure you want to delete this point? This action cannot be undone.",
+            confirmText: "Delete Point",
           }
-          rows={3}
-          className={inputClass}
-        />
+        : {
+            title: "Are you sure?",
+            message: "This action cannot be undone.",
+            confirmText: "Delete",
+          };
 
-        <div className="grid gap-4 md:grid-cols-2">
-          <input
-            placeholder="Button Text"
-            value={form.button_text || ""}
-            onChange={(e) => setForm({ ...form, button_text: e.target.value })}
-            className={inputClass}
-          />
+  return (
+    <>
+      <div className="max-w-6xl mx-auto space-y-8">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
+            <Star className="text-primary" size={28} />
+            Why Choose Us
+          </h1>
 
-          <input
-            placeholder="Button Link"
-            value={form.button_link || ""}
-            onChange={(e) => setForm({ ...form, button_link: e.target.value })}
-            className={inputClass}
-          />
+          <p className="text-gray-500 mt-1">
+            Manage section content, image, CTA button and feature points.
+          </p>
         </div>
 
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleFileChange}
-          className={inputClass}
-        />
+        <div className={cardClass}>
+          <h2 className="flex items-center gap-2 text-xl font-bold text-gray-900">
+            <ImageIcon size={20} className="text-primary" />
+            Section Content
+          </h2>
 
-        {(preview || form.image) && (
-          <div className="relative w-fit rounded-2xl border bg-gray-50 p-3">
-            <img
-              src={preview || form.image}
-              className="w-72 h-44 object-cover rounded-xl"
-              alt=""
+          <input
+            placeholder="Title"
+            value={form.title || ""}
+            onChange={(e) => setForm({ ...form, title: e.target.value })}
+            className={inputClass}
+          />
+
+          <input
+            placeholder="Subtitle"
+            value={form.subtitle || ""}
+            onChange={(e) => setForm({ ...form, subtitle: e.target.value })}
+            className={inputClass}
+          />
+
+          <textarea
+            placeholder="Description"
+            value={form.description || ""}
+            onChange={(e) => setForm({ ...form, description: e.target.value })}
+            rows={4}
+            className={inputClass}
+          />
+
+          <input
+            placeholder="Overlay Title"
+            value={form.overlay_title || ""}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                overlay_title: e.target.value,
+              })
+            }
+            className={inputClass}
+          />
+
+          <textarea
+            placeholder="Overlay Description"
+            value={form.overlay_description || ""}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                overlay_description: e.target.value,
+              })
+            }
+            rows={3}
+            className={inputClass}
+          />
+
+          <div className="grid gap-4 md:grid-cols-2">
+            <input
+              placeholder="Button Text"
+              value={form.button_text || ""}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  button_text: e.target.value,
+                })
+              }
+              className={inputClass}
             />
 
-            {!preview && form.image && (
+            <input
+              placeholder="Button Link"
+              value={form.button_link || ""}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  button_link: e.target.value,
+                })
+              }
+              className={inputClass}
+            />
+          </div>
+
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            className={inputClass}
+          />
+
+          {(preview || form.image) && (
+            <div className="relative w-fit rounded-2xl border bg-gray-50 p-3">
+              <img
+                src={preview || form.image}
+                className="w-72 h-44 object-cover rounded-xl"
+                alt="Why Choose Us"
+              />
+
+              {!preview && form.image && (
+                <button
+                  type="button"
+                  onClick={requestDeleteImage}
+                  className="absolute top-4 right-4 bg-red-500 text-white p-2 rounded-lg hover:bg-red-600 transition-all duration-500"
+                >
+                  <Trash2 size={14} />
+                </button>
+              )}
+            </div>
+          )}
+
+          <button
+            type="button"
+            onClick={handleSave}
+            disabled={saving}
+            className="flex w-full items-center justify-center gap-2 rounded-2xl bg-primary px-6 py-4 font-semibold text-white shadow-[0_20px_50px_rgba(0,0,0,0.16)] transition-all duration-500 hover:-translate-y-1 hover:bg-secondary disabled:opacity-60"
+          >
+            <Save size={18} />
+            {saving ? "Saving..." : "Save Section"}
+          </button>
+        </div>
+
+        <div className={cardClass}>
+          <h2 className="text-xl font-bold text-gray-900">Feature Points</h2>
+
+          <div className="grid gap-3 md:grid-cols-[1fr_auto]">
+            <input
+              value={pointText}
+              onChange={(e) => setPointText(e.target.value)}
+              placeholder={editingPoint ? "Update point" : "Add point"}
+              className={inputClass}
+            />
+
+            {editingPoint ? (
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => updatePoint(editingPoint)}
+                  disabled={savingPoint}
+                  className="flex items-center justify-center gap-2 rounded-2xl bg-blue-500 px-5 py-3 text-white transition-all duration-500 hover:bg-blue-600 disabled:opacity-60"
+                >
+                  <Save size={16} />
+                  {savingPoint ? "Updating..." : "Update"}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={cancelEditPoint}
+                  className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gray-200 text-gray-700 transition-all duration-500 hover:bg-gray-300"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+            ) : (
               <button
                 type="button"
-                onClick={deleteImage}
-                className="absolute top-4 right-4 bg-red-500 text-white p-2 rounded-lg hover:bg-red-600 transition-all duration-500"
+                onClick={addPoint}
+                disabled={savingPoint}
+                className="flex items-center justify-center gap-2 rounded-2xl bg-primary px-5 py-3 text-white transition-all duration-500 hover:bg-secondary disabled:opacity-60"
               >
-                <Trash2 size={14} />
+                <Plus size={16} />
+                {savingPoint ? "Adding..." : "Add"}
               </button>
             )}
           </div>
-        )}
 
-        <button
-          type="button"
-          onClick={handleSave}
-          disabled={saving}
-          className="flex w-full items-center justify-center gap-2 rounded-2xl bg-primary px-6 py-4 font-semibold text-white shadow-[0_20px_50px_rgba(0,0,0,0.16)] transition-all duration-500 hover:-translate-y-1 hover:bg-secondary disabled:opacity-60"
-        >
-          <Save size={18} />
-          {saving ? "Saving..." : "Save Section"}
-        </button>
-      </div>
+          <div className="space-y-3">
+            {points.length === 0 ? (
+              <p className="rounded-2xl bg-gray-50 p-6 text-center text-gray-400">
+                No points added yet.
+              </p>
+            ) : (
+              points.map((item, index) => (
+                <div
+                  key={item.id}
+                  className="flex items-center justify-between gap-4 rounded-2xl border bg-gray-50 p-4 transition-all duration-500 hover:bg-white hover:shadow-sm"
+                >
+                  <div className="flex items-start gap-3">
+                    <span className="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary text-xs font-bold">
+                      {index + 1}
+                    </span>
 
-      <div className={cardClass}>
-        <h2 className="text-xl font-bold text-gray-900">Feature Points</h2>
+                    <p className="text-gray-700">{item.point}</p>
+                  </div>
 
-        <div className="grid gap-3 md:grid-cols-[1fr_auto]">
-          <input
-            value={pointText}
-            onChange={(e) => setPointText(e.target.value)}
-            placeholder={editingPoint ? "Update point" : "Add point"}
-            className={inputClass}
-          />
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => startEditPoint(item)}
+                      className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100 text-blue-600 transition-all duration-500 hover:bg-blue-500 hover:text-white"
+                    >
+                      <Pencil size={15} />
+                    </button>
 
-          {editingPoint ? (
-            <button
-              type="button"
-              onClick={() => updatePoint(editingPoint)}
-              className="flex items-center justify-center gap-2 rounded-2xl bg-blue-500 px-5 py-3 text-white transition-all duration-500 hover:bg-blue-600"
-            >
-              <Save size={16} />
-              Update
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={addPoint}
-              className="flex items-center justify-center gap-2 rounded-2xl bg-primary px-5 py-3 text-white transition-all duration-500 hover:bg-secondary"
-            >
-              <Plus size={16} />
-              Add
-            </button>
-          )}
-        </div>
-
-        <div className="space-y-3">
-          {points.length === 0 ? (
-            <p className="rounded-2xl bg-gray-50 p-6 text-center text-gray-400">
-              No points added yet.
-            </p>
-          ) : (
-            points.map((item, index) => (
-              <div
-                key={item.id}
-                className="flex items-center justify-between gap-4 rounded-2xl border bg-gray-50 p-4 transition-all duration-500 hover:bg-white hover:shadow-sm"
-              >
-                <div className="flex items-start gap-3">
-                  <span className="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary text-xs font-bold">
-                    {index + 1}
-                  </span>
-
-                  <p className="text-gray-700">{item.point}</p>
+                    <button
+                      type="button"
+                      onClick={() => requestDeletePoint(item.id)}
+                      className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-100 text-red-600 transition-all duration-500 hover:bg-red-500 hover:text-white"
+                    >
+                      <Trash2 size={15} />
+                    </button>
+                  </div>
                 </div>
-
-                <div className="flex gap-2">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setEditingPoint(item.id);
-                      setPointText(item.point);
-                    }}
-                    className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100 text-blue-600 transition-all duration-500 hover:bg-blue-500 hover:text-white"
-                  >
-                    <Pencil size={15} />
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => deletePoint(item.id)}
-                    className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-100 text-red-600 transition-all duration-500 hover:bg-red-500 hover:text-white"
-                  >
-                    <Trash2 size={15} />
-                  </button>
-                </div>
-              </div>
-            ))
-          )}
+              ))
+            )}
+          </div>
         </div>
       </div>
-    </div>
+
+      <ConfirmModal
+        show={confirmModal.show}
+        title={confirmContent.title}
+        message={confirmContent.message}
+        confirmText={confirmContent.confirmText}
+        cancelText="Cancel"
+        loading={confirmModal.loading}
+        onCancel={closeConfirmModal}
+        onConfirm={confirmDelete}
+      />
+
+      <StatusModal
+        show={modal.show}
+        type={modal.type}
+        message={modal.message}
+        onClose={closeModal}
+      />
+    </>
   );
 }
 

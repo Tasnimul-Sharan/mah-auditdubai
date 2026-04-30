@@ -3,15 +3,62 @@
 import AdminLayout from "@/components/AdminLayout";
 import { useEffect, useState } from "react";
 import { supabaseServer } from "@/lib/supabaseServer";
-import { Pencil, Trash2, Plus } from "lucide-react";
+import { Pencil, Trash2, Plus, X } from "lucide-react";
+import StatusModal from "@/components/StatusModal";
+import ConfirmModal from "@/components/ConfirmModal";
 
 function TypesPage() {
   const [name, setName] = useState("");
   const [types, setTypes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
   const [editId, setEditId] = useState(null);
   const [editName, setEditName] = useState("");
+
+  const [deleteId, setDeleteId] = useState(null);
+
+  const [modal, setModal] = useState({
+    show: false,
+    type: "success",
+    message: "",
+  });
+
+  const [confirmModal, setConfirmModal] = useState({
+    show: false,
+    loading: false,
+  });
+
+  const inputClass =
+    "w-full rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition-all duration-500 focus:border-primary focus:shadow-[0_0_0_4px_rgba(0,0,0,0.04)]";
+
+  const cardClass =
+    "rounded-[1.5rem] border border-gray-100 bg-white p-6 shadow-[0_18px_50px_rgba(0,0,0,0.05)]";
+
+  const showModal = (type, message) => {
+    setModal({
+      show: true,
+      type,
+      message,
+    });
+  };
+
+  const closeModal = () => {
+    setModal({
+      show: false,
+      type: "success",
+      message: "",
+    });
+  };
+
+  const closeConfirmModal = () => {
+    setConfirmModal({
+      show: false,
+      loading: false,
+    });
+
+    setDeleteId(null);
+  };
 
   useEffect(() => {
     fetchTypes();
@@ -19,294 +66,282 @@ function TypesPage() {
 
   const fetchTypes = async () => {
     setLoading(true);
-    const { data } = await supabaseServer
+
+    const { data, error } = await supabaseServer
       .from("types")
       .select("*")
       .order("id", { ascending: true });
+
+    if (error) {
+      console.error(error);
+      showModal("error", "Types fetch failed. Please try again.");
+      setLoading(false);
+      return;
+    }
 
     setTypes(data || []);
     setLoading(false);
   };
 
-  const generateSlug = (text) => text.toLowerCase().trim().replace(/\s+/g, "-");
+  const generateSlug = (text) =>
+    text
+      .toLowerCase()
+      .trim()
+      .replace(/[^\w\s-]/g, "")
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-");
+
+  const resetEdit = () => {
+    setEditId(null);
+    setEditName("");
+  };
 
   const handleSave = async () => {
-    if (!name.trim() && !editName.trim()) {
-      alert("Type name required");
+    const currentName = editId ? editName : name;
+
+    if (!currentName.trim()) {
+      showModal("error", "Type name is required.");
       return;
     }
 
-    // UPDATE MODE
-    if (editId) {
-      const { error } = await supabaseServer
-        .from("types")
-        .update({
-          name: editName,
-          slug: generateSlug(editName),
-        })
-        .eq("id", editId);
+    try {
+      setSaving(true);
 
-      if (error) {
-        alert(error.message);
+      if (editId) {
+        const { error } = await supabaseServer
+          .from("types")
+          .update({
+            name: editName,
+            slug: generateSlug(editName),
+          })
+          .eq("id", editId);
+
+        if (error) throw error;
+
+        resetEdit();
+        showModal("success", "Type updated successfully.");
+        fetchTypes();
         return;
       }
 
-      setEditId(null);
-      setEditName("");
+      const { error } = await supabaseServer.from("types").insert([
+        {
+          name,
+          slug: generateSlug(name),
+        },
+      ]);
+
+      if (error) throw error;
+
+      setName("");
+      showModal("success", "Type added successfully.");
       fetchTypes();
-      return;
+    } catch (err) {
+      console.error(err);
+      showModal("error", err.message || "Save failed. Please try again.");
+    } finally {
+      setSaving(false);
     }
-
-    // ADD MODE
-    const { error } = await supabaseServer.from("types").insert([
-      {
-        name,
-        slug: generateSlug(name),
-      },
-    ]);
-
-    if (error) {
-      alert(error.message);
-      return;
-    }
-
-    setName("");
-    fetchTypes();
   };
 
-  const handleDelete = async (id) => {
-    if (!confirm("Delete this type?")) return;
+  const handleEdit = (type) => {
+    setEditId(type.id);
+    setEditName(type.name || "");
 
-    await supabaseServer.from("types").delete().eq("id", id);
-    fetchTypes();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
+  const requestDelete = (id) => {
+    setDeleteId(id);
+
+    setConfirmModal({
+      show: true,
+      loading: false,
+    });
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteId) {
+      showModal("error", "No type selected to delete.");
+      closeConfirmModal();
+      return;
+    }
+
+    try {
+      setConfirmModal({
+        show: true,
+        loading: true,
+      });
+
+      const { error } = await supabaseServer
+        .from("types")
+        .delete()
+        .eq("id", deleteId);
+
+      if (error) throw error;
+
+      if (editId === deleteId) {
+        resetEdit();
+      }
+
+      closeConfirmModal();
+      showModal("success", "Type deleted successfully.");
+      fetchTypes();
+    } catch (err) {
+      console.error(err);
+      closeConfirmModal();
+      showModal("error", err.message || "Delete failed. Please try again.");
+    }
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
-      <h1 className="text-2xl font-bold">Manage Types</h1>
+    <>
+      <div className="mx-auto max-w-5xl space-y-8">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Manage Types</h1>
+          <p className="mt-1 text-gray-500">
+            Add, update and manage content type categories.
+          </p>
+        </div>
 
-      {/* Add / Update Box */}
-      <div className="bg-white p-4 rounded-xl border flex gap-3">
-        <input
-          type="text"
-          placeholder="Enter type name..."
-          className="border w-full px-4 py-2 rounded-lg focus:ring-2 focus:ring-black outline-none"
-          value={editId ? editName : name}
-          onChange={(e) =>
-            editId ? setEditName(e.target.value) : setName(e.target.value)
-          }
-        />
+        <div className={`${cardClass} space-y-4`}>
+          <h2 className="text-xl font-bold text-gray-900">
+            {editId ? "Update Type" : "Add New Type"}
+          </h2>
 
-        <button
-          onClick={handleSave}
-          className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg"
-        >
-          <Plus size={16} />
-          {editId ? "Update" : "Add"}
-        </button>
+          <div className="grid gap-3 md:grid-cols-[1fr_auto_auto]">
+            <input
+              type="text"
+              placeholder="Enter type name..."
+              value={editId ? editName : name}
+              onChange={(e) =>
+                editId ? setEditName(e.target.value) : setName(e.target.value)
+              }
+              className={inputClass}
+            />
 
-        {editId && (
-          <button
-            onClick={() => {
-              setEditId(null);
-              setEditName("");
-            }}
-            className="px-4 py-2 bg-gray-300 rounded-lg"
-          >
-            Cancel
-          </button>
-        )}
-      </div>
+            <button
+              type="button"
+              onClick={handleSave}
+              disabled={saving}
+              className="flex items-center justify-center gap-2 rounded-2xl bg-primary px-6 py-3 font-semibold text-white transition-all duration-500 hover:bg-secondary disabled:opacity-60"
+            >
+              <Plus size={16} />
+              {saving ? "Saving..." : editId ? "Update" : "Add"}
+            </button>
 
-      {/* Table */}
-      <div className="bg-white rounded-xl border overflow-hidden">
-        {loading ? (
-          <div className="p-6 text-center text-gray-500">Loading types...</div>
-        ) : (
-          <table className="w-full text-sm border-collapse">
-            <thead className="bg-primary text-white">
-              <tr>
-                <th className="p-3 text-left w-16 border">S/L</th>
-                <th className="p-3 text-left border">Name</th>
-                <th className="p-3 text-left border">Slug</th>
-                <th className="p-3 text-center w-32 border">Action</th>
-              </tr>
-            </thead>
+            {editId && (
+              <button
+                type="button"
+                onClick={resetEdit}
+                className="flex items-center justify-center gap-2 rounded-2xl bg-gray-200 px-6 py-3 font-semibold text-gray-700 transition-all duration-500 hover:bg-gray-300"
+              >
+                <X size={16} />
+                Cancel
+              </button>
+            )}
+          </div>
+        </div>
 
-            <tbody>
-              {types.map((type, i) => (
-                <tr
-                  key={type.id}
-                  className="even:bg-gray-50 hover:bg-gray-100 transition"
-                >
-                  <td className="p-3 border">{i + 1}</td>
-                  <td className="p-3 border font-medium">{type.name}</td>
-                  <td className="p-3 border text-gray-500">{type.slug}</td>
-                  <td className="p-3 border">
-                    <div className="flex justify-center gap-2">
-                      <button
-                        onClick={() => {
-                          setEditId(type.id);
-                          setEditName(type.name);
-                        }}
-                        className="bg-blue-100 p-2 rounded hover:bg-blue-200"
-                      >
-                        <Pencil size={14} className="text-blue-600" />
-                      </button>
-
-                      <button
-                        onClick={() => handleDelete(type.id)}
-                        className="bg-red-100 p-2 rounded hover:bg-red-200"
-                      >
-                        <Trash2 size={14} className="text-red-600" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-
-              {types.length === 0 && (
+        <div className="overflow-hidden rounded-[1.5rem] border border-gray-100 bg-white shadow-[0_18px_50px_rgba(0,0,0,0.05)]">
+          {loading ? (
+            <div className="p-8 text-center text-gray-500">
+              Loading types...
+            </div>
+          ) : (
+            <table className="w-full border-collapse text-sm">
+              <thead className="bg-primary text-white">
                 <tr>
-                  <td colSpan="4" className="p-6 text-center text-gray-400">
-                    No types found
-                  </td>
+                  <th className="w-16 border border-primary/20 p-4 text-left">
+                    S/L
+                  </th>
+                  <th className="border border-primary/20 p-4 text-left">
+                    Name
+                  </th>
+                  <th className="border border-primary/20 p-4 text-left">
+                    Slug
+                  </th>
+                  <th className="w-36 border border-primary/20 p-4 text-center">
+                    Action
+                  </th>
                 </tr>
-              )}
-            </tbody>
-          </table>
-        )}
+              </thead>
+
+              <tbody>
+                {types.length > 0 ? (
+                  types.map((type, i) => (
+                    <tr
+                      key={type.id}
+                      className="transition even:bg-gray-50 hover:bg-primary/5"
+                    >
+                      <td className="border border-gray-100 p-4">{i + 1}</td>
+
+                      <td className="border border-gray-100 p-4 font-semibold text-gray-900">
+                        {type.name}
+                      </td>
+
+                      <td className="border border-gray-100 p-4 text-gray-500">
+                        {type.slug}
+                      </td>
+
+                      <td className="border border-gray-100 p-4">
+                        <div className="flex justify-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => handleEdit(type)}
+                            className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100 text-blue-600 transition-all duration-500 hover:bg-blue-500 hover:text-white"
+                          >
+                            <Pencil size={14} />
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => requestDelete(type.id)}
+                            className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-100 text-red-600 transition-all duration-500 hover:bg-red-500 hover:text-white"
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="4" className="p-8 text-center text-gray-400">
+                      No types found
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          )}
+        </div>
       </div>
-    </div>
+
+      <ConfirmModal
+        show={confirmModal.show}
+        title="Delete Type?"
+        message="Are you sure you want to delete this type? This action cannot be undone."
+        confirmText="Delete Type"
+        cancelText="Cancel"
+        loading={confirmModal.loading}
+        onCancel={closeConfirmModal}
+        onConfirm={confirmDelete}
+      />
+
+      <StatusModal
+        show={modal.show}
+        type={modal.type}
+        message={modal.message}
+        onClose={closeModal}
+      />
+    </>
   );
 }
 
 TypesPage.getLayout = (page) => <AdminLayout>{page}</AdminLayout>;
 
 export default TypesPage;
-
-// "use client";
-
-// import { useEffect, useState } from "react";
-// import { supabaseServer } from "@/lib/supabaseServer";
-// import AdminLayout from "@/components/AdminLayout";
-
-// export default function PageEditor({ slug }) {
-//   const [sections, setSections] = useState([]);
-//   const [types, setTypes] = useState([]);
-//   const [typeId, setTypeId] = useState("");
-//   const [content, setContent] = useState("");
-
-//   // FETCH TYPES
-//   const fetchTypes = async () => {
-//     const { data } = await supabaseServer.from("types").select("*");
-//     setTypes(data || []);
-//   };
-
-//   // FETCH SECTIONS
-//   const fetchSections = async () => {
-//     const { data } = await supabaseServer
-//       .from("sections")
-//       .select("*, types(name, slug)")
-//       .eq("page_slug", slug)
-//       .order("position");
-
-//     setSections(data || []);
-//   };
-
-//   useEffect(() => {
-//     if (slug) {
-//       fetchSections();
-//       fetchTypes();
-//     }
-//   }, [slug]);
-
-//   // ADD SECTION
-//   const addSection = async () => {
-//     if (!typeId) return alert("Select type");
-
-//     const { error } = await supabaseServer.from("sections").insert([
-//       {
-//         page_slug: slug,
-//         type_id: typeId,
-//         content: { text: content },
-//         position: sections.length + 1,
-//       },
-//     ]);
-
-//     if (error) {
-//       alert(error.message);
-//       return;
-//     }
-
-//     setTypeId("");
-//     setContent("");
-//     fetchSections();
-//   };
-
-//   // DELETE
-//   const deleteSection = async (id) => {
-//     await supabaseServer.from("sections").delete().eq("id", id);
-//     fetchSections();
-//   };
-
-//   return (
-//     <div className="max-w-5xl mx-auto space-y-6">
-//       <h1 className="text-xl font-bold">Manage Sections: {slug}</h1>
-
-//       {/* ADD */}
-//       <div className="flex gap-3">
-//         <select
-//           value={typeId}
-//           onChange={(e) => setTypeId(e.target.value)}
-//           className="border p-2"
-//         >
-//           <option value="">Select Type</option>
-//           {types.map((t) => (
-//             <option key={t.id} value={t.id}>
-//               {t.name}
-//             </option>
-//           ))}
-//         </select>
-
-//         <input
-//           value={content}
-//           onChange={(e) => setContent(e.target.value)}
-//           placeholder="Content text"
-//           className="border p-2 w-full"
-//         />
-
-//         <button onClick={addSection} className="bg-primary text-white px-4">
-//           Add
-//         </button>
-//       </div>
-
-//       {/* LIST */}
-//       {sections.map((sec) => (
-//         <div key={sec.id} className="border p-4 flex justify-between">
-//           <div>
-//             <p className="font-bold">{sec.types?.name}</p>
-//             <p className="text-gray-500">{sec.content?.text}</p>
-//           </div>
-
-//           <button
-//             onClick={() => deleteSection(sec.id)}
-//             className="text-red-500"
-//           >
-//             Delete
-//           </button>
-//         </div>
-//       ))}
-//     </div>
-//   );
-// }
-
-// // SSR
-// export async function getServerSideProps({ params }) {
-//   return {
-//     props: {
-//       slug: params.slug,
-//     },
-//   };
-// }
-
-// PageEditor.getLayout = (page) => <AdminLayout>{page}</AdminLayout>;

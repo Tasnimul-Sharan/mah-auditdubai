@@ -15,6 +15,8 @@ import {
   Briefcase,
   Copyright,
 } from "lucide-react";
+import StatusModal from "@/components/StatusModal";
+import ConfirmModal from "@/components/ConfirmModal";
 
 export default function FooterAdmin() {
   const { uploadFile } = useUpload();
@@ -35,18 +37,70 @@ export default function FooterAdmin() {
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
 
+  const [deleteTarget, setDeleteTarget] = useState({
+    type: null,
+    index: null,
+  });
+
+  const [modal, setModal] = useState({
+    show: false,
+    type: "success",
+    message: "",
+  });
+
+  const [confirmModal, setConfirmModal] = useState({
+    show: false,
+    loading: false,
+  });
+
   const inputClass =
     "w-full rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition-all duration-500 focus:border-primary focus:shadow-[0_0_0_4px_rgba(0,0,0,0.04)]";
 
   const cardClass =
     "rounded-[1.5rem] border border-gray-100 bg-white p-6 shadow-[0_18px_50px_rgba(0,0,0,0.05)] space-y-4";
 
+  const showModal = (type, message) => {
+    setModal({
+      show: true,
+      type,
+      message,
+    });
+  };
+
+  const closeModal = () => {
+    setModal({
+      show: false,
+      type: "success",
+      message: "",
+    });
+  };
+
+  const closeConfirmModal = () => {
+    setConfirmModal({
+      show: false,
+      loading: false,
+    });
+
+    setDeleteTarget({
+      type: null,
+      index: null,
+    });
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
 
   const fetchData = async () => {
-    const { data } = await supabaseServer.from("footer").select("*").single();
+    const { data, error } = await supabaseServer
+      .from("footer")
+      .select("*")
+      .single();
+
+    if (error) {
+      console.error(error);
+      return;
+    }
 
     if (data) {
       setForm({
@@ -56,6 +110,7 @@ export default function FooterAdmin() {
         services: data.services || [],
         copyright: data.copyright || "",
       });
+
       setId(data.id);
     }
   };
@@ -72,12 +127,87 @@ export default function FooterAdmin() {
         ...form,
         logo: url,
       });
+
+      showModal("success", "Logo uploaded successfully. Please save footer.");
     } catch (err) {
       console.error(err);
-      alert("Logo upload failed");
+      showModal("error", "Logo upload failed. Please try again.");
     } finally {
       setUploading(false);
     }
+  };
+
+  const requestDelete = (type, index = null) => {
+    setDeleteTarget({
+      type,
+      index,
+    });
+
+    setConfirmModal({
+      show: true,
+      loading: false,
+    });
+  };
+
+  const confirmDelete = () => {
+    const { type, index } = deleteTarget;
+
+    if (!type) {
+      showModal("error", "No delete action selected.");
+      closeConfirmModal();
+      return;
+    }
+
+    setConfirmModal({
+      show: true,
+      loading: true,
+    });
+
+    if (type === "logo") {
+      setForm({
+        ...form,
+        logo: "",
+      });
+
+      closeConfirmModal();
+      showModal("success", "Logo removed successfully. Please save footer.");
+      return;
+    }
+
+    if (type === "social") {
+      setForm({
+        ...form,
+        social_links: form.social_links.filter((_, i) => i !== index),
+      });
+
+      closeConfirmModal();
+      showModal("success", "Social link removed successfully.");
+      return;
+    }
+
+    if (type === "quick") {
+      setForm({
+        ...form,
+        quick_links: form.quick_links.filter((_, i) => i !== index),
+      });
+
+      closeConfirmModal();
+      showModal("success", "Quick link removed successfully.");
+      return;
+    }
+
+    if (type === "service") {
+      setForm({
+        ...form,
+        services: form.services.filter((_, i) => i !== index),
+      });
+
+      closeConfirmModal();
+      showModal("success", "Service removed successfully.");
+      return;
+    }
+
+    closeConfirmModal();
   };
 
   const addSocial = () => {
@@ -93,13 +223,6 @@ export default function FooterAdmin() {
     setForm({ ...form, social_links: updated });
   };
 
-  const deleteSocial = (i) => {
-    setForm({
-      ...form,
-      social_links: form.social_links.filter((_, index) => index !== i),
-    });
-  };
-
   const addLink = () => {
     setForm({
       ...form,
@@ -113,13 +236,6 @@ export default function FooterAdmin() {
     setForm({ ...form, quick_links: updated });
   };
 
-  const deleteLink = (i) => {
-    setForm({
-      ...form,
-      quick_links: form.quick_links.filter((_, index) => index !== i),
-    });
-  };
-
   const addService = () => {
     setForm({
       ...form,
@@ -131,13 +247,6 @@ export default function FooterAdmin() {
     const updated = [...form.services];
     updated[i] = value;
     setForm({ ...form, services: updated });
-  };
-
-  const deleteService = (i) => {
-    setForm({
-      ...form,
-      services: form.services.filter((_, index) => index !== i),
-    });
   };
 
   const handleSave = async () => {
@@ -162,188 +271,263 @@ export default function FooterAdmin() {
         setId(data.id);
       }
 
-      alert("Footer Updated");
+      showModal("success", "Footer updated successfully.");
       fetchData();
     } catch (err) {
       console.error(err);
-      alert("Save failed");
+      showModal("error", "Save failed. Please check your data and try again.");
     } finally {
       setSaving(false);
     }
   };
 
+  const getConfirmContent = () => {
+    if (deleteTarget.type === "logo") {
+      return {
+        title: "Delete Footer Logo?",
+        message:
+          "Are you sure you want to remove this footer logo? Please save footer after removing.",
+        confirmText: "Delete Logo",
+      };
+    }
+
+    if (deleteTarget.type === "social") {
+      return {
+        title: "Delete Social Link?",
+        message:
+          "Are you sure you want to delete this social link? This action cannot be undone.",
+        confirmText: "Delete Link",
+      };
+    }
+
+    if (deleteTarget.type === "quick") {
+      return {
+        title: "Delete Quick Link?",
+        message:
+          "Are you sure you want to delete this quick link? This action cannot be undone.",
+        confirmText: "Delete Link",
+      };
+    }
+
+    if (deleteTarget.type === "service") {
+      return {
+        title: "Delete Service?",
+        message:
+          "Are you sure you want to delete this service? This action cannot be undone.",
+        confirmText: "Delete Service",
+      };
+    }
+
+    return {
+      title: "Are you sure?",
+      message: "This action cannot be undone.",
+      confirmText: "Delete",
+    };
+  };
+
+  const confirmContent = getConfirmContent();
+
   return (
-    <div className="max-w-6xl mx-auto space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Footer Settings</h1>
-        <p className="text-gray-500 mt-1">
-          Manage footer logo, company info, links, services and copyright.
-        </p>
-      </div>
+    <>
+      <div className="max-w-6xl mx-auto space-y-8">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Footer Settings</h1>
+          <p className="text-gray-500 mt-1">
+            Manage footer logo, company info, links, services and copyright.
+          </p>
+        </div>
 
-      <div className={cardClass}>
-        <h2 className="flex items-center gap-2 text-xl font-bold">
-          <ImageIcon size={20} className="text-primary" />
-          Footer Logo
-        </h2>
+        <div className={cardClass}>
+          <h2 className="flex items-center gap-2 text-xl font-bold">
+            <ImageIcon size={20} className="text-primary" />
+            Footer Logo
+          </h2>
 
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e) => handleLogoUpload(e.target.files?.[0])}
-          className={inputClass}
-        />
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => handleLogoUpload(e.target.files?.[0])}
+            className={inputClass}
+          />
 
-        {uploading && (
-          <p className="text-sm text-gray-500">Uploading logo...</p>
-        )}
+          {uploading && (
+            <p className="text-sm text-gray-500">Uploading logo...</p>
+          )}
 
-        {form.logo && (
-          <div className="w-fit rounded-2xl border bg-gray-50 p-4">
-            <img
-              src={form.logo}
-              className="h-24 w-56 object-contain rounded-xl"
-              alt=""
+          {form.logo && (
+            <div className="relative w-fit rounded-2xl border bg-gray-50 p-4">
+              <img
+                src={form.logo}
+                className="h-24 w-56 object-contain rounded-xl"
+                alt="Footer Logo"
+              />
+
+              <button
+                type="button"
+                onClick={() => requestDelete("logo")}
+                className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-xl bg-red-500 text-white shadow-lg shadow-red-200 transition-all duration-500 hover:bg-red-600"
+              >
+                <Trash2 size={15} />
+              </button>
+            </div>
+          )}
+        </div>
+
+        <div className={cardClass}>
+          <h2 className="flex items-center gap-2 text-xl font-bold">
+            <Info size={20} className="text-primary" />
+            Basic Information
+          </h2>
+
+          <textarea
+            placeholder="About"
+            value={form.about || ""}
+            onChange={(e) => setForm({ ...form, about: e.target.value })}
+            rows={4}
+            className={inputClass}
+          />
+
+          <div className="grid md:grid-cols-3 gap-4">
+            <input
+              placeholder="Phone"
+              value={form.phone || ""}
+              onChange={(e) => setForm({ ...form, phone: e.target.value })}
+              className={inputClass}
+            />
+
+            <input
+              placeholder="Email"
+              value={form.email || ""}
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
+              className={inputClass}
+            />
+
+            <input
+              placeholder="Address"
+              value={form.address || ""}
+              onChange={(e) => setForm({ ...form, address: e.target.value })}
+              className={inputClass}
             />
           </div>
-        )}
-      </div>
+        </div>
 
-      <div className={cardClass}>
-        <h2 className="flex items-center gap-2 text-xl font-bold">
-          <Info size={20} className="text-primary" />
-          Basic Information
-        </h2>
+        <RepeaterCard
+          title="Social Links"
+          icon={<Share2 size={20} className="text-primary" />}
+          onAdd={addSocial}
+          addLabel="Add Social"
+        >
+          {form.social_links.map((item, i) => (
+            <div key={i} className="grid md:grid-cols-[220px_1fr_auto] gap-3">
+              <input
+                placeholder="Type e.g. facebook"
+                value={item.type || ""}
+                onChange={(e) => updateSocial(i, "type", e.target.value)}
+                className={inputClass}
+              />
 
-        <textarea
-          placeholder="About"
-          value={form.about || ""}
-          onChange={(e) => setForm({ ...form, about: e.target.value })}
-          rows={4}
-          className={inputClass}
-        />
+              <input
+                placeholder="URL"
+                value={item.url || ""}
+                onChange={(e) => updateSocial(i, "url", e.target.value)}
+                className={inputClass}
+              />
 
-        <div className="grid md:grid-cols-3 gap-4">
+              <DeleteButton onClick={() => requestDelete("social", i)} />
+            </div>
+          ))}
+        </RepeaterCard>
+
+        <RepeaterCard
+          title="Quick Links"
+          icon={<LinkIcon size={20} className="text-primary" />}
+          onAdd={addLink}
+          addLabel="Add Link"
+        >
+          {form.quick_links.map((item, i) => (
+            <div key={i} className="grid md:grid-cols-[220px_1fr_auto] gap-3">
+              <input
+                placeholder="Label"
+                value={item.label || ""}
+                onChange={(e) => updateLink(i, "label", e.target.value)}
+                className={inputClass}
+              />
+
+              <input
+                placeholder="Link"
+                value={item.link || ""}
+                onChange={(e) => updateLink(i, "link", e.target.value)}
+                className={inputClass}
+              />
+
+              <DeleteButton onClick={() => requestDelete("quick", i)} />
+            </div>
+          ))}
+        </RepeaterCard>
+
+        <RepeaterCard
+          title="Services"
+          icon={<Briefcase size={20} className="text-primary" />}
+          onAdd={addService}
+          addLabel="Add Service"
+        >
+          {form.services.map((item, i) => (
+            <div key={i} className="grid md:grid-cols-[1fr_auto] gap-3">
+              <input
+                placeholder="Service Name"
+                value={item || ""}
+                onChange={(e) => updateService(i, e.target.value)}
+                className={inputClass}
+              />
+
+              <DeleteButton onClick={() => requestDelete("service", i)} />
+            </div>
+          ))}
+        </RepeaterCard>
+
+        <div className={cardClass}>
+          <h2 className="flex items-center gap-2 text-xl font-bold">
+            <Copyright size={20} className="text-primary" />
+            Copyright
+          </h2>
+
           <input
-            placeholder="Phone"
-            value={form.phone || ""}
-            onChange={(e) => setForm({ ...form, phone: e.target.value })}
-            className={inputClass}
-          />
-
-          <input
-            placeholder="Email"
-            value={form.email || ""}
-            onChange={(e) => setForm({ ...form, email: e.target.value })}
-            className={inputClass}
-          />
-
-          <input
-            placeholder="Address"
-            value={form.address || ""}
-            onChange={(e) => setForm({ ...form, address: e.target.value })}
+            placeholder="Copyright Text"
+            value={form.copyright || ""}
+            onChange={(e) => setForm({ ...form, copyright: e.target.value })}
             className={inputClass}
           />
         </div>
+
+        <button
+          type="button"
+          onClick={handleSave}
+          disabled={saving}
+          className="sticky bottom-6 z-20 flex w-full items-center justify-center gap-2 rounded-2xl bg-primary px-6 py-4 font-semibold text-white shadow-[0_20px_50px_rgba(0,0,0,0.18)] transition-all duration-500 hover:-translate-y-1 hover:bg-secondary disabled:opacity-60"
+        >
+          <Save size={18} />
+          {saving ? "Saving..." : "Save Footer"}
+        </button>
       </div>
 
-      <RepeaterCard
-        title="Social Links"
-        icon={<Share2 size={20} className="text-primary" />}
-        onAdd={addSocial}
-        addLabel="Add Social"
-      >
-        {form.social_links.map((item, i) => (
-          <div key={i} className="grid md:grid-cols-[220px_1fr_auto] gap-3">
-            <input
-              placeholder="Type e.g. facebook"
-              value={item.type || ""}
-              onChange={(e) => updateSocial(i, "type", e.target.value)}
-              className={inputClass}
-            />
+      <ConfirmModal
+        show={confirmModal.show}
+        title={confirmContent.title}
+        message={confirmContent.message}
+        confirmText={confirmContent.confirmText}
+        cancelText="Cancel"
+        loading={confirmModal.loading}
+        onCancel={closeConfirmModal}
+        onConfirm={confirmDelete}
+      />
 
-            <input
-              placeholder="URL"
-              value={item.url || ""}
-              onChange={(e) => updateSocial(i, "url", e.target.value)}
-              className={inputClass}
-            />
-
-            <DeleteButton onClick={() => deleteSocial(i)} />
-          </div>
-        ))}
-      </RepeaterCard>
-
-      <RepeaterCard
-        title="Quick Links"
-        icon={<LinkIcon size={20} className="text-primary" />}
-        onAdd={addLink}
-        addLabel="Add Link"
-      >
-        {form.quick_links.map((item, i) => (
-          <div key={i} className="grid md:grid-cols-[220px_1fr_auto] gap-3">
-            <input
-              placeholder="Label"
-              value={item.label || ""}
-              onChange={(e) => updateLink(i, "label", e.target.value)}
-              className={inputClass}
-            />
-
-            <input
-              placeholder="Link"
-              value={item.link || ""}
-              onChange={(e) => updateLink(i, "link", e.target.value)}
-              className={inputClass}
-            />
-
-            <DeleteButton onClick={() => deleteLink(i)} />
-          </div>
-        ))}
-      </RepeaterCard>
-
-      <RepeaterCard
-        title="Services"
-        icon={<Briefcase size={20} className="text-primary" />}
-        onAdd={addService}
-        addLabel="Add Service"
-      >
-        {form.services.map((item, i) => (
-          <div key={i} className="grid md:grid-cols-[1fr_auto] gap-3">
-            <input
-              placeholder="Service Name"
-              value={item || ""}
-              onChange={(e) => updateService(i, e.target.value)}
-              className={inputClass}
-            />
-
-            <DeleteButton onClick={() => deleteService(i)} />
-          </div>
-        ))}
-      </RepeaterCard>
-
-      <div className={cardClass}>
-        <h2 className="flex items-center gap-2 text-xl font-bold">
-          <Copyright size={20} className="text-primary" />
-          Copyright
-        </h2>
-
-        <input
-          placeholder="Copyright Text"
-          value={form.copyright || ""}
-          onChange={(e) => setForm({ ...form, copyright: e.target.value })}
-          className={inputClass}
-        />
-      </div>
-
-      <button
-        onClick={handleSave}
-        disabled={saving}
-        className="sticky bottom-6 z-20 flex w-full items-center justify-center gap-2 rounded-2xl bg-primary px-6 py-4 font-semibold text-white shadow-[0_20px_50px_rgba(0,0,0,0.18)] transition-all duration-500 hover:-translate-y-1 hover:bg-secondary disabled:opacity-60"
-      >
-        <Save size={18} />
-        {saving ? "Saving..." : "Save Footer"}
-      </button>
-    </div>
+      <StatusModal
+        show={modal.show}
+        type={modal.type}
+        message={modal.message}
+        onClose={closeModal}
+      />
+    </>
   );
 }
 

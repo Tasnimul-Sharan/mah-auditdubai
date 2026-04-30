@@ -5,6 +5,8 @@ import AdminLayout from "@/components/AdminLayout";
 import { Save, Trash2, ImageIcon, Search, Newspaper } from "lucide-react";
 import { supabaseServer } from "@/lib/supabaseServer";
 import { useUpload } from "@/Hooks/useUpload";
+import StatusModal from "@/components/StatusModal";
+import ConfirmModal from "@/components/ConfirmModal";
 
 export default function BlogPageDashboard() {
   const { uploadFile } = useUpload();
@@ -26,6 +28,33 @@ export default function BlogPageDashboard() {
   const [preview, setPreview] = useState("");
   const [saving, setSaving] = useState(false);
 
+  const [modal, setModal] = useState({
+    show: false,
+    type: "success",
+    message: "",
+  });
+
+  const [confirmModal, setConfirmModal] = useState({
+    show: false,
+    loading: false,
+  });
+
+  const showModal = (type, message) => {
+    setModal({
+      show: true,
+      type,
+      message,
+    });
+  };
+
+  const closeModal = () => {
+    setModal({
+      show: false,
+      type: "success",
+      message: "",
+    });
+  };
+
   const inputClass =
     "w-full rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition-all duration-500 focus:border-primary focus:shadow-[0_0_0_4px_rgba(0,0,0,0.04)]";
 
@@ -33,10 +62,15 @@ export default function BlogPageDashboard() {
     "rounded-[1.5rem] border border-gray-100 bg-white p-6 shadow-[0_18px_50px_rgba(0,0,0,0.05)] space-y-4";
 
   const fetchData = async () => {
-    const { data } = await supabaseServer
+    const { data, error } = await supabaseServer
       .from("blog_page")
       .select("*")
       .single();
+
+    if (error) {
+      console.error(error);
+      return;
+    }
 
     if (data) {
       setMeta({
@@ -67,10 +101,34 @@ export default function BlogPageDashboard() {
     setPreview(URL.createObjectURL(selected));
   };
 
-  const deleteImage = async () => {
-    if (!meta?.public_id || !rowId) return;
+  const requestDeleteImage = () => {
+    if (!meta?.public_id || !rowId) {
+      showModal("error", "No image found to delete.");
+      return;
+    }
+
+    setConfirmModal({
+      show: true,
+      loading: false,
+    });
+  };
+
+  const confirmDeleteImage = async () => {
+    if (!meta?.public_id || !rowId) {
+      showModal("error", "No image found to delete.");
+      setConfirmModal({
+        show: false,
+        loading: false,
+      });
+      return;
+    }
 
     try {
+      setConfirmModal({
+        show: true,
+        loading: true,
+      });
+
       await fetch("/api/delete-image", {
         method: "POST",
         headers: {
@@ -79,17 +137,35 @@ export default function BlogPageDashboard() {
         body: JSON.stringify({ public_id: meta.public_id }),
       });
 
-      await supabaseServer
+      const { error } = await supabaseServer
         .from("blog_page")
-        .update({ hero_image: null, public_id: null })
+        .update({
+          hero_image: null,
+          public_id: null,
+        })
         .eq("id", rowId);
 
+      if (error) throw error;
+
       setPreview("");
-      setFile(null);
+      setFile("");
+
+      setConfirmModal({
+        show: false,
+        loading: false,
+      });
+
+      showModal("success", "Hero image deleted successfully.");
       fetchData();
     } catch (err) {
       console.error(err);
-      alert("Image delete failed");
+
+      setConfirmModal({
+        show: false,
+        loading: false,
+      });
+
+      showModal("error", "Image delete failed. Please try again.");
     }
   };
 
@@ -146,168 +222,189 @@ export default function BlogPageDashboard() {
 
       setFile(null);
       setPreview("");
-      alert("Saved successfully");
+
+      showModal("success", "Blog page data saved successfully.");
       fetchData();
     } catch (err) {
       console.error(err);
-      alert("Save failed");
+      showModal("error", "Save failed. Please check your data and try again.");
     } finally {
       setSaving(false);
     }
   };
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
-          <Newspaper className="text-primary" size={28} />
-          Blog Page Management
-        </h1>
+    <>
+      <div className="max-w-6xl mx-auto space-y-8">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
+            <Newspaper className="text-primary" size={28} />
+            Blog Page Management
+          </h1>
 
-        <p className="text-gray-500 mt-1">
-          Manage blog page hero content, image and SEO metadata.
-        </p>
-      </div>
+          <p className="text-gray-500 mt-1">
+            Manage blog page hero content, image and SEO metadata.
+          </p>
+        </div>
 
-      <div className={cardClass}>
-        <h2 className="flex items-center gap-2 text-xl font-bold text-gray-900">
-          <ImageIcon size={20} className="text-primary" />
-          Hero Section
-        </h2>
+        <div className={cardClass}>
+          <h2 className="flex items-center gap-2 text-xl font-bold text-gray-900">
+            <ImageIcon size={20} className="text-primary" />
+            Hero Section
+          </h2>
 
-        <input
-          placeholder="Hero Title"
-          value={meta.hero_title || ""}
-          onChange={(e) =>
-            setMeta({
-              ...meta,
-              hero_title: e.target.value,
-            })
-          }
-          className={inputClass}
-        />
-
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleFileChange}
-          className={inputClass}
-        />
-
-        {(preview || meta.hero_image) && (
-          <div className="relative w-fit rounded-2xl border bg-gray-50 p-3">
-            <img
-              src={preview || meta.hero_image}
-              className="w-72 h-44 rounded-xl object-cover"
-              alt=""
-            />
-
-            {!preview && meta.hero_image && (
-              <button
-                type="button"
-                onClick={deleteImage}
-                className="absolute top-4 right-4 rounded-lg bg-red-500 p-2 text-white transition-all duration-500 hover:bg-red-600"
-              >
-                <Trash2 size={14} />
-              </button>
-            )}
-          </div>
-        )}
-      </div>
-
-      <div className={cardClass}>
-        <h2 className="flex items-center gap-2 text-xl font-bold text-gray-900">
-          <Search size={20} className="text-primary" />
-          SEO Meta
-        </h2>
-
-        <input
-          placeholder="Meta Title"
-          value={meta.meta_title || ""}
-          onChange={(e) =>
-            setMeta({
-              ...meta,
-              meta_title: e.target.value,
-            })
-          }
-          className={inputClass}
-        />
-
-        <textarea
-          placeholder="Meta Description"
-          value={meta.meta_description || ""}
-          onChange={(e) =>
-            setMeta({
-              ...meta,
-              meta_description: e.target.value,
-            })
-          }
-          rows={4}
-          className={inputClass}
-        />
-
-        <textarea
-          placeholder="Meta Keywords"
-          value={meta.meta_keywords || ""}
-          onChange={(e) =>
-            setMeta({
-              ...meta,
-              meta_keywords: e.target.value,
-            })
-          }
-          rows={3}
-          className={inputClass}
-        />
-
-        <div className="grid gap-4 md:grid-cols-2">
           <input
-            placeholder="Meta Author"
-            value={meta.meta_author || ""}
+            placeholder="Hero Title"
+            value={meta.hero_title || ""}
             onChange={(e) =>
               setMeta({
                 ...meta,
-                meta_author: e.target.value,
+                hero_title: e.target.value,
               })
             }
             className={inputClass}
           />
 
           <input
-            placeholder="Meta URL"
-            value={meta.meta_url || ""}
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            className={inputClass}
+          />
+
+          {(preview || meta.hero_image) && (
+            <div className="relative w-fit rounded-2xl border bg-gray-50 p-3">
+              <img
+                src={preview || meta.hero_image}
+                className="w-72 h-44 rounded-xl object-cover"
+                alt="Blog Hero Preview"
+              />
+
+              {!preview && meta.hero_image && (
+                <button
+                  type="button"
+                  onClick={requestDeleteImage}
+                  className="absolute top-4 right-4 rounded-lg bg-red-500 p-2 text-white transition-all duration-500 hover:bg-red-600"
+                >
+                  <Trash2 size={14} />
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+
+        <div className={cardClass}>
+          <h2 className="flex items-center gap-2 text-xl font-bold text-gray-900">
+            <Search size={20} className="text-primary" />
+            SEO Meta
+          </h2>
+
+          <input
+            placeholder="Meta Title"
+            value={meta.meta_title || ""}
             onChange={(e) =>
               setMeta({
                 ...meta,
-                meta_url: e.target.value,
+                meta_title: e.target.value,
+              })
+            }
+            className={inputClass}
+          />
+
+          <textarea
+            placeholder="Meta Description"
+            value={meta.meta_description || ""}
+            onChange={(e) =>
+              setMeta({
+                ...meta,
+                meta_description: e.target.value,
+              })
+            }
+            rows={4}
+            className={inputClass}
+          />
+
+          <textarea
+            placeholder="Meta Keywords"
+            value={meta.meta_keywords || ""}
+            onChange={(e) =>
+              setMeta({
+                ...meta,
+                meta_keywords: e.target.value,
+              })
+            }
+            rows={3}
+            className={inputClass}
+          />
+
+          <div className="grid gap-4 md:grid-cols-2">
+            <input
+              placeholder="Meta Author"
+              value={meta.meta_author || ""}
+              onChange={(e) =>
+                setMeta({
+                  ...meta,
+                  meta_author: e.target.value,
+                })
+              }
+              className={inputClass}
+            />
+
+            <input
+              placeholder="Meta URL"
+              value={meta.meta_url || ""}
+              onChange={(e) =>
+                setMeta({
+                  ...meta,
+                  meta_url: e.target.value,
+                })
+              }
+              className={inputClass}
+            />
+          </div>
+
+          <input
+            placeholder="Meta Image"
+            value={meta.meta_image || ""}
+            onChange={(e) =>
+              setMeta({
+                ...meta,
+                meta_image: e.target.value,
               })
             }
             className={inputClass}
           />
         </div>
 
-        <input
-          placeholder="Meta Image"
-          value={meta.meta_image || ""}
-          onChange={(e) =>
-            setMeta({
-              ...meta,
-              meta_image: e.target.value,
-            })
-          }
-          className={inputClass}
-        />
+        <button
+          type="button"
+          onClick={saveData}
+          disabled={saving}
+          className="sticky bottom-6 z-20 flex w-full items-center justify-center gap-2 rounded-2xl bg-primary px-6 py-4 font-semibold text-white shadow-[0_20px_50px_rgba(0,0,0,0.18)] transition-all duration-500 hover:-translate-y-1 hover:bg-secondary disabled:opacity-60"
+        >
+          <Save size={18} />
+          {saving ? "Saving..." : "Save Blog Page"}
+        </button>
       </div>
 
-      <button
-        type="button"
-        onClick={saveData}
-        disabled={saving}
-        className="sticky bottom-6 z-20 flex w-full items-center justify-center gap-2 rounded-2xl bg-primary px-6 py-4 font-semibold text-white shadow-[0_20px_50px_rgba(0,0,0,0.18)] transition-all duration-500 hover:-translate-y-1 hover:bg-secondary disabled:opacity-60"
-      >
-        <Save size={18} />
-        {saving ? "Saving..." : "Save Blog Page"}
-      </button>
-    </div>
+      <ConfirmModal
+        show={confirmModal.show}
+        title="Delete Image?"
+        message="Are you sure you want to delete this image? This action cannot be undone."
+        confirmText="Delete Image"
+        cancelText="Cancel"
+        loading={confirmModal.loading}
+        onCancel={() => setConfirmModal({ show: false, loading: false })}
+        onConfirm={confirmDeleteImage}
+      />
+
+      <StatusModal
+        show={modal.show}
+        type={modal.type}
+        message={modal.message}
+        onClose={closeModal}
+      />
+    </>
   );
 }
 

@@ -26,74 +26,43 @@ const itemVariants = {
   },
 };
 
-const PremiumButton = ({ children, variant = "primary" }) => {
-  const base =
-    "relative inline-flex items-center justify-center px-8 py-3.5 rounded-full text-sm font-semibold overflow-hidden transition-all duration-700 ease-out group";
+const fallbackSlides = [
+  {
+    subtitle: "Dubai • UAE Financial Compliance Experts",
+    title: "Audit & Assurance You Can Trust",
+    description:
+      "We provide independent audit and assurance services designed to strengthen financial transparency, ensure regulatory compliance, and build investor confidence for businesses operating across the UAE.",
+    image: "/slider/audit-1.jpg",
+  },
+  {
+    subtitle: "Corporate Advisory • Risk Management",
+    title: "Strategic Financial Advisory",
+    description:
+      "Our experienced advisory team supports organizations with financial restructuring, risk management, and strategic planning to help businesses navigate complex regulatory and economic environments.",
+    image: "/slider/audit-2.jpg",
+  },
+  {
+    subtitle: "40+ Years Experience • Global Standards",
+    title: "Driving Financial Clarity for Enterprises",
+    description:
+      "Combining international accounting standards with deep regional expertise, we deliver precise financial insights that empower leadership teams to make confident, data-driven decisions.",
+    image: "/slider/audit-3.jpg",
+  },
+];
 
-  const variants = {
-    primary:
-      "text-white bg-primary shadow-[0_12px_35px_rgba(0,0,0,0.25)] hover:shadow-[0_18px_55px_rgba(0,0,0,0.35)]",
-    outline:
-      "text-white border border-white/30 bg-white/10 backdrop-blur-md hover:border-primary/70 hover:bg-primary/20",
-  };
-
-  return (
-    <button className={`${base} ${variants[variant]}`}>
-      <span
-        className="absolute inset-0 opacity-0 group-hover:opacity-100
-        bg-gradient-to-r from-primary via-primary/80 to-white/20
-        transition-opacity duration-700"
-      />
-
-      <span
-        className="absolute -left-full top-0 h-full w-1/2 skew-x-[-20deg]
-        bg-white/25 group-hover:left-[130%] transition-all duration-1000"
-      />
-
-      <span
-        className="absolute inset-0 blur-xl opacity-0 group-hover:opacity-40
-        bg-primary transition-opacity duration-700"
-      />
-
-      <span className="relative z-10">{children}</span>
-    </button>
-  );
-};
-
-export default function LandingPage() {
+export default function LandingPage({ slides = [] }) {
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  const slides = [
-    {
-      subtitle: "Dubai • UAE Financial Compliance Experts",
-      title: "Audit & Assurance You Can Trust",
-      description:
-        "We provide independent audit and assurance services designed to strengthen financial transparency, ensure regulatory compliance, and build investor confidence for businesses operating across the UAE.",
-      image: "/slider/audit-1.jpg",
-    },
-    {
-      subtitle: "Corporate Advisory • Risk Management",
-      title: "Strategic Financial Advisory",
-      description:
-        "Our experienced advisory team supports organizations with financial restructuring, risk management, and strategic planning to help businesses navigate complex regulatory and economic environments.",
-      image: "/slider/audit-2.jpg",
-    },
-    {
-      subtitle: "40+ Years Experience • Global Standards",
-      title: "Driving Financial Clarity for Enterprises",
-      description:
-        "Combining international accounting standards with deep regional expertise, we deliver precise financial insights that empower leadership teams to make confident, data-driven decisions.",
-      image: "/slider/audit-3.jpg",
-    },
-  ];
+  const sliderData =
+    Array.isArray(slides) && slides.length > 0 ? slides : fallbackSlides;
 
   const settings = {
     dots: false,
-    infinite: true,
+    infinite: sliderData.length > 1,
     fade: true,
     speed: 900,
-    arrows: true,
-    autoplay: true,
+    arrows: sliderData.length > 1,
+    autoplay: sliderData.length > 1,
     autoplaySpeed: 5000,
     slidesToShow: 1,
     slidesToScroll: 1,
@@ -105,73 +74,78 @@ export default function LandingPage() {
   return (
     <section className="relative w-full h-screen overflow-hidden group">
       <Slider {...settings}>
-        {slides.map((slide, index) => (
-          <div key={index} className="relative w-full h-screen">
-            <motion.div
-              key={`bg-${index}-${currentSlide}`}
-              initial={{ scale: 1.15 }}
-              animate={{ scale: 1 }}
-              transition={{ duration: 5, ease: "easeOut" }}
-              className="absolute inset-0 bg-cover bg-center"
-              style={{ backgroundImage: `url(${slide.image})` }}
-            />
+        {sliderData.map((slide, index) => {
+          const titleWords = String(slide.title || "").split(" ");
+          const firstWord = titleWords[0] || "";
+          const restTitle = titleWords.slice(1).join(" ");
 
-            <div className="absolute inset-0 bg-black/55" />
-
-            <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/70" />
-
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.08),transparent_55%)]" />
-
-            <div className="relative z-10 h-full flex items-center custom-container mx-auto px-4">
+          return (
+            <div key={slide.id || index} className="relative w-full h-screen">
               <motion.div
-                key={currentSlide === index ? `slide-${index}` : index}
-                className="max-w-3xl flex flex-col items-center text-center mx-auto"
-                variants={containerVariants}
-                initial="hidden"
-                animate={currentSlide === index ? "visible" : "hidden"}
-              >
+                key={`bg-${index}-${currentSlide}`}
+                initial={{ scale: 1.15 }}
+                animate={{ scale: 1 }}
+                transition={{ duration: 5, ease: "easeOut" }}
+                className="absolute inset-0 bg-cover bg-center"
+                style={{
+                  backgroundImage: `url(${slide.image || fallbackSlides[0].image})`,
+                }}
+              />
+
+              <div className="absolute inset-0 bg-black/55" />
+              <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/70" />
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.08),transparent_55%)]" />
+
+              <div className="relative z-10 h-full flex items-center custom-container mx-auto px-4">
                 <motion.div
-                  variants={itemVariants}
-                  className="flex items-center gap-3 mb-5 px-4 py-2 rounded-full border border-white/15 bg-white/10 backdrop-blur-md"
+                  key={currentSlide === index ? `slide-${index}` : index}
+                  className="max-w-3xl flex flex-col items-center text-center mx-auto"
+                  variants={containerVariants}
+                  initial="hidden"
+                  animate={currentSlide === index ? "visible" : "hidden"}
                 >
-                  <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/20 text-primary">
-                    <FaBalanceScale className="text-sm" />
-                  </span>
+                  <motion.div
+                    variants={itemVariants}
+                    className="flex items-center gap-3 mb-5 px-4 py-2 rounded-full border border-white/15 bg-white/10 backdrop-blur-md"
+                  >
+                    <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/20 text-primary">
+                      <FaBalanceScale className="text-sm" />
+                    </span>
 
-                  <span className="uppercase tracking-[0.28em] text-xs font-medium text-primary">
-                    {slide.subtitle}
-                  </span>
+                    <span className="uppercase tracking-[0.28em] text-xs font-medium text-primary">
+                      {slide.subtitle}
+                    </span>
+                  </motion.div>
+
+                  <motion.h1
+                    variants={itemVariants}
+                    className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight drop-shadow-[0_8px_30px_rgba(0,0,0,0.45)]"
+                  >
+                    <span className="text-primary">{firstWord}</span>{" "}
+                    {restTitle}
+                  </motion.h1>
+
+                  <motion.p
+                    variants={itemVariants}
+                    className="text-gray-200 mb-10 max-w-2xl leading-relaxed text-base md:text-lg"
+                  >
+                    {slide.description}
+                  </motion.p>
+
+                  <motion.div variants={itemVariants} className="flex gap-4">
+                    <Link href="/contact">
+                      <Button variant="primary">Get In Touch</Button>
+                    </Link>
+
+                    <Link href="/about">
+                      <Button variant="outline">Learn More</Button>
+                    </Link>
+                  </motion.div>
                 </motion.div>
-
-                <motion.h1
-                  variants={itemVariants}
-                  className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight drop-shadow-[0_8px_30px_rgba(0,0,0,0.45)]"
-                >
-                  <span className="text-primary">
-                    {slide.title.split(" ")[0]}
-                  </span>{" "}
-                  {slide.title.split(" ").slice(1).join(" ")}
-                </motion.h1>
-
-                <motion.p
-                  variants={itemVariants}
-                  className="text-gray-200 mb-10 max-w-2xl leading-relaxed text-base md:text-lg"
-                >
-                  {slide.description}
-                </motion.p>
-
-                <motion.div variants={itemVariants} className="flex gap-4">
-                  <Link href="/contact">
-                    <Button variant="primary">Get In Touch</Button>
-                  </Link>
-                  <Link href="/about">
-                    <Button variant="outline">Learn More</Button>
-                  </Link>
-                </motion.div>
-              </motion.div>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </Slider>
     </section>
   );

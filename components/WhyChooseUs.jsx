@@ -31,43 +31,6 @@ export default function WhyChooseUs({ data, points = [] }) {
 
       <div className="mx-auto grid max-w-7xl items-center gap-14 px-6 md:grid-cols-2 lg:gap-20">
         {whyChooseUs.image && (
-          // <div className="relative">
-          //   <div className="absolute -left-6 -top-6 h-32 w-32 rounded-full border border-primary/20" />
-          //   <div className="absolute -bottom-6 -right-6 h-44 w-44 rounded-full bg-primary/10 blur-3xl" />
-
-          //   <div className="relative aspect-square overflow-hidden rounded-[2rem] border border-slate-200 bg-slate-100 shadow-[0_28px_90px_rgba(15,23,42,0.18)]">
-          //     <Image
-          //       src={whyChooseUs.image}
-          //       alt={whyChooseUs.title}
-          //       fill
-          //       className="object-cover w-full h-full"
-          //       priority
-          //     />
-
-          //     <div className="absolute inset-0 bg-gradient-to-t from-secondary/70 via-secondary/10 to-transparent" />
-
-          //     <div className="absolute bottom-5 left-5 right-5 flex items-center gap-4 rounded-2xl border border-white/30 bg-white/90 p-4 shadow-xl backdrop-blur-md">
-          //       <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
-          //         <FaShieldAlt className="text-xl" />
-          //       </div>
-
-          //       <div>
-          //         <p className="font-semibold text-secondary">
-          //           Confidential by design
-          //         </p>
-          //         <p className="mt-1 text-sm leading-5 text-slate-600">
-          //           Secure audit handling with clear reporting.
-          //         </p>
-          //       </div>
-          //     </div>
-          //   </div>
-
-          //   {/* <div className="absolute -bottom-6 -right-4 hidden rounded-2xl bg-secondary p-5 text-white shadow-2xl sm:block">
-          //     <p className="text-3xl font-bold leading-none">UAE</p>
-          //     <p className="mt-2 text-sm text-white/70">Compliance focused</p>
-          //   </div> */}
-          // </div>
-
           <div className="relative">
             <div className="absolute -left-6 -top-6 h-32 w-32 rounded-full border border-primary/20" />
             <div className="absolute -bottom-6 -right-6 h-44 w-44 rounded-full bg-primary/10 blur-3xl" />
@@ -150,27 +113,3 @@ export default function WhyChooseUs({ data, points = [] }) {
     </section>
   );
 }
-
-// import { supabaseServer } from "@/lib/supabaseServer";
-// import WhyChooseUsView from "./home/WhyChooseUsView";
-
-// export default async function WhyChooseUs() {
-//   const { data: whyChooseUs, error } = await supabaseServer
-//     .from("why_choose_us")
-//     .select("id, title, subtitle, description, image")
-//     .order("created_at", { ascending: false })
-//     .limit(1)
-//     .maybeSingle();
-
-//   if (error || !whyChooseUs) return null;
-
-//   const { data: pointRows } = await supabaseServer
-//     .from("why_choose_points")
-//     .select("point")
-//     .eq("why_id", whyChooseUs.id)
-//     .order("created_at", { ascending: true });
-
-//   const points = (pointRows || []).map((item) => item.point).filter(Boolean);
-
-//   return <WhyChooseUsView data={whyChooseUs} points={points} />;
-// }

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import AdminLayout from "@/components/AdminLayout";
 import { supabaseServer } from "@/lib/supabaseServer";
@@ -98,6 +99,12 @@ export default function AdminSettings() {
 
   useEffect(() => {
     fetchUser();
+
+    return () => {
+      if (preview) {
+        URL.revokeObjectURL(preview);
+      }
+    };
   }, []);
 
   const fetchUser = async () => {
@@ -263,10 +270,13 @@ export default function AdminSettings() {
             {(preview || profileImage) && (
               <div className="relative mt-4 inline-block rounded-2xl border bg-gray-50 p-3">
                 <div className="relative h-28 w-28 overflow-hidden rounded-2xl">
-                  <img
+                  <Image
                     src={preview || profileImage}
                     alt="Profile"
-                    className="h-full w-full object-cover"
+                    fill
+                    sizes="112px"
+                    className="object-cover"
+                    unoptimized
                   />
 
                   {preview && (

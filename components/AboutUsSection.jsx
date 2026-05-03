@@ -1,9 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import SectionBadge from "./SectionBadge";
+import OptimizedImage from "./OptimizedImage";
 import { FiArrowRight } from "react-icons/fi";
 import { FaShieldAlt, FaChartLine, FaBalanceScale } from "react-icons/fa";
 
@@ -90,10 +90,12 @@ export default function AboutUsSection({ data }) {
           >
             <div className="relative overflow-hidden rounded-2xl border border-gray-200 bg-secondary p-3 shadow-[0_30px_90px_rgba(15,23,42,0.14)]">
               <div className="relative h-[420px] md:h-[560px] overflow-hidden rounded-xl">
-                <Image
+                <OptimizedImage
                   src={data.image}
-                  alt="Audit Firm Dubai"
+                  alt={data.image_alt || "Audit Firm Dubai"}
                   fill
+                  width={900}
+                  sizes="(max-width: 1024px) 100vw, 50vw"
                   className="object-cover"
                 />
 

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Plus, Trash2, Pencil, Save, Users, X, ImageIcon } from "lucide-react";
 import AdminLayout from "@/components/AdminLayout";
+import OptimizedImage from "@/components/OptimizedImage";
 import { supabaseServer } from "@/lib/supabaseServer";
 import { useUpload } from "@/Hooks/useUpload";
 import StatusModal from "@/components/StatusModal";
@@ -89,6 +90,12 @@ export default function TeamAdmin() {
     });
   };
 
+  const revokePreview = () => {
+    if (preview) {
+      URL.revokeObjectURL(preview);
+    }
+  };
+
   const fetchData = async () => {
     const { data: sec, error: secError } = await supabaseServer
       .from("team_section")
@@ -124,6 +131,12 @@ export default function TeamAdmin() {
 
   useEffect(() => {
     fetchData();
+
+    return () => {
+      if (preview) {
+        URL.revokeObjectURL(preview);
+      }
+    };
   }, []);
 
   const deleteFromCloudinary = async (publicId) => {
@@ -174,8 +187,14 @@ export default function TeamAdmin() {
     const selected = e.target.files?.[0];
     if (!selected) return;
 
+    if (preview) {
+      URL.revokeObjectURL(preview);
+    }
+
+    const previewUrl = URL.createObjectURL(selected);
+
     setFile(selected);
-    setPreview(URL.createObjectURL(selected));
+    setPreview(previewUrl);
   };
 
   const requestDelete = (type, item = null, index = null) => {
@@ -219,6 +238,7 @@ export default function TeamAdmin() {
       });
 
       if (preview && file) {
+        revokePreview();
         setPreview("");
         setFile(null);
 
@@ -253,6 +273,7 @@ export default function TeamAdmin() {
         public_id: "",
       });
 
+      revokePreview();
       setPreview("");
       setFile(null);
 
@@ -331,6 +352,8 @@ export default function TeamAdmin() {
   };
 
   const resetForm = () => {
+    revokePreview();
+
     setMemberForm({
       name: "",
       role: "",
@@ -431,6 +454,8 @@ export default function TeamAdmin() {
   };
 
   const startEdit = (item) => {
+    revokePreview();
+
     setEditingId(item.id);
 
     setMemberForm({
@@ -564,16 +589,22 @@ export default function TeamAdmin() {
 
           {(preview || memberForm.image) && (
             <div className="relative w-fit rounded-2xl border bg-gray-50 p-3">
-              <img
-                src={preview || memberForm.image}
-                alt="Team Member"
-                className="h-44 w-72 rounded-xl object-cover"
-              />
+              <div className="relative h-44 w-72 overflow-hidden rounded-xl">
+                <OptimizedImage
+                  src={preview || memberForm.image}
+                  alt={memberForm.name || "Team Member"}
+                  fill
+                  width={288}
+                  sizes="288px"
+                  className="object-cover"
+                  unoptimized={Boolean(preview)}
+                />
+              </div>
 
               <button
                 type="button"
                 onClick={() => requestDelete("image")}
-                className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-xl bg-red-500 text-white transition-all duration-500 hover:bg-red-600"
+                className="absolute right-4 top-4 z-20 flex h-9 w-9 items-center justify-center rounded-xl bg-red-500 text-white transition-all duration-500 hover:bg-red-600"
               >
                 <Trash2 size={14} />
               </button>
@@ -661,10 +692,13 @@ export default function TeamAdmin() {
               >
                 <div className="relative h-44 overflow-hidden rounded-xl">
                   {item.image ? (
-                    <img
+                    <OptimizedImage
                       src={item.image}
-                      alt="Team Member"
-                      className="w-full h-full object-cover transition duration-700 group-hover:scale-110"
+                      alt={item.name || "Team Member"}
+                      fill
+                      width={700}
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      className="object-cover transition duration-700 group-hover:scale-110"
                     />
                   ) : (
                     <div className="flex h-full w-full items-center justify-center bg-gray-100 text-gray-400">

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import AdminLayout from "@/components/AdminLayout";
+import OptimizedImage from "@/components/OptimizedImage";
 import {
   Save,
   Trash2,
@@ -15,6 +16,7 @@ import Link from "next/link";
 import { supabaseServer } from "@/lib/supabaseServer";
 import { useUpload } from "@/Hooks/useUpload";
 import StatusModal from "@/components/StatusModal";
+import ConfirmModal from "@/components/ConfirmModal";
 
 export default function AboutDashboard() {
   const { uploadFile } = useUpload();
@@ -42,6 +44,11 @@ export default function AboutDashboard() {
     message: "",
   });
 
+  const [confirmModal, setConfirmModal] = useState({
+    show: false,
+    loading: false,
+  });
+
   const showModal = (type, message) => {
     setModal({
       show: true,
@@ -58,13 +65,39 @@ export default function AboutDashboard() {
     });
   };
 
+  const openConfirmModal = () => {
+    if (!meta?.public_id || !rowId) {
+      showModal("error", "No image found to delete.");
+      return;
+    }
+
+    setConfirmModal({
+      show: true,
+      loading: false,
+    });
+  };
+
+  const closeConfirmModal = () => {
+    if (confirmModal.loading) return;
+
+    setConfirmModal({
+      show: false,
+      loading: false,
+    });
+  };
+
   const inputClass =
     "w-full rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition-all duration-500 focus:border-primary focus:shadow-[0_0_0_4px_rgba(0,0,0,0.04)]";
 
   const cardClass =
     "rounded-[1.5rem] border border-gray-100 bg-white p-6 shadow-[0_18px_50px_rgba(0,0,0,0.05)] space-y-4";
 
-  // ================= FETCH =================
+  const revokePreview = () => {
+    if (preview) {
+      URL.revokeObjectURL(preview);
+    }
+  };
+
   const fetchData = async () => {
     const { data, error } = await supabaseServer
       .from("about_page")
@@ -95,6 +128,12 @@ export default function AboutDashboard() {
 
   useEffect(() => {
     fetchData();
+
+    return () => {
+      if (preview) {
+        URL.revokeObjectURL(preview);
+      }
+    };
   }, []);
 
   // ================= IMAGE =================
@@ -102,17 +141,32 @@ export default function AboutDashboard() {
     const selected = e.target.files?.[0];
     if (!selected) return;
 
+    if (preview) {
+      URL.revokeObjectURL(preview);
+    }
+
+    const previewUrl = URL.createObjectURL(selected);
+
     setFile(selected);
-    setPreview(URL.createObjectURL(selected));
+    setPreview(previewUrl);
   };
 
   const deleteImage = async () => {
     if (!meta?.public_id || !rowId) {
       showModal("error", "No image found to delete.");
+      setConfirmModal({
+        show: false,
+        loading: false,
+      });
       return;
     }
 
     try {
+      setConfirmModal({
+        show: true,
+        loading: true,
+      });
+
       await fetch("/api/delete-image", {
         method: "POST",
         headers: {
@@ -126,18 +180,29 @@ export default function AboutDashboard() {
         .update({ hero_image: null, public_id: null })
         .eq("id", rowId);
 
+      revokePreview();
       setPreview("");
       setFile(null);
+
+      setConfirmModal({
+        show: false,
+        loading: false,
+      });
 
       showModal("success", "Hero image deleted successfully.");
       fetchData();
     } catch (err) {
       console.error(err);
+
+      setConfirmModal({
+        show: false,
+        loading: false,
+      });
+
       showModal("error", "Image delete failed. Please try again.");
     }
   };
 
-  // ================= SAVE =================
   const saveData = async () => {
     try {
       setSaving(true);
@@ -189,6 +254,7 @@ export default function AboutDashboard() {
         setRowId(data.id);
       }
 
+      revokePreview();
       setFile(null);
       setPreview("");
 
@@ -216,12 +282,12 @@ export default function AboutDashboard() {
   return (
     <>
       <div className="max-w-6xl mx-auto space-y-8">
-        {/* HEADER */}
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-2 text-gray-900">
             <Layers className="text-primary" size={28} />
             About Page Management
           </h1>
+
           <p className="text-gray-500 mt-1">
             Manage about page hero content and SEO metadata.
           </p>
@@ -265,7 +331,6 @@ export default function AboutDashboard() {
           ))}
         </div>
 
-        {/* HERO */}
         <div className={cardClass}>
           <h2 className="flex items-center gap-2 text-xl font-bold">
             <ImageIcon size={20} className="text-primary" />
@@ -288,17 +353,23 @@ export default function AboutDashboard() {
 
           {(preview || meta.hero_image) && (
             <div className="relative w-fit rounded-2xl border bg-gray-50 p-3">
-              <img
-                src={preview || meta.hero_image}
-                className="w-72 h-44 object-cover rounded-xl"
-                alt="Hero Preview"
-              />
+              <div className="relative h-44 w-72 overflow-hidden rounded-xl">
+                <OptimizedImage
+                  src={preview || meta.hero_image}
+                  alt={meta.hero_title || "Hero Preview"}
+                  fill
+                  width={288}
+                  sizes="288px"
+                  className="object-cover"
+                  unoptimized={Boolean(preview)}
+                />
+              </div>
 
               {!preview && meta.hero_image && (
                 <button
                   type="button"
-                  onClick={deleteImage}
-                  className="absolute top-4 right-4 bg-red-500 text-white p-2 rounded-lg hover:bg-red-600"
+                  onClick={openConfirmModal}
+                  className="absolute top-4 right-4 z-20 bg-red-500 text-white p-2 rounded-lg hover:bg-red-600"
                 >
                   <Trash2 size={14} />
                 </button>
@@ -307,7 +378,6 @@ export default function AboutDashboard() {
           )}
         </div>
 
-        {/* SEO */}
         <div className={cardClass}>
           <h2 className="flex items-center gap-2 text-xl font-bold">
             <Search size={20} className="text-primary" />
@@ -367,16 +437,27 @@ export default function AboutDashboard() {
           />
         </div>
 
-        {/* SAVE BUTTON */}
         <button
+          type="button"
           onClick={saveData}
           disabled={saving}
-          className="sticky bottom-6 w-full flex items-center justify-center gap-2 bg-primary text-white py-4 rounded-2xl shadow-xl hover:-translate-y-1 transition disabled:opacity-60"
+          className="sticky bottom-6 w-full flex items-center justify-center gap-2 bg-primary text-white py-4 rounded-2xl shadow-xl hover:-translate-y-1 transition disabled:opacity-60 z-40"
         >
           <Save size={18} />
           {saving ? "Saving..." : "Save About Page"}
         </button>
       </div>
+
+      <ConfirmModal
+        show={confirmModal.show}
+        title="Delete Hero Image?"
+        message="Are you sure you want to delete this hero image? This action cannot be undone."
+        confirmText="Delete Image"
+        cancelText="Cancel"
+        loading={confirmModal.loading}
+        onCancel={closeConfirmModal}
+        onConfirm={deleteImage}
+      />
 
       <StatusModal
         show={modal.show}

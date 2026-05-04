@@ -23,7 +23,6 @@ export default function AboutPage({
     <div className="w-full relative">
       <Head>
         <title>{data?.meta_title}</title>
-
         <meta name="description" content={data?.meta_description} />
         <meta name="keywords" content={data?.meta_keywords} />
         <meta name="author" content={data?.meta_author} />

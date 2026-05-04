@@ -6,6 +6,7 @@ export default function EventMap({ mapUrl }) {
       <div className="relative w-full h-[500px] rounded overflow-hidden border border-border_color">
         <iframe
           src={mapUrl || ""}
+          title="MAH Audit Dubai location map"
           className="w-full h-full"
           style={{ border: 0 }}
           allowFullScreen

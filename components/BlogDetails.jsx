@@ -155,13 +155,15 @@ export default function BlogDetails({ blogsData }) {
                       href={social.getLink(currentUrl, blogPost.title)}
                       target="_blank"
                       rel="noopener noreferrer"
+                      aria-label={`Share this blog on ${social.name}`}
+                      title={`Share this blog on ${social.name}`}
                       className="w-10 h-10 flex items-center justify-center rounded-full
-                      border border-gray-200 text-gray-500 bg-white
-                      hover:bg-primary hover:text-white hover:border-primary
-                      hover:-translate-y-1 hover:shadow-lg
-                      transition-all duration-500"
+  border border-gray-200 text-gray-500 bg-white
+  hover:bg-primary hover:text-white hover:border-primary
+  hover:-translate-y-1 hover:shadow-lg
+  transition-all duration-500"
                     >
-                      <Icon className="w-4 h-4" />
+                      <Icon className="w-4 h-4" aria-hidden="true" />
                     </a>
                   );
                 })}

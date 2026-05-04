@@ -161,6 +161,7 @@ export default function ContactIndexPage() {
               <div className="border rounded-xl overflow-hidden h-[300px] bg-white">
                 <iframe
                   src={data.map_url}
+                  title="MAH Audit Dubai location map"
                   className="w-full h-full"
                   style={{ border: 0 }}
                   loading="lazy"

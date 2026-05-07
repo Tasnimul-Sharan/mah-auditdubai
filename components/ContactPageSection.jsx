@@ -16,7 +16,9 @@ const icons = {
   location: <FaMapMarkerAlt />,
 };
 
-export default function ContactPageSection({ contactInfo }) {
+export default function ContactPageSection({ contactInfo, formContent }) {
+  const formData = formContent || {};
+
   const info = contactInfo || {};
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
@@ -101,18 +103,23 @@ export default function ContactPageSection({ contactInfo }) {
           <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-br from-primary/5 via-transparent to-secondary/5" />
 
           <div className="relative">
-            <span className="mb-4 inline-flex rounded-full bg-primary/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-              Contact Form
-            </span>
+            {formContent?.badge && (
+              <span className="mb-4 inline-flex rounded-full bg-primary/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+                {formContent.badge}
+              </span>
+            )}
 
-            <h2 className="mb-3 text-2xl font-bold text-gray-900 md:text-3xl">
-              {info.form_title || "Send Us a Message"}
-            </h2>
+            {formContent?.title && (
+              <h2 className="text-2xl font-semibold mb-3 text-slate-900">
+                {formContent.title}
+              </h2>
+            )}
 
-            <p className="mb-8 leading-relaxed text-gray-600">
-              {info.form_subtitle ||
-                "Have a question or need a consultation? Fill out the form below."}
-            </p>
+            {formContent?.description && (
+              <p className="mb-8 text-slate-500 leading-relaxed">
+                {formContent.description}
+              </p>
+            )}
 
             <form onSubmit={handleSubmit} className="space-y-5">
               <input

@@ -41,7 +41,10 @@ export default function ContactPage({ data }) {
       />
 
       <ContactHero hero={data?.hero} stats={data?.stats} />
-      <ContactPageSection contactInfo={data?.contact_info} />
+      <ContactPageSection
+        contactInfo={data?.contact_info}
+        formContent={data?.form_content}
+      />
       <EventMap mapUrl={data?.map_url} />
     </div>
   );

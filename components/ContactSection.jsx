@@ -13,6 +13,8 @@ import SectionBadge from "./SectionBadge";
 
 export default function ContactSection({ data }) {
   const hero = data?.hero || {};
+  const formContent = data?.form_content || {};
+
   const cards = data?.contact_info || [];
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -113,16 +115,23 @@ export default function ContactSection({ data }) {
             />
           </div>
           <div className="bg-white p-10 rounded-[2rem] border border-sky-100 shadow-[0_18px_50px_rgba(15,23,42,0.08)]">
-            <span className="mb-4 inline-flex rounded-full bg-primary/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-              Contact Form
-            </span>
-            <h2 className="text-2xl font-semibold mb-3 text-slate-900">
-              Send Us a Message
-            </h2>
+            {formContent?.badge && (
+              <span className="mb-4 inline-flex rounded-full bg-primary/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+                {formContent.badge}
+              </span>
+            )}
 
-            <p className="mb-8 text-slate-500 leading-relaxed">
-              Have a question or need a consultation? Fill out the form below.
-            </p>
+            {formContent?.title && (
+              <h2 className="text-2xl font-semibold mb-3 text-slate-900">
+                {formContent.title}
+              </h2>
+            )}
+
+            {formContent?.description && (
+              <p className="mb-8 text-slate-500 leading-relaxed">
+                {formContent.description}
+              </p>
+            )}
             <form onSubmit={handleSubmit} className="space-y-5">
               <input
                 type="hidden"

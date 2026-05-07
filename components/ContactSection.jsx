@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import {
   FaPhoneAlt,
@@ -306,19 +305,19 @@ function getCardIcon(type = "", title = "", value = "") {
 }
 
 function Input({ label, name, type = "text", placeholder, required }) {
-    return (
-        <div>
-            <label className="text-sm font-medium text-slate-700">
-                {label} {required && <span className="text-red-500">*</span>}
-            </label>
+  return (
+    <div>
+      <label className="text-sm font-medium text-slate-700">
+        {label} {required && <span className="text-red-500">*</span>}
+      </label>
 
-            <input
-                name={name}
-                type={type}
-                required={required}
-                placeholder={placeholder}
-                className="w-full mt-1 p-4 border border-gray-200 rounded-2xl outline-none transition-all duration-500 focus:border-primary focus:shadow-[0_0_0_4px_rgba(14,165,233,0.10)]"
-            />
-        </div>
-    );
+      <input
+        name={name}
+        type={type}
+        required={required}
+        placeholder={placeholder}
+        className="w-full mt-1 p-4 border border-gray-200 rounded-2xl outline-none transition-all duration-500 focus:border-primary focus:shadow-[0_0_0_4px_rgba(14,165,233,0.10)]"
+      />
+    </div>
+  );
 }

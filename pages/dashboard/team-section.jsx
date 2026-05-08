@@ -12,11 +12,29 @@ import ConfirmModal from "@/components/ConfirmModal";
 const inputClass =
   "w-full rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition-all duration-500 focus:border-primary focus:shadow-[0_0_0_4px_rgba(0,0,0,0.04)]";
 
+const textareaClass =
+  "w-full rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition-all duration-500 focus:border-primary focus:shadow-[0_0_0_4px_rgba(0,0,0,0.04)]";
+
 const cardClass =
   "rounded-[1.5rem] border border-gray-100 bg-white p-6 shadow-[0_18px_50px_rgba(0,0,0,0.05)] space-y-4";
 
 const primaryBtn =
   "flex items-center justify-center gap-2 rounded-2xl bg-primary px-6 py-4 font-semibold text-white shadow-[0_20px_50px_rgba(0,0,0,0.16)] transition-all duration-500 hover:-translate-y-1 hover:bg-secondary disabled:opacity-60";
+
+function normalizeSocials(socials) {
+  if (Array.isArray(socials)) return socials;
+
+  if (typeof socials === "string") {
+    try {
+      const parsed = JSON.parse(socials);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }
+
+  return [];
+}
 
 export default function TeamAdmin() {
   const { uploadFile } = useUpload();
@@ -28,11 +46,13 @@ export default function TeamAdmin() {
     badge: "",
     title: "",
     subtitle: "",
+    read_more_text: "Read More",
   });
 
   const [memberForm, setMemberForm] = useState({
     name: "",
     role: "",
+    bio: "",
     image: "",
     public_id: "",
     socials: [],
@@ -123,6 +143,7 @@ export default function TeamAdmin() {
         badge: sec.badge || "",
         title: sec.title || "",
         subtitle: sec.subtitle || "",
+        read_more_text: sec.read_more_text || "Read More",
       });
     }
 
@@ -155,17 +176,24 @@ export default function TeamAdmin() {
     try {
       setSavingSection(true);
 
+      const payload = {
+        badge: form.badge,
+        title: form.title,
+        subtitle: form.subtitle,
+        read_more_text: form.read_more_text || "Read More",
+      };
+
       if (section) {
         const { error } = await supabaseServer
           .from("team_section")
-          .update(form)
+          .update(payload)
           .eq("id", section.id);
 
         if (error) throw error;
       } else {
         const { data, error } = await supabaseServer
           .from("team_section")
-          .insert([form])
+          .insert([payload])
           .select()
           .single();
 
@@ -316,7 +344,9 @@ export default function TeamAdmin() {
       }
 
       const payload = {
-        ...memberForm,
+        name: memberForm.name,
+        role: memberForm.role,
+        bio: memberForm.bio,
         image: imageUrl,
         public_id: publicId,
         socials: memberForm.socials || [],
@@ -357,6 +387,7 @@ export default function TeamAdmin() {
     setMemberForm({
       name: "",
       role: "",
+      bio: "",
       image: "",
       public_id: "",
       socials: [],
@@ -461,9 +492,10 @@ export default function TeamAdmin() {
     setMemberForm({
       name: item.name || "",
       role: item.role || "",
+      bio: item.bio || "",
       image: item.image || "",
       public_id: item.public_id || "",
-      socials: item.socials || [],
+      socials: normalizeSocials(item.socials),
     });
 
     setFile(null);
@@ -542,6 +574,15 @@ export default function TeamAdmin() {
             value={form.subtitle}
             onChange={(e) => setForm({ ...form, subtitle: e.target.value })}
             rows={3}
+            className={textareaClass}
+          />
+
+          <input
+            placeholder="Read More Button Text"
+            value={form.read_more_text || ""}
+            onChange={(e) =>
+              setForm({ ...form, read_more_text: e.target.value })
+            }
             className={inputClass}
           />
 
@@ -578,6 +619,16 @@ export default function TeamAdmin() {
               setMemberForm({ ...memberForm, role: e.target.value })
             }
             className={inputClass}
+          />
+
+          <textarea
+            placeholder="Member Bio / Details"
+            value={memberForm.bio || ""}
+            onChange={(e) =>
+              setMemberForm({ ...memberForm, bio: e.target.value })
+            }
+            rows={8}
+            className={textareaClass}
           />
 
           <input
@@ -628,14 +679,14 @@ export default function TeamAdmin() {
               <div key={i} className="grid gap-2 md:grid-cols-[1fr_2fr_auto]">
                 <input
                   placeholder="Type"
-                  value={social.type}
+                  value={social.type || ""}
                   onChange={(e) => updateSocial(i, "type", e.target.value)}
                   className={inputClass}
                 />
 
                 <input
                   placeholder="URL"
-                  value={social.url}
+                  value={social.url || ""}
                   onChange={(e) => updateSocial(i, "url", e.target.value)}
                   className={inputClass}
                 />
@@ -685,69 +736,80 @@ export default function TeamAdmin() {
               No team members found.
             </div>
           ) : (
-            members.map((item) => (
-              <div
-                key={item.id}
-                className="group relative overflow-hidden rounded-[2rem] border border-gray-100 bg-white p-4 shadow-[0_18px_55px_rgba(15,23,42,0.08)] hover:-translate-y-2 hover:shadow-[0_32px_90px_rgba(15,23,42,0.14)] transition"
-              >
-                <div className="relative h-44 overflow-hidden rounded-xl">
-                  {item.image ? (
-                    <OptimizedImage
-                      src={item.image}
-                      alt={item.name || "Team Member"}
-                      fill
-                      width={700}
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      className="object-cover transition duration-700 group-hover:scale-110"
-                    />
-                  ) : (
-                    <div className="flex h-full w-full items-center justify-center bg-gray-100 text-gray-400">
-                      No Image
-                    </div>
-                  )}
+            members.map((item) => {
+              const socials = normalizeSocials(item.socials);
 
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-                </div>
+              return (
+                <div
+                  key={item.id}
+                  className="group relative overflow-hidden rounded-[2rem] border border-gray-100 bg-white p-4 shadow-[0_18px_55px_rgba(15,23,42,0.08)] hover:-translate-y-2 hover:shadow-[0_32px_90px_rgba(15,23,42,0.14)] transition"
+                >
+                  <div className="relative h-44 overflow-hidden rounded-xl">
+                    {item.image ? (
+                      <OptimizedImage
+                        src={item.image}
+                        alt={item.name || "Team Member"}
+                        fill
+                        width={700}
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        className="object-cover transition duration-700 group-hover:scale-110"
+                      />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center bg-gray-100 text-gray-400">
+                        No Image
+                      </div>
+                    )}
 
-                <div className="mt-4">
-                  <h3 className="text-lg font-bold text-gray-900">
-                    {item.name}
-                  </h3>
-                  <p className="text-sm text-primary font-medium">
-                    {item.role}
-                  </p>
-                </div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                  </div>
 
-                <div className="flex flex-wrap gap-2 mt-3">
-                  {item.socials?.map((s, i) => (
-                    <span
-                      key={i}
-                      className="text-xs bg-primary/10 px-3 py-1 rounded-full text-primary font-medium"
+                  <div className="mt-4">
+                    <h3 className="text-lg font-bold text-gray-900">
+                      {item.name}
+                    </h3>
+
+                    <p className="text-sm text-primary font-medium">
+                      {item.role}
+                    </p>
+
+                    {item.bio && (
+                      <p className="mt-3 line-clamp-3 text-sm leading-6 text-gray-500">
+                        {item.bio}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="flex flex-wrap gap-2 mt-3">
+                    {socials.map((s, i) => (
+                      <span
+                        key={i}
+                        className="text-xs bg-primary/10 px-3 py-1 rounded-full text-primary font-medium"
+                      >
+                        {s.type}
+                      </span>
+                    ))}
+                  </div>
+
+                  <div className="flex gap-2 mt-4">
+                    <button
+                      type="button"
+                      onClick={() => startEdit(item)}
+                      className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100 text-blue-600 hover:bg-blue-500 hover:text-white transition"
                     >
-                      {s.type}
-                    </span>
-                  ))}
-                </div>
+                      <Pencil size={15} />
+                    </button>
 
-                <div className="flex gap-2 mt-4">
-                  <button
-                    type="button"
-                    onClick={() => startEdit(item)}
-                    className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100 text-blue-600 hover:bg-blue-500 hover:text-white transition"
-                  >
-                    <Pencil size={15} />
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => requestDelete("member", item)}
-                    className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-100 text-red-600 hover:bg-red-500 hover:text-white transition"
-                  >
-                    <Trash2 size={15} />
-                  </button>
+                    <button
+                      type="button"
+                      onClick={() => requestDelete("member", item)}
+                      className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-100 text-red-600 hover:bg-red-500 hover:text-white transition"
+                    >
+                      <Trash2 size={15} />
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
       </div>

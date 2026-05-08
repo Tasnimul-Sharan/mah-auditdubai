@@ -99,8 +99,8 @@ export default function ClientsSection() {
                     src={client.logo_url}
                     alt="Client Logo"
                     width={180}
-                    height={90}
-                    className="relative z-10 max-h-20 w-full h-full object-contain opacity-80 grayscale
+                    height={100}
+                    className="relative z-10 max-h-32 w-full h-full object-contain opacity-80 grayscale
                     group-hover:opacity-100 group-hover:grayscale-0
                     group-hover:scale-110 transition-all duration-700"
                   />

@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { FaCheckCircle, FaIndustry } from "react-icons/fa";
 import SectionBadge from "./SectionBadge";
 
@@ -8,6 +9,9 @@ export default function IndustrySection({
   industrySection = null,
   industryItems = [],
 }) {
+  const buttonText = industrySection?.button_text;
+  const buttonLink = industrySection?.button_link;
+
   return (
     <section className="relative overflow-hidden bg-[#f8fafc] py-24">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(0,0,0,0.06),transparent_35%)]" />
@@ -49,9 +53,14 @@ export default function IndustrySection({
             )}
           </div>
 
-          <button className="mt-10 rounded-xl bg-primary px-8 py-3 font-semibold text-white shadow-lg shadow-primary/20 transition-all duration-300 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-xl">
-            Consult With Our Experts
-          </button>
+          {buttonText && buttonLink && (
+            <Link
+              href={buttonLink}
+              className="mt-10 inline-flex rounded-xl bg-primary px-8 py-3 font-semibold text-white shadow-lg shadow-primary/20 transition-all duration-300 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-xl"
+            >
+              {buttonText}
+            </Link>
+          )}
         </div>
 
         <div className="relative">
@@ -63,6 +72,7 @@ export default function IndustrySection({
               src={industrySection?.image || "/images/services/audit-team.jpg"}
               alt={industrySection?.title || "Industries We Serve"}
               fill
+              sizes="(max-width: 1024px) 100vw, 50vw"
               className="object-cover"
               priority
             />

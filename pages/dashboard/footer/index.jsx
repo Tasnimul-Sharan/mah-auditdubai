@@ -107,7 +107,7 @@ export default function FooterAdmin() {
         ...data,
         social_links: data.social_links || [],
         quick_links: data.quick_links || [],
-        services: data.services || [],
+        services: normalizeServices(data.services || []),
         copyright: data.copyright || "",
       });
 
@@ -236,18 +236,96 @@ export default function FooterAdmin() {
     setForm({ ...form, quick_links: updated });
   };
 
-  const addService = () => {
-    setForm({
-      ...form,
-      services: [...form.services, ""],
+  const generateSlug = (text = "") =>
+    text
+      .toLowerCase()
+      .trim()
+      .replace(/[^\w\s-]/g, "")
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-");
+
+  const getServiceLink = (slug = "") => {
+    if (!slug) return "";
+    return `/services/${slug}`;
+  };
+
+  const normalizeServices = (services = []) => {
+    if (!Array.isArray(services)) return [];
+
+    return services.map((item) => {
+      if (typeof item === "string") {
+        const slug = generateSlug(item);
+
+        return {
+          label: item,
+          slug,
+          link: getServiceLink(slug),
+        };
+      }
+
+      const label = item?.label || item?.title || "";
+      const slug = item?.slug || generateSlug(label);
+
+      return {
+        label,
+        slug,
+        link: item?.link || getServiceLink(slug),
+      };
     });
   };
 
-  const updateService = (i, value) => {
-    const updated = [...form.services];
-    updated[i] = value;
-    setForm({ ...form, services: updated });
-  };
+const addService = () => {
+  setForm({
+    ...form,
+    services: [
+      ...form.services,
+      {
+        label: "",
+        slug: "",
+        link: "",
+      },
+    ],
+  });
+};
+
+ const updateService = (i, field, value) => {
+   const updated = [...form.services];
+
+   const current = updated[i] || {
+     label: "",
+     slug: "",
+     link: "",
+   };
+
+   if (field === "label") {
+     const slug = generateSlug(value);
+
+     updated[i] = {
+       ...current,
+       label: value,
+       slug,
+       link: getServiceLink(slug),
+     };
+   } else if (field === "slug") {
+     const slug = generateSlug(value);
+
+     updated[i] = {
+       ...current,
+       slug,
+       link: getServiceLink(slug),
+     };
+   } else {
+     updated[i] = {
+       ...current,
+       [field]: value,
+     };
+   }
+
+   setForm({
+     ...form,
+     services: updated,
+   });
+ };
 
   const handleSave = async () => {
     try {
@@ -471,18 +549,46 @@ export default function FooterAdmin() {
           onAdd={addService}
           addLabel="Add Service"
         >
-          {form.services.map((item, i) => (
-            <div key={i} className="grid md:grid-cols-[1fr_auto] gap-3">
-              <input
-                placeholder="Service Name"
-                value={item || ""}
-                onChange={(e) => updateService(i, e.target.value)}
-                className={inputClass}
-              />
+          {form.services.map((item, i) => {
+            const service =
+              typeof item === "string"
+                ? {
+                    label: item,
+                    slug: generateSlug(item),
+                    link: getServiceLink(generateSlug(item)),
+                  }
+                : item;
 
-              <DeleteButton onClick={() => requestDelete("service", i)} />
-            </div>
-          ))}
+            return (
+              <div
+                key={i}
+                className="grid gap-3 md:grid-cols-[1fr_220px_1fr_auto]"
+              >
+                <input
+                  placeholder="Service Name"
+                  value={service.label || ""}
+                  onChange={(e) => updateService(i, "label", e.target.value)}
+                  className={inputClass}
+                />
+
+                <input
+                  placeholder="Auto Slug"
+                  value={service.slug || ""}
+                  onChange={(e) => updateService(i, "slug", e.target.value)}
+                  className={`${inputClass} bg-gray-50 text-gray-500`}
+                />
+
+                <input
+                  placeholder="Service Link"
+                  value={service.link || ""}
+                  onChange={(e) => updateService(i, "link", e.target.value)}
+                  className={inputClass}
+                />
+
+                <DeleteButton onClick={() => requestDelete("service", i)} />
+              </div>
+            );
+          })}
         </RepeaterCard>
 
         <div className={cardClass}>

@@ -54,7 +54,7 @@ export default function Footer() {
       <div className="absolute right-0 top-20 h-80 w-80 rounded-full bg-primary/5 blur-3xl" />
 
       <div className="relative custom-container mx-auto px-6 pt-16 md:pt-20 pb-10">
-        <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_1.4fr] gap-10 lg:gap-14">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_2fr]">
           <div className="max-w-sm">
             {data.logo && (
               <Link href="/" className="inline-flex">
@@ -115,7 +115,6 @@ export default function Footer() {
                 ))}
               </ul>
             </div>
-
             <div>
               <h4 className="relative inline-block text-base font-bold text-white">
                 Services
@@ -123,17 +122,47 @@ export default function Footer() {
               </h4>
 
               <ul className="mt-7 space-y-3">
-                {data.services?.map((service, i) => (
-                  <li key={i}>
-                    <span
-                      className="relative inline-block text-sm text-white/65 transition hover:text-primary
-    after:absolute after:left-0 after:-bottom-1 after:h-[1px] after:w-0 after:bg-primary
-    after:transition-all after:duration-300 hover:after:w-full"
-                    >
-                      {service}
-                    </span>
-                  </li>
-                ))}
+                {data.services?.map((service, i) => {
+                  const label =
+                    typeof service === "string"
+                      ? service
+                      : service?.label || service?.title;
+
+                  const slug =
+                    typeof service === "string"
+                      ? service
+                          .toLowerCase()
+                          .trim()
+                          .replace(/[^\w\s-]/g, "")
+                          .replace(/\s+/g, "-")
+                          .replace(/-+/g, "-")
+                      : service?.slug;
+
+                  const href =
+                    typeof service === "string"
+                      ? `/services/${slug}`
+                      : service?.link || `/services/${slug}`;
+
+                  if (!label || !href) return null;
+
+                  return (
+                    <li key={i}>
+                      <Link
+                        href={href}
+                        className="group relative inline-flex items-center gap-2 text-sm text-white/65 transition hover:text-primary
+after:absolute after:left-0 after:-bottom-1 after:h-[1px] after:w-0 after:bg-primary
+after:transition-all after:duration-300 hover:after:w-full"
+                      >
+                        <span>{label}</span>
+
+                        <FaArrowRight
+                          size={10}
+                          className="translate-x-[-6px] opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-60"
+                        />
+                      </Link>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
 

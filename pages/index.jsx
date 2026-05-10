@@ -16,11 +16,14 @@ export default function Home({
   heroSlides,
   about,
   services,
+  servicesPage,
   whyChooseUs,
   whyChoosePoints,
   industrySection,
   industryItems,
   contactPage,
+  blogs,
+  blogSectionData,
 }) {
   return (
     <div>
@@ -73,7 +76,10 @@ export default function Home({
 
       <LandingPage slides={heroSlides} />
       <AboutUsSection data={about} />
-      <ServicesSection services={services} />
+      <ServicesSection
+        services={services}
+        sectionContent={servicesPage?.section_content}
+      />
       <StatsSection />
       <WhyChooseUs data={whyChooseUs} points={whyChoosePoints} />
 
@@ -84,7 +90,9 @@ export default function Home({
 
       <ClientsSection />
       <TestimonialsSection />
-      <BlogSection />
+
+      <BlogSection blogs={blogs} sectionData={blogSectionData} />
+
       <ContactSection data={contactPage} />
     </div>
   );
@@ -156,17 +164,41 @@ export async function getServerSideProps() {
     .select("*")
     .single();
 
+  const { data: blogsData } = await supabaseServer
+    .from("blogs")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  const firstBlog = blogsData?.[0] || null;
+
+  const blogSectionData = {
+    badge: firstBlog?.badge || "Insights & Resources",
+    title: firstBlog?.section_title || "Audit & Compliance Insights in Dubai",
+    subtitle:
+      firstBlog?.section_subtitle ||
+      "Expert insights on auditing, VAT, and compliance to help your business stay secure, compliant, and growth-ready in the UAE.",
+    buttonText: firstBlog?.button_text || "View All Insights",
+  };
+
+  const { data: servicesPageData } = await supabaseServer
+    .from("services_page")
+    .select("*")
+    .single();
+
   return {
     props: {
       meta: homeData || null,
       heroSlides: heroSlidesData || [],
       about: aboutData || null,
       services: servicesData || [],
+      servicesPage: servicesPageData || null,
       whyChooseUs: whyChooseUsData || null,
       whyChoosePoints,
       industrySection: industrySection || null,
       industryItems,
       contactPage: contactPage || null,
+      blogs: blogsData || [],
+      blogSectionData,
     },
   };
 }

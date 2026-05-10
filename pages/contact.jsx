@@ -31,6 +31,25 @@ export default function ContactPage({ data }) {
         />
         <meta name="twitter:image" content={data?.meta_image || ""} />
         <meta name="robots" content="index, follow" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "MAH Audit Dubai",
+              url: data?.meta_url,
+              logo: "https://mah-auditdubai.ae/logo.png",
+              image: data?.meta_image,
+              description: data?.meta_description,
+              areaServed: "Dubai, UAE",
+              sameAs: [
+                "https://www.facebook.com/",
+                "https://www.linkedin.com/",
+              ],
+            }),
+          }}
+        />
       </Head>
 
       <HeroSection

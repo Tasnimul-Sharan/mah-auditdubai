@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import {
   FaArrowRight,
@@ -7,6 +6,7 @@ import {
   FaStar,
 } from "react-icons/fa";
 import SectionBadge from "./SectionBadge";
+import OptimizedImage from "@/components/OptimizedImage";
 
 export default function WhyChooseUs({ data, points = [] }) {
   const whyChooseUs = data;
@@ -35,11 +35,13 @@ export default function WhyChooseUs({ data, points = [] }) {
             <div className="absolute -left-6 -top-6 h-32 w-32 rounded-full border border-primary/20" />
             <div className="absolute -bottom-6 -right-6 h-44 w-44 rounded-full bg-primary/10 blur-3xl" />
 
-            <div className="relative h-full min-h-[420px] md:min-h-[520px] lg:min-h-[600px] overflow-hidden rounded-[2rem] border border-slate-200 bg-slate-100 shadow-[0_28px_90px_rgba(15,23,42,0.18)]">
-              <Image
+            <div className="relative h-full min-h-[420px] overflow-hidden rounded-[2rem] border border-slate-200 bg-slate-100 shadow-[0_28px_90px_rgba(15,23,42,0.18)] md:min-h-[520px] lg:min-h-[600px]">
+              <OptimizedImage
                 src={whyChooseUs.image}
                 alt={whyChooseUs.title || "Why choose us"}
                 fill
+                width={900}
+                sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-cover"
                 priority
               />
@@ -66,7 +68,7 @@ export default function WhyChooseUs({ data, points = [] }) {
           </div>
         )}
 
-        <div className={!whyChooseUs.image ? "md:col-span-2 max-w-3xl" : ""}>
+        <div className={!whyChooseUs.image ? "max-w-3xl md:col-span-2" : ""}>
           {whyChooseUs.subtitle && (
             <SectionBadge icon={FaStar} className="mb-5">
               {whyChooseUs.subtitle}
@@ -93,6 +95,7 @@ export default function WhyChooseUs({ data, points = [] }) {
                   className="group flex items-start gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-xl"
                 >
                   <FaCheckCircle className="mt-1 shrink-0 text-primary" />
+
                   <span className="text-sm leading-6 text-slate-700">
                     {item}
                   </span>
@@ -102,10 +105,10 @@ export default function WhyChooseUs({ data, points = [] }) {
           )}
 
           <Link
-            href={whyChooseUs.button_link}
+            href={buttonHref}
             className="mt-10 inline-flex items-center gap-3 rounded-xl bg-primary px-7 py-3 font-semibold text-white shadow-lg shadow-primary/20 transition duration-300 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-xl"
           >
-            {whyChooseUs.button_text}
+            {buttonText}
             <FaArrowRight className="text-sm" />
           </Link>
         </div>

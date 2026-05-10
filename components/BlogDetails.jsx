@@ -1,7 +1,7 @@
 "use client";
 
 import { socialConfig } from "@/utils/socialConfig";
-import Image from "next/image";
+import OptimizedImage from "@/components/OptimizedImage";
 import { AiOutlineTag } from "react-icons/ai";
 import { FaCheckCircle, FaQuoteLeft, FaRegCheckCircle } from "react-icons/fa";
 
@@ -22,18 +22,19 @@ export default function BlogDetails({ blogsData }) {
   };
 
   return (
-    <article className="relative py-20 overflow-hidden bg-gradient-to-b from-white via-gray-50 to-white">
+    <article className="relative py-20 bg-gradient-to-b from-white via-gray-50 to-white">
       <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-primary/10 blur-3xl rounded-full" />
       <div className="absolute bottom-20 right-0 w-[450px] h-[260px] bg-secondary/10 blur-3xl rounded-full" />
 
       <div className="relative max-w-6xl mx-auto md:px-0 px-6">
         <div className="relative rounded-[2rem] overflow-hidden shadow-[0_30px_90px_rgba(0,0,0,0.16)] border border-white">
-          <Image
+          <OptimizedImage
             src={blogPost.image}
             alt={blogPost.title || "Blog Image"}
             width={1400}
             height={850}
             priority
+            sizes="(max-width: 768px) 100vw, 1152px"
             className="w-full h-[320px] md:h-[560px] object-cover"
           />
 
@@ -82,10 +83,12 @@ export default function BlogDetails({ blogsData }) {
                     key={i}
                     className="relative h-72 rounded-3xl overflow-hidden shadow-lg group"
                   >
-                    <Image
+                    <OptimizedImage
                       src={img}
                       alt={`Blog supporting image ${i + 1}`}
                       fill
+                      width={700}
+                      sizes="(max-width: 768px) 100vw, 50vw"
                       className="object-cover group-hover:scale-110 transition-transform duration-1000"
                     />
                   </div>
@@ -100,6 +103,7 @@ export default function BlogDetails({ blogsData }) {
                     <span className="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
                       <FaCheckCircle />
                     </span>
+
                     <p className="text-gray-700 leading-7">{point}</p>
                   </div>
                 ))}
@@ -158,10 +162,10 @@ export default function BlogDetails({ blogsData }) {
                       aria-label={`Share this blog on ${social.name}`}
                       title={`Share this blog on ${social.name}`}
                       className="w-10 h-10 flex items-center justify-center rounded-full
-  border border-gray-200 text-gray-500 bg-white
-  hover:bg-primary hover:text-white hover:border-primary
-  hover:-translate-y-1 hover:shadow-lg
-  transition-all duration-500"
+                        border border-gray-200 text-gray-500 bg-white
+                        hover:bg-primary hover:text-white hover:border-primary
+                        hover:-translate-y-1 hover:shadow-lg
+                        transition-all duration-500"
                     >
                       <Icon className="w-4 h-4" aria-hidden="true" />
                     </a>

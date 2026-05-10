@@ -1,9 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { FaCheckCircle, FaIndustry } from "react-icons/fa";
 import SectionBadge from "./SectionBadge";
+import OptimizedImage from "@/components/OptimizedImage";
 
 export default function IndustrySection({
   industrySection = null,
@@ -68,10 +68,11 @@ export default function IndustrySection({
           <div className="absolute -bottom-8 -right-8 h-52 w-52 rounded-full bg-primary/10 blur-3xl" />
 
           <div className="relative h-[520px] overflow-hidden rounded-[2rem] border border-white/60 bg-white shadow-[0_28px_90px_rgba(15,23,42,0.16)]">
-            <Image
+            <OptimizedImage
               src={industrySection?.image || "/images/services/audit-team.jpg"}
               alt={industrySection?.title || "Industries We Serve"}
               fill
+              width={900}
               sizes="(max-width: 1024px) 100vw, 50vw"
               className="object-cover"
               priority

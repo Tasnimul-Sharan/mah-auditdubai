@@ -1,22 +1,26 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { FaRegCalendarAlt, FaRegUser, FaBookOpen } from "react-icons/fa";
 import { FiArrowRight } from "react-icons/fi";
-import { useEffect, useState } from "react";
-import { supabaseServer } from "@/lib/supabaseServer";
 import SectionBadge from "@/components/SectionBadge";
+import OptimizedImage from "@/components/OptimizedImage";
 
-export default function BlogPageSection() {
-  const [blogs, setBlogs] = useState([]);
-  const [loading, setLoading] = useState(true);
+const defaultSectionData = {
+  badge: "Insights & Resources",
+  title: "Latest Blogs",
+  subtitle: "Stay updated with our latest insights and resources.",
+  buttonText: "Read More",
+};
 
-  const [sectionData, setSectionData] = useState({
-    badge: "Insights & Resources",
-    title: "Latest Blogs",
-    subtitle: "Stay updated with our latest insights and resources.",
-  });
+export default function BlogPageSection({
+  blogs = [],
+  sectionData = defaultSectionData,
+}) {
+  const section = {
+    ...defaultSectionData,
+    ...(sectionData || {}),
+  };
 
   const formatDate = (date) => {
     if (!date) return "";
@@ -28,123 +32,74 @@ export default function BlogPageSection() {
     });
   };
 
-  const fetchBlogs = async () => {
-    try {
-      setLoading(true);
-
-      const { data, error } = await supabaseServer
-        .from("blogs")
-        .select("*")
-        .order("date", { ascending: false });
-
-      if (error) throw error;
-
-      setBlogs(data || []);
-
-      // ✅ header data load
-      if (data?.length > 0) {
-        if (data?.length > 0) {
-          setSectionData({
-            badge: data[0]?.badge,
-            title: data[0]?.section_title,
-            subtitle: data[0]?.section_subtitle,
-            buttonText: data[0]?.button_text,
-          });
-        }
-      }
-    } catch (err) {
-      console.error("Blogs fetch error:", err);
-      setBlogs([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchBlogs();
-  }, []);
-
-  if (loading) {
-    return (
-      <section className="py-20 bg-white text-center text-gray-500">
-        Loading blogs...
-      </section>
-    );
-  }
-
   return (
-    <section className="py-20 bg-white relative">
-      <div className="max-w-7xl mx-auto px-6 md:px-12">
-        {/* ================= HEADER ================= */}
-        <div className="text-center mb-16">
-          <div className="flex justify-center mb-4">
-            <SectionBadge icon={FaBookOpen}>{sectionData.badge}</SectionBadge>
+    <section className="relative bg-white py-20">
+      <div className="mx-auto max-w-7xl px-6 md:px-12">
+        <div className="mb-16 text-center">
+          <div className="mb-4 flex justify-center">
+            <SectionBadge icon={FaBookOpen}>{section.badge}</SectionBadge>
           </div>
 
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
-            {sectionData.title}
+          <h2 className="text-3xl font-bold text-gray-900 md:text-4xl">
+            {section.title}
           </h2>
 
-          <p className="text-gray-600 mt-3 max-w-xl mx-auto">
-            {sectionData.subtitle}
+          <p className="mx-auto mt-3 max-w-xl text-gray-600">
+            {section.subtitle}
           </p>
         </div>
 
-        {/* ================= BLOG GRID ================= */}
         {blogs.length === 0 ? (
-          <div className="text-center py-20 text-gray-400">No blogs found</div>
+          <div className="py-20 text-center text-gray-400">No blogs found</div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             {blogs.map((blog) => (
               <Link key={blog.id} href={`/blogs/${blog.slug}`}>
-                <div className="group rounded-xl overflow-hidden border bg-white hover:shadow-xl transition-all duration-500 hover:-translate-y-2">
-                  {/* IMAGE */}
-                  <div className="relative w-full h-64 overflow-hidden">
-                    <Image
+                <div className="group/card overflow-hidden rounded-xl border bg-white transition-all duration-500 hover:-translate-y-2 hover:shadow-xl">
+                  <div className="relative h-64 w-full overflow-hidden">
+                    <OptimizedImage
                       src={blog.image || "/placeholder.jpg"}
                       alt={blog.title || "Blog Image"}
                       fill
-                      className="object-cover transition-all duration-1000 group-hover:scale-125"
+                      width={800}
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                      className="object-cover transition-all duration-1000 group-hover/card:scale-125"
                     />
                   </div>
 
                   <div className="p-6">
-                    {/* DATE + AUTHOR */}
-                    <div className="flex flex-wrap items-center gap-4 text-gray-500 text-sm mb-3">
+                    <div className="mb-3 flex flex-wrap items-center gap-4 text-sm text-gray-500">
                       <span className="flex items-center gap-2 font-medium">
-                        <span className="p-2 rounded-lg bg-primary/10 text-primary">
+                        <span className="rounded-lg bg-primary/10 p-2 text-primary">
                           <FaRegCalendarAlt />
                         </span>
                         {formatDate(blog.date)}
                       </span>
 
                       <span className="flex items-center gap-2 font-medium">
-                        <span className="p-2 rounded-lg bg-primary/10 text-primary">
+                        <span className="rounded-lg bg-primary/10 p-2 text-primary">
                           <FaRegUser />
                         </span>
                         By: {blog.author}
                       </span>
                     </div>
 
-                    {/* TITLE */}
-                    <h3 className="text-lg font-bold text-secondary mb-2 group-hover:text-primary transition-colors duration-500">
+                    <h3 className="mb-2 text-lg font-bold text-secondary transition-colors duration-500 group-hover/card:text-primary">
                       {blog.title}
                     </h3>
 
-                    {/* DESCRIPTION */}
-                    <p className="text-gray-600 text-sm line-clamp-3">
+                    <p className="line-clamp-3 text-sm text-gray-600">
                       {blog.description}
                     </p>
 
-                    {/* READ MORE */}
-                    <div className="relative mt-4 inline-flex items-center gap-2 text-secondary text-sm font-semibold transition-all duration-300 group">
-                      <span className="relative transition-all duration-300 group-hover:text-primary group-hover:translate-x-1">
-                        Read More
+                    <div className="relative mt-4 inline-flex items-center gap-2 text-sm font-semibold text-secondary transition-all duration-300">
+                      <span className="relative transition-all duration-300 group-hover/card:translate-x-1 group-hover/card:text-primary">
+                        {section.buttonText || "Read More"}
                       </span>
 
-                      <FiArrowRight className="transition-all duration-500 group-hover:translate-x-2 group-hover:text-primary" />
+                      <FiArrowRight className="transition-all duration-500 group-hover/card:translate-x-2 group-hover/card:text-primary" />
 
-                      <span className="absolute left-0 -bottom-1 h-[2px] w-full bg-primary scale-x-0 origin-left transition-transform duration-500 group-hover:scale-x-100" />
+                      <span className="absolute -bottom-1 left-0 h-[2px] w-full origin-left scale-x-0 bg-primary transition-transform duration-500 group-hover/card:scale-x-100" />
                     </div>
                   </div>
                 </div>

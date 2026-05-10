@@ -16,10 +16,12 @@ export default function ServicesPage({ data, services }) {
             "Professional audit, accounting, tax and business advisory services in Dubai, UAE."
           }
         />
+
         <meta
           name="keywords"
           content={data?.meta_keywords || "audit services Dubai"}
         />
+
         <meta name="author" content={data?.meta_author || "MAH Audit Dubai"} />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
@@ -32,15 +34,19 @@ export default function ServicesPage({ data, services }) {
           property="og:title"
           content={data?.meta_title || "Services | MAH Audit Dubai"}
         />
+
         <meta
           property="og:description"
           content={data?.meta_description || ""}
         />
+
         <meta property="og:type" content="website" />
+
         <meta
           property="og:url"
           content={data?.meta_url || "https://mah-auditdubai.ae/services"}
         />
+
         <meta
           property="og:image"
           content={
@@ -48,17 +54,21 @@ export default function ServicesPage({ data, services }) {
             "https://mah-auditdubai.ae/services/services-og.jpg"
           }
         />
+
         <meta property="og:site_name" content="MAH Audit Dubai" />
 
         <meta name="twitter:card" content="summary_large_image" />
+
         <meta
           name="twitter:title"
           content={data?.meta_title || "Services | MAH Audit Dubai"}
         />
+
         <meta
           name="twitter:description"
           content={data?.meta_description || ""}
         />
+
         <meta
           name="twitter:image"
           content={
@@ -97,21 +107,32 @@ export default function ServicesPage({ data, services }) {
         }}
       />
 
-      <ServicesSection services={services} />
+      <ServicesSection
+        services={services}
+        sectionContent={data?.section_content}
+      />
     </div>
   );
 }
 
 export async function getServerSideProps() {
-  const { data: pageData } = await supabaseServer
+  const { data: pageData, error: pageError } = await supabaseServer
     .from("services_page")
     .select("*")
     .single();
 
-  const { data: servicesData } = await supabaseServer
+  if (pageError) {
+    console.error("Services page fetch error:", pageError);
+  }
+
+  const { data: servicesData, error: servicesError } = await supabaseServer
     .from("services")
     .select("*")
     .order("created_at", { ascending: true });
+
+  if (servicesError) {
+    console.error("Services fetch error:", servicesError);
+  }
 
   return {
     props: {

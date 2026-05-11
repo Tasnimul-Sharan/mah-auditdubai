@@ -1,48 +1,21 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { FaHandshake } from "react-icons/fa";
 import SectionBadge from "../SectionBadge";
 import OptimizedImage from "@/components/OptimizedImage";
-import { supabaseServer } from "@/lib/supabaseServer";
 
-export default function ClientsSection() {
-  const [clients, setClients] = useState([]);
+const defaultSectionData = {
+  badge: "Our Clients",
+  title: "Trusted by Leading Organizations",
+  subtitle:
+    "We collaborate with companies across the UAE and international markets, delivering reliable audit, compliance, and advisory services.",
+};
 
-  const [sectionData, setSectionData] = useState({
-    badge: "Our Clients",
-    title: "Trusted by Leading Organizations",
-    subtitle:
-      "We collaborate with companies across the UAE and international markets, delivering reliable audit, compliance, and advisory services.",
-  });
-
-  const fetchClients = async () => {
-    const { data, error } = await supabaseServer
-      .from("clients")
-      .select("*")
-      .order("created_at", { ascending: true });
-
-    if (error) {
-      console.error("Clients fetch error:", error);
-      return;
-    }
-
-    setClients(data || []);
-
-    if (data?.length > 0) {
-      setSectionData({
-        badge: data[0]?.badge || "Our Clients",
-        title: data[0]?.title || "Trusted by Leading Organizations",
-        subtitle:
-          data[0]?.subtitle ||
-          "We collaborate with companies across the UAE and international markets, delivering reliable audit, compliance, and advisory services.",
-      });
-    }
+export default function ClientsSection({ clients = [], sectionData = null }) {
+  const section = {
+    ...defaultSectionData,
+    ...(sectionData || {}),
   };
-
-  useEffect(() => {
-    fetchClients();
-  }, []);
 
   return (
     <section className="relative overflow-hidden bg-gradient-to-b from-white via-gray-50 to-white py-28">
@@ -56,16 +29,16 @@ export default function ClientsSection() {
               icon={FaHandshake}
               className="flex items-center gap-2"
             >
-              {sectionData.badge}
+              {section.badge}
             </SectionBadge>
           </div>
 
           <h2 className="text-3xl font-bold text-secondary md:text-5xl">
-            {sectionData.title}
+            {section.title}
           </h2>
 
           <p className="mx-auto mt-5 max-w-2xl leading-relaxed text-gray-600">
-            {sectionData.subtitle}
+            {section.subtitle}
           </p>
         </div>
 
@@ -83,7 +56,7 @@ export default function ClientsSection() {
 
                   <OptimizedImage
                     src={client.logo_url || "/placeholder.jpg"}
-                    alt={client.name || "Client Logo"}
+                    alt={client.name || client.title || "Client Logo"}
                     width={180}
                     height={100}
                     sizes="180px"

@@ -24,6 +24,10 @@ export default function Home({
   contactPage,
   blogs,
   blogSectionData,
+  clients,
+  clientsSectionData,
+  testimonials,
+  testimonialsSectionData,
 }) {
   return (
     <div>
@@ -88,8 +92,11 @@ export default function Home({
         industryItems={industryItems}
       />
 
-      <ClientsSection />
-      <TestimonialsSection />
+      <ClientsSection clients={clients} sectionData={clientsSectionData} />
+      <TestimonialsSection
+        testimonials={testimonials}
+        sectionData={testimonialsSectionData}
+      />
 
       <BlogSection blogs={blogs} sectionData={blogSectionData} />
 
@@ -185,6 +192,36 @@ export async function getServerSideProps() {
     .select("*")
     .single();
 
+  const { data: clientsData } = await supabaseServer
+    .from("clients")
+    .select("*")
+    .order("created_at", { ascending: true });
+
+  const firstClient = clientsData?.[0] || null;
+
+  const clientsSectionData = {
+    badge: firstClient?.badge || "Our Clients",
+    title: firstClient?.title || "Trusted by Leading Organizations",
+    subtitle:
+      firstClient?.subtitle ||
+      "We collaborate with companies across the UAE and international markets, delivering reliable audit, compliance, and advisory services.",
+  };
+
+  const { data: testimonialsData } = await supabaseServer
+    .from("testimonials")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  const firstTestimonial = testimonialsData?.[0] || null;
+
+  const testimonialsSectionData = {
+    badge: firstTestimonial?.badge || "Testimonials",
+    title: firstTestimonial?.section_title || "What Our Clients Say",
+    subtitle:
+      firstTestimonial?.section_subtitle ||
+      "Trusted by businesses for delivering reliable audit, compliance, and financial advisory services.",
+  };
+
   return {
     props: {
       meta: homeData || null,
@@ -199,6 +236,10 @@ export async function getServerSideProps() {
       contactPage: contactPage || null,
       blogs: blogsData || [],
       blogSectionData,
+      clients: clientsData || [],
+      clientsSectionData,
+      testimonials: testimonialsData || [],
+      testimonialsSectionData,
     },
   };
 }

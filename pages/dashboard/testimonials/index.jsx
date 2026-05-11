@@ -251,6 +251,43 @@ export default function TestimonialsAdmin() {
     ));
   };
 
+  const handleSectionSettingsUpdate = async () => {
+    try {
+      setSaving(true);
+
+      const payload = {
+        badge: form.badge || "Testimonials",
+        section_title: form.section_title || "What Our Clients Say",
+        section_subtitle:
+          form.section_subtitle ||
+          "Trusted by businesses for delivering reliable services.",
+      };
+
+      if (data.length === 0) {
+        showModal(
+          "error",
+          "First add at least one testimonial, then update section settings.",
+        );
+        return;
+      }
+
+      const { error } = await supabaseServer
+        .from("testimonials")
+        .update(payload)
+        .not("id", "is", null);
+
+      if (error) throw error;
+
+      showModal("success", "Section settings updated successfully.");
+      fetchData();
+    } catch (err) {
+      console.error(err);
+      showModal("error", "Section settings update failed. Please try again.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
   return (
     <>
       <div className="max-w-6xl mx-auto space-y-8">
@@ -259,7 +296,6 @@ export default function TestimonialsAdmin() {
           Testimonials
         </h1>
 
-        {/* ================= SECTION SETTINGS ================= */}
         <div className={cardClass}>
           <h2 className="text-xl font-bold">Section Settings</h2>
 
@@ -287,6 +323,16 @@ export default function TestimonialsAdmin() {
             placeholder="Subtitle"
             className={inputClass}
           />
+
+          <button
+            type="button"
+            onClick={handleSectionSettingsUpdate}
+            disabled={saving}
+            className={primaryBtn}
+          >
+            <Save size={18} />
+            {saving ? "Updating..." : "Update Section Settings"}
+          </button>
         </div>
 
         {/* ================= FORM ================= */}

@@ -18,6 +18,11 @@ export default function AboutPage({
   teamMembers,
   whyUs,
   premiumCTA,
+  testimonials,
+  clients,
+  clientsSectionData,
+  testimonialsSectionData,
+  stats,
 }) {
   return (
     <div className="w-full relative">
@@ -75,10 +80,13 @@ export default function AboutPage({
       <AboutUsSection data={about} />
       <VisionMission />
       <WhyUs whyUs={whyUs} />
-      <StatsSection />
-      <ClientsSection />
+      <StatsSection stats={stats} />
+      <ClientsSection clients={clients} sectionData={clientsSectionData} />
       <TeamSection section={teamSection} members={teamMembers} />
-      <TestimonialsSection />
+      <TestimonialsSection
+        testimonials={testimonials}
+        sectionData={testimonialsSectionData}
+      />
       <FAQ />
       <PremiumCTA data={premiumCTA} />
     </div>
@@ -115,6 +123,41 @@ export async function getServerSideProps() {
     .select("*")
     .single();
 
+  const { data: testimonialsData } = await supabaseServer
+    .from("testimonials")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  const firstTestimonial = testimonialsData?.[0] || null;
+
+  const testimonialsSectionData = {
+    badge: firstTestimonial?.badge || "Testimonials",
+    title: firstTestimonial?.section_title || "What Our Clients Say",
+    subtitle:
+      firstTestimonial?.section_subtitle ||
+      "Trusted by businesses for delivering reliable audit, compliance, and financial advisory services.",
+  };
+
+  const { data: statsData } = await supabaseServer
+    .from("stats")
+    .select("*")
+    .order("created_at", { ascending: true });
+
+  const { data: clientsData } = await supabaseServer
+    .from("clients")
+    .select("*")
+    .order("created_at", { ascending: true });
+
+  const firstClient = clientsData?.[0] || null;
+
+  const clientsSectionData = {
+    badge: firstClient?.badge || "Our Clients",
+    title: firstClient?.title || "Trusted by Leading Organizations",
+    subtitle:
+      firstClient?.subtitle ||
+      "We collaborate with companies across the UAE and international markets, delivering reliable audit, compliance, and advisory services.",
+  };
+
   return {
     props: {
       data: pageData || null,
@@ -123,6 +166,11 @@ export async function getServerSideProps() {
       teamSection: teamSection || null,
       teamMembers: teamMembers || [],
       whyUs: whyUs || null,
+      testimonials: testimonialsData || [],
+      testimonialsSectionData,
+      stats: statsData || [],
+      clients: clientsData || [],
+      clientsSectionData,
     },
   };
 }

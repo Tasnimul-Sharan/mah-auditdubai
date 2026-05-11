@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Counter from "./Counter";
 import {
   FaBriefcase,
@@ -9,7 +8,6 @@ import {
   FaAward,
   FaChartLine,
 } from "react-icons/fa";
-import { supabaseServer } from "@/lib/supabaseServer";
 
 const iconMap = {
   briefcase: FaBriefcase,
@@ -25,50 +23,25 @@ const iconMap = {
   FaChartLine: FaChartLine,
 };
 
-export default function StatsSection() {
-  const [stats, setStats] = useState([]);
-
-  useEffect(() => {
-    fetchStats();
-  }, []);
-
-  const fetchStats = async () => {
-    const { data, error } = await supabaseServer
-      .from("stats")
-      .select("*")
-      .order("created_at", { ascending: true });
-
-    if (error) {
-      console.error("Stats fetch error:", error);
-      return;
-    }
-
-    setStats(data || []);
-  };
-
-  if (!stats.length) return null;
+export default function StatsSection({ stats = [] }) {
+  if (!Array.isArray(stats) || stats.length === 0) return null;
 
   return (
-    <section className="py-24 bg-secondary text-primary">
-      <div className="max-w-6xl mx-auto px-6">
-        <div className="grid md:grid-cols-4 gap-12 text-center">
+    <section className="bg-secondary py-24 text-primary">
+      <div className="mx-auto max-w-6xl px-6">
+        <div className="grid gap-12 text-center md:grid-cols-4">
           {stats.map((item) => {
             const Icon = iconMap[item.icon] || FaChartLine;
 
             return (
               <div key={item.id} className="group">
-                <div className="flex justify-center mb-4">
-                  <div
-                    className="w-16 h-16 md:w-20 md:h-20 text-2xl md:text-3xl
-                    flex items-center justify-center rounded-xl
-                    bg-primary/5 border border-primary/10 text-primary
-                    group-hover:scale-110 transition-all duration-300"
-                  >
+                <div className="mb-4 flex justify-center">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-xl border border-primary/10 bg-primary/5 text-2xl text-primary transition-all duration-300 group-hover:scale-110 md:h-20 md:w-20 md:text-3xl">
                     <Icon />
                   </div>
                 </div>
 
-                <h3 className="text-4xl md:text-5xl font-bold text-primary">
+                <h3 className="text-4xl font-bold text-primary md:text-5xl">
                   <Counter
                     end={Number(item.value) || 0}
                     suffix={item.suffix || ""}

@@ -8,12 +8,10 @@ export default function BlogsPage({ data, blogs, blogSectionData }) {
     <div className="w-full relative">
       <Head>
         <title>{data?.meta_title || "Blogs | MAH Audit Dubai"}</title>
-
         <meta name="description" content={data?.meta_description || ""} />
         <meta name="keywords" content={data?.meta_keywords || ""} />
         <meta name="author" content={data?.meta_author || ""} />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
         <link rel="canonical" href={data?.meta_url || ""} />
 
         <meta property="og:title" content={data?.meta_title || ""} />
@@ -24,7 +22,6 @@ export default function BlogsPage({ data, blogs, blogSectionData }) {
         <meta property="og:url" content={data?.meta_url || ""} />
         <meta property="og:image" content={data?.meta_image || ""} />
         <meta property="og:type" content="website" />
-
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={data?.meta_title || ""} />
         <meta
@@ -32,9 +29,7 @@ export default function BlogsPage({ data, blogs, blogSectionData }) {
           content={data?.meta_description || ""}
         />
         <meta name="twitter:image" content={data?.meta_image || ""} />
-
         <meta name="robots" content="index, follow" />
-
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

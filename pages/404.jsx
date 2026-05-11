@@ -77,12 +77,11 @@ export default function Custom404() {
         <link rel="canonical" href="https://mah-auditdubai.ae/404" />
       </Head>
 
-      {/* Background Effects */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(56,182,255,0.22),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(108,201,255,0.14),transparent_32%)]" />
       <div className="absolute left-1/2 top-0 h-[420px] w-[760px] -translate-x-1/2 rounded-full bg-[#38b6ff]/10 blur-3xl" />
       <div className="absolute -bottom-28 -right-28 h-[380px] w-[380px] rounded-full bg-[#6cc9ff]/10 blur-3xl" />
 
-      <div className="relative z-10 flex min-h-screen items-center justify-center px-5 py-16 pt-40">
+      <div className="relative z-10 flex min-h-screen items-center justify-center px-5 py-16 pt-24">
         <div
           ref={cardRef}
           className="relative w-full max-w-4xl overflow-hidden rounded-[2.5rem] border border-white/10 bg-white/[0.06] p-8 text-center shadow-[0_35px_120px_rgba(0,0,0,0.35)] backdrop-blur-2xl md:p-14"

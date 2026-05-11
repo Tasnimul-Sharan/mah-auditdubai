@@ -13,7 +13,6 @@ export default function BlogsPage({ data, blogs, blogSectionData }) {
         <meta name="author" content={data?.meta_author || ""} />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="canonical" href={data?.meta_url || ""} />
-
         <meta property="og:title" content={data?.meta_title || ""} />
         <meta
           property="og:description"
@@ -45,14 +44,12 @@ export default function BlogsPage({ data, blogs, blogSectionData }) {
           }}
         />
       </Head>
-
       <HeroSection
         hero={{
           title: data?.hero_title || "Blogs",
           backgroundImage: data?.hero_image || "/blogs/blog-hero.jpg",
         }}
       />
-
       <BlogPageSection blogs={blogs} sectionData={blogSectionData} />
     </div>
   );

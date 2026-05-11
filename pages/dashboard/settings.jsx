@@ -17,33 +17,27 @@ import {
 } from "lucide-react";
 import StatusModal from "@/components/StatusModal";
 import ConfirmModal from "@/components/ConfirmModal";
-
 export default function AdminSettings() {
   const { uploadFile } = useUpload();
   const fileInputRef = useRef(null);
-
   const [user, setUser] = useState(null);
   const [profileName, setProfileName] = useState("");
   const [profileImage, setProfileImage] = useState("");
   const [newEmail, setNewEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState("");
   const [saving, setSaving] = useState(false);
-
   const [modal, setModal] = useState({
     show: false,
     type: "success",
     message: "",
   });
-
   const [confirmModal, setConfirmModal] = useState({
     show: false,
     loading: false,
   });
-
   const showModal = (type, message) => {
     setModal({
       show: true,

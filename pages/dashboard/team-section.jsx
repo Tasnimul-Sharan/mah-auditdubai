@@ -300,11 +300,9 @@ export default function TeamAdmin() {
         image: "",
         public_id: "",
       });
-
       revokePreview();
       setPreview("");
       setFile(null);
-
       closeConfirmModal();
       showModal("success", "Member image removed successfully.");
       fetchData();
@@ -336,9 +334,7 @@ export default function TeamAdmin() {
         if (publicId) {
           await deleteFromCloudinary(publicId);
         }
-
         const res = await uploadFile(file, "team");
-
         imageUrl = res.url;
         publicId = res.public_id;
       }

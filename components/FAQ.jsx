@@ -1,42 +1,21 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
 import { motion } from "framer-motion";
 import gsap from "gsap";
-import { supabaseServer } from "@/lib/supabaseServer";
 
-export default function FAQ() {
+export default function FAQ({ faqData = null }) {
   const [activeIndex, setActiveIndex] = useState(null);
-  const [faqData, setFaqData] = useState({
-    title: "",
-    faqs: [],
-  });
+
+  const data = {
+    title: faqData?.title || "Frequently Asked Questions",
+    faqs: Array.isArray(faqData?.faqs) ? faqData.faqs : [],
+  };
 
   const answerRefs = useRef([]);
 
-  const fetchFAQ = async () => {
-    const { data, error } = await supabaseServer
-      .from("faq")
-      .select("*")
-      .single();
-
-    if (error) {
-      console.error("FAQ Fetch Error:", error.message);
-      return;
-    }
-
-    if (data) {
-      setFaqData({
-        title: data.title,
-        faqs: data.faqs || [],
-      });
-    }
-  };
-
-  useEffect(() => {
-    fetchFAQ();
-  }, []);
+  if (!data.faqs.length) return null;
 
   const expand = (index) => {
     const el = answerRefs.current[index];
@@ -103,26 +82,26 @@ export default function FAQ() {
     <section className="relative overflow-hidden bg-[#f6f8fb] py-16 md:py-24">
       <div className="absolute left-1/2 top-0 h-72 w-72 -translate-x-1/2 rounded-full bg-primary/10 blur-3xl" />
 
-      <div className="relative max-w-7xl mx-auto px-6">
-        <div className="grid lg:grid-cols-[0.85fr_1.15fr] gap-8 items-start">
+      <div className="relative mx-auto max-w-7xl px-6">
+        <div className="grid items-start gap-8 lg:grid-cols-[0.85fr_1.15fr]">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="lg:sticky lg:top-24 rounded-2xl bg-secondary p-6 md:p-8 text-white shadow-xl"
+            className="rounded-2xl bg-secondary p-6 text-white shadow-xl md:p-8 lg:sticky lg:top-24"
           >
             <div className="flex items-center gap-3 text-sm font-bold uppercase tracking-wide text-primary">
               <span className="h-px w-10 bg-primary" />
               FAQ
             </div>
 
-            <h2 className="mt-5 text-3xl md:text-5xl font-bold leading-tight">
-              {faqData.title || "Frequently Asked Questions"}
+            <h2 className="mt-5 text-3xl font-bold leading-tight md:text-5xl">
+              {data.title}
             </h2>
 
             <div className="mt-8 grid grid-cols-2 gap-4">
               <div className="rounded-xl bg-white/10 p-5">
-                <p className="text-4xl font-bold">{faqData.faqs.length}</p>
+                <p className="text-4xl font-bold">{data.faqs.length}</p>
                 <p className="mt-1 text-sm text-white/60">Questions</p>
               </div>
 
@@ -132,19 +111,19 @@ export default function FAQ() {
               </div>
             </div>
 
-            <p className="mt-6 text-white/65 leading-relaxed">
+            <p className="mt-6 leading-relaxed text-white/65">
               Find quick answers about our audit, advisory, compliance, and
               reporting process in Dubai.
             </p>
           </motion.div>
 
           <div className="space-y-4">
-            {faqData.faqs.map((faq, index) => {
+            {data.faqs.map((faq, index) => {
               const isActive = activeIndex === index;
 
               return (
                 <motion.div
-                  key={index}
+                  key={`${faq.question}-${index}`}
                   initial={{ opacity: 0, y: 22 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
@@ -159,7 +138,8 @@ export default function FAQ() {
                     type="button"
                     onClick={() => toggleFAQ(index)}
                     aria-expanded={isActive}
-                    className="flex w-full items-start gap-4 p-5 md:p-6 text-left"
+                    aria-controls={`faq-answer-${index}`}
+                    className="flex w-full items-start gap-4 p-5 text-left md:p-6"
                   >
                     <span
                       className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-sm font-bold transition ${
@@ -173,7 +153,7 @@ export default function FAQ() {
 
                     <span className="flex-1 pt-1">
                       <span
-                        className={`block text-lg md:text-xl font-bold leading-snug transition ${
+                        className={`block text-lg font-bold leading-snug transition md:text-xl ${
                           isActive ? "text-primary" : "text-secondary"
                         }`}
                       >
@@ -197,12 +177,13 @@ export default function FAQ() {
                   </button>
 
                   <div
+                    id={`faq-answer-${index}`}
                     ref={(el) => (answerRefs.current[index] = el)}
                     className="hidden h-0 overflow-hidden px-5 md:px-6"
                     style={{ opacity: 0 }}
                   >
                     <div className="border-t border-gray-100 pb-6 pt-4 md:ml-[60px]">
-                      <p className="text-sm md:text-base leading-relaxed text-gray-600">
+                      <p className="text-sm leading-relaxed text-gray-600 md:text-base">
                         {faq.answer}
                       </p>
                     </div>

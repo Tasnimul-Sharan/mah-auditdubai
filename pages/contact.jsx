@@ -14,7 +14,6 @@ export default function ContactPage({ data }) {
         <meta name="keywords" content={data?.meta_keywords || ""} />
         <meta name="author" content={data?.meta_author || ""} />
         <link rel="canonical" href={data?.meta_url || ""} />
-
         <meta property="og:title" content={data?.meta_title || ""} />
         <meta
           property="og:description"
@@ -22,7 +21,6 @@ export default function ContactPage({ data }) {
         />
         <meta property="og:url" content={data?.meta_url || ""} />
         <meta property="og:image" content={data?.meta_image || ""} />
-
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={data?.meta_title || ""} />
         <meta
@@ -51,14 +49,12 @@ export default function ContactPage({ data }) {
           }}
         />
       </Head>
-
       <HeroSection
         hero={{
           title: data?.hero_title || "Contact",
           backgroundImage: data?.hero_image || "/contact-bg.jpg",
         }}
       />
-
       <ContactHero hero={data?.hero} stats={data?.stats} />
       <ContactPageSection
         contactInfo={data?.contact_info}

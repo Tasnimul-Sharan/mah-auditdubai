@@ -1,5 +1,4 @@
 "use client";
-
 import AdminLayout from "@/components/AdminLayout";
 import { useEffect, useState } from "react";
 import { supabaseServer } from "@/lib/supabaseServer";
@@ -12,12 +11,9 @@ function TypesPage() {
   const [types, setTypes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-
   const [editId, setEditId] = useState(null);
   const [editName, setEditName] = useState("");
-
   const [deleteId, setDeleteId] = useState(null);
-
   const [modal, setModal] = useState({
     show: false,
     type: "success",
@@ -56,7 +52,6 @@ function TypesPage() {
       show: false,
       loading: false,
     });
-
     setDeleteId(null);
   };
 
@@ -78,7 +73,6 @@ function TypesPage() {
       setLoading(false);
       return;
     }
-
     setTypes(data || []);
     setLoading(false);
   };

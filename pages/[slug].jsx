@@ -4,26 +4,15 @@ import { supabaseServer } from "@/lib/supabaseServer";
 import Head from "next/head";
 
 export default function DynamicPage({ page, sections }) {
-  if (!page) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-50">
-        <div className="rounded-3xl border border-slate-200 bg-white px-10 py-8 text-center shadow-xl">
-          <h1 className="text-2xl font-bold text-slate-900">Page not found</h1>
-          <p className="mt-2 text-slate-500">
-            The page you are looking for does not exist.
-          </p>
-        </div>
-      </div>
-    );
-  }
-
   const pageUrl =
     page.meta_url || `https://mah-auditdubai.ae/${page.slug || ""}`;
 
   const metaTitle = page.meta_title || `${page.title} | MAH Audit Dubai`;
+
   const metaDescription =
     page.meta_description ||
     "Professional audit, accounting, tax and advisory services in Dubai, UAE.";
+
   const metaImage =
     page.meta_image ||
     page.hero_image ||
@@ -33,27 +22,22 @@ export default function DynamicPage({ page, sections }) {
     <>
       <Head>
         <title>{metaTitle}</title>
-
         <meta name="description" content={metaDescription} />
         <meta name="keywords" content={page.meta_keywords || ""} />
         <meta name="author" content={page.meta_author || "MAH Audit Dubai"} />
         <meta name="robots" content="index, follow" />
-
         <link rel="canonical" href={pageUrl} />
-
         <meta property="og:type" content="website" />
         <meta property="og:title" content={metaTitle} />
         <meta property="og:description" content={metaDescription} />
         <meta property="og:url" content={pageUrl} />
         <meta property="og:image" content={metaImage} />
         <meta property="og:site_name" content="MAH Audit Dubai" />
-
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={metaTitle} />
         <meta name="twitter:description" content={metaDescription} />
         <meta name="twitter:image" content={metaImage} />
       </Head>
-
       <main className="overflow-hidden bg-white">
         <HeroSection
           hero={{
@@ -61,11 +45,9 @@ export default function DynamicPage({ page, sections }) {
             backgroundImage: page.hero_image || "/default.jpg",
           }}
         />
-
         <section className="relative bg-gradient-to-b from-white via-slate-50 to-white py-20">
           <div className="absolute left-0 top-0 h-96 w-96 rounded-full bg-primary/5 blur-3xl" />
           <div className="absolute bottom-0 right-0 h-96 w-96 rounded-full bg-primary/5 blur-3xl" />
-
           <div className="relative mx-auto max-w-7xl px-6">
             {sections.length > 0 ? (
               <div className="space-y-20">
@@ -96,13 +78,21 @@ export default function DynamicPage({ page, sections }) {
 }
 
 export async function getServerSideProps({ params }) {
-  const { slug } = params;
+  const slug = Array.isArray(params?.slug)
+    ? params.slug.join("/")
+    : params?.slug;
 
-  const { data: page } = await supabaseServer
+  const { data: page, error: pageError } = await supabaseServer
     .from("pages")
     .select("*")
     .eq("slug", slug)
-    .single();
+    .maybeSingle();
+
+  if (pageError || !page) {
+    return {
+      notFound: true,
+    };
+  }
 
   const { data: sections } = await supabaseServer
     .from("sections")
@@ -114,7 +104,7 @@ export async function getServerSideProps({ params }) {
 
   return {
     props: {
-      page: page || null,
+      page,
       sections: sections || [],
     },
   };

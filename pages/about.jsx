@@ -23,6 +23,8 @@ export default function AboutPage({
   clientsSectionData,
   testimonialsSectionData,
   stats,
+  visionMission,
+  faqData,
 }) {
   return (
     <div className="w-full relative">
@@ -32,7 +34,6 @@ export default function AboutPage({
         <meta name="keywords" content={data?.meta_keywords} />
         <meta name="author" content={data?.meta_author} />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
         <link rel="canonical" href={data?.meta_url} />
         <meta property="og:title" content={data?.meta_title} />
         <meta property="og:description" content={data?.meta_description} />
@@ -40,15 +41,12 @@ export default function AboutPage({
         <meta property="og:url" content={data?.meta_url} />
         <meta property="og:image" content={data?.meta_image} />
         <meta property="og:site_name" content="MAH Audit Dubai" />
-
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={data?.meta_title} />
         <meta name="twitter:description" content={data?.meta_description} />
         <meta name="twitter:image" content={data?.meta_image} />
-
         <meta name="robots" content="index, follow" />
         <meta property="og:locale" content="en_US" />
-
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -69,16 +67,14 @@ export default function AboutPage({
           }}
         />
       </Head>
-
       <HeroSection
         hero={{
           title: data?.hero_title || "About Us",
           backgroundImage: data?.hero_image || "/default-hero.jpg",
         }}
       />
-
       <AboutUsSection data={about} />
-      <VisionMission />
+      <VisionMission sections={visionMission} />
       <WhyUs whyUs={whyUs} />
       <StatsSection stats={stats} />
       <ClientsSection clients={clients} sectionData={clientsSectionData} />
@@ -87,7 +83,7 @@ export default function AboutPage({
         testimonials={testimonials}
         sectionData={testimonialsSectionData}
       />
-      <FAQ />
+      <FAQ faqData={faqData} />
       <PremiumCTA data={premiumCTA} />
     </div>
   );
@@ -104,8 +100,23 @@ export async function getServerSideProps() {
     .select("*")
     .single();
 
+  const { data: visionMissionData } = await supabaseServer
+    .from("vision_mission")
+    .select(
+      `
+    *,
+    vision_mission_points(*)
+  `,
+    )
+    .order("id", { ascending: true });
+
   const { data: teamSection } = await supabaseServer
     .from("team_section")
+    .select("*")
+    .single();
+
+  const { data: faqData } = await supabaseServer
+    .from("faq")
     .select("*")
     .single();
 
@@ -162,6 +173,8 @@ export async function getServerSideProps() {
     props: {
       data: pageData || null,
       about: aboutData || null,
+      faqData: faqData || null,
+      visionMission: visionMissionData || [],
       premiumCTA: premiumCTA || null,
       teamSection: teamSection || null,
       teamMembers: teamMembers || [],

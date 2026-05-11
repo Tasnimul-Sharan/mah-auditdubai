@@ -28,6 +28,7 @@ export default function Home({
   clientsSectionData,
   testimonials,
   testimonialsSectionData,
+  stats,
 }) {
   return (
     <div>
@@ -38,19 +39,16 @@ export default function Home({
         <meta name="author" content={meta?.meta_author} />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="canonical" href={meta?.meta_url} />
-
         <meta property="og:title" content={meta?.meta_title} />
         <meta property="og:description" content={meta?.meta_description} />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={meta?.meta_url} />
         <meta property="og:image" content={meta?.meta_image} />
         <meta property="og:site_name" content="MAH Audit Dubai" />
-
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={meta?.meta_title} />
         <meta name="twitter:description" content={meta?.meta_description} />
         <meta name="twitter:image" content={meta?.meta_image} />
-
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -77,29 +75,24 @@ export default function Home({
           }}
         />
       </Head>
-
       <LandingPage slides={heroSlides} />
       <AboutUsSection data={about} />
       <ServicesSection
         services={services}
         sectionContent={servicesPage?.section_content}
       />
-      <StatsSection />
+      <StatsSection stats={stats} />
       <WhyChooseUs data={whyChooseUs} points={whyChoosePoints} />
-
       <IndustrySection
         industrySection={industrySection}
         industryItems={industryItems}
       />
-
       <ClientsSection clients={clients} sectionData={clientsSectionData} />
       <TestimonialsSection
         testimonials={testimonials}
         sectionData={testimonialsSectionData}
       />
-
       <BlogSection blogs={blogs} sectionData={blogSectionData} />
-
       <ContactSection data={contactPage} />
     </div>
   );
@@ -207,6 +200,11 @@ export async function getServerSideProps() {
       "We collaborate with companies across the UAE and international markets, delivering reliable audit, compliance, and advisory services.",
   };
 
+  const { data: statsData } = await supabaseServer
+    .from("stats")
+    .select("*")
+    .order("created_at", { ascending: true });
+
   const { data: testimonialsData } = await supabaseServer
     .from("testimonials")
     .select("*")
@@ -239,6 +237,7 @@ export async function getServerSideProps() {
       clients: clientsData || [],
       clientsSectionData,
       testimonials: testimonialsData || [],
+      stats: statsData || [],
       testimonialsSectionData,
     },
   };

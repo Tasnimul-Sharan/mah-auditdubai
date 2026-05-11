@@ -4,6 +4,10 @@ function isCloudinaryUrl(src) {
   return typeof src === "string" && src.includes("res.cloudinary.com");
 }
 
+function isBlobUrl(src) {
+  return typeof src === "string" && src.startsWith("blob:");
+}
+
 function optimizeCloudinaryUrl(src, width = 900) {
   if (!src) return "";
 
@@ -15,17 +19,19 @@ function optimizeCloudinaryUrl(src, width = 900) {
     return src;
   }
 
-  if (
-    src.includes("/image/upload/f_auto") ||
-    src.includes("/image/upload/q_auto")
-  ) {
-    return src;
-  }
+  const safeWidth = Math.max(80, Math.round(Number(width) || 900));
+  const [base, path = ""] = src.split("/image/upload/");
 
-  return src.replace(
-    "/image/upload/",
-    `/image/upload/f_auto,q_auto,c_limit,w_${width}/`,
-  );
+  const segments = path.split("/");
+  const firstSegment = segments[0] || "";
+
+  const hasCloudinaryTransform =
+    firstSegment.includes(",") ||
+    /^(f_|q_|c_|w_|h_|dpr_|ar_|g_|e_)/.test(firstSegment);
+
+  const cleanPath = hasCloudinaryTransform ? segments.slice(1).join("/") : path;
+
+  return `${base}/image/upload/f_auto,q_auto:eco,c_limit,w_${safeWidth}/${cleanPath}`;
 }
 
 export default function OptimizedImage({
@@ -38,12 +44,15 @@ export default function OptimizedImage({
   className = "",
   priority = false,
   quality,
+  unoptimized = false,
   ...props
 }) {
   const optimizedSrc = optimizeCloudinaryUrl(src, width);
-  const isCloudinary = isCloudinaryUrl(optimizedSrc);
 
   if (!optimizedSrc) return null;
+
+  const shouldUnoptimize =
+    unoptimized || isCloudinaryUrl(optimizedSrc) || isBlobUrl(optimizedSrc);
 
   if (fill) {
     return (
@@ -54,7 +63,7 @@ export default function OptimizedImage({
         sizes={sizes || "100vw"}
         priority={priority}
         quality={quality}
-        unoptimized={isCloudinary}
+        unoptimized={shouldUnoptimize}
         className={className}
         {...props}
       />
@@ -70,7 +79,7 @@ export default function OptimizedImage({
       sizes={sizes || "(max-width: 768px) 100vw, 50vw"}
       priority={priority}
       quality={quality}
-      unoptimized={isCloudinary}
+      unoptimized={shouldUnoptimize}
       className={className}
       {...props}
     />

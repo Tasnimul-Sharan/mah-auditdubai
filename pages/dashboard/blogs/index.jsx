@@ -16,6 +16,7 @@ import { useRouter } from "next/router";
 import { supabaseServer } from "@/lib/supabaseServer";
 import StatusModal from "@/components/StatusModal";
 import ConfirmModal from "@/components/ConfirmModal";
+import OptimizedImage from "@/components/OptimizedImage";
 
 const PAGE_SIZE = 10;
 
@@ -230,11 +231,16 @@ export default function BlogsPage() {
                       <td className="p-4">
                         <div className="flex items-center gap-4">
                           {blog.image ? (
-                            <img
-                              src={blog.image}
-                              alt=""
-                              className="h-14 w-20 rounded-xl border object-cover"
-                            />
+                            <div className="relative h-14 w-20 overflow-hidden rounded-xl border">
+                              <OptimizedImage
+                                src={blog.image}
+                                alt={blog.title || "Blog image"}
+                                fill
+                                width={160}
+                                sizes="80px"
+                                className="object-cover"
+                              />
+                            </div>
                           ) : (
                             <div className="flex h-14 w-20 items-center justify-center rounded-xl bg-primary/10 text-primary">
                               <Newspaper size={20} />

@@ -7,6 +7,7 @@ import { supabaseServer } from "@/lib/supabaseServer";
 import { useUpload } from "@/Hooks/useUpload";
 import StatusModal from "@/components/StatusModal";
 import ConfirmModal from "@/components/ConfirmModal";
+import OptimizedImage from "@/components/OptimizedImage";
 
 export default function IndustriesAdmin() {
   const { uploadFile } = useUpload();
@@ -484,11 +485,17 @@ export default function IndustriesAdmin() {
 
           {(preview || form.image) && (
             <div className="relative w-fit rounded-2xl border bg-gray-50 p-3">
-              <img
-                src={preview || form.image}
-                className="w-72 h-44 object-cover rounded-xl"
-                alt="Industries Section"
-              />
+              <div className="relative h-44 w-72 overflow-hidden rounded-xl">
+                <OptimizedImage
+                  src={preview || form.image}
+                  alt="Industries Section"
+                  fill
+                  width={700}
+                  sizes="288px"
+                  className="object-cover"
+                  unoptimized={Boolean(preview)}
+                />
+              </div>
 
               {!preview && form.image && (
                 <button

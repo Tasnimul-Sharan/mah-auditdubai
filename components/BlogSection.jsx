@@ -37,11 +37,21 @@ export default function BlogSection({
   const formatDate = (date) => {
     if (!date) return "";
 
-    return new Date(date).toLocaleDateString("en-US", {
+    const normalizedDate =
+      typeof date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(date)
+        ? `${date}T00:00:00.000Z`
+        : date;
+
+    const parsedDate = new Date(normalizedDate);
+
+    if (Number.isNaN(parsedDate.getTime())) return "";
+
+    return new Intl.DateTimeFormat("en-US", {
       month: "long",
       day: "numeric",
       year: "numeric",
-    });
+      timeZone: "UTC",
+    }).format(parsedDate);
   };
 
   return (

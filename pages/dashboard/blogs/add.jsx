@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import StatusModal from "@/components/StatusModal";
 import ConfirmModal from "@/components/ConfirmModal";
+import OptimizedImage from "@/components/OptimizedImage";
 
 export default function AddBlogPage() {
   const [form, setForm] = useState({
@@ -429,11 +430,17 @@ export default function AddBlogPage() {
 
             {form.image && (
               <div className="relative w-fit rounded-2xl border bg-gray-50 p-3">
-                <img
-                  src={form.image}
-                  className="h-44 w-72 rounded-xl object-cover"
-                  alt=""
-                />
+                <div className="relative h-44 w-72 overflow-hidden rounded-xl">
+                  <OptimizedImage
+                    src={form.image}
+                    alt={form.title || "Blog main image"}
+                    fill
+                    width={500}
+                    sizes="288px"
+                    className="object-cover"
+                    unoptimized
+                  />
+                </div>
 
                 <button
                   type="button"
@@ -508,11 +515,17 @@ export default function AddBlogPage() {
                     key={i}
                     className="relative rounded-2xl border bg-gray-50 p-2"
                   >
-                    <img
-                      src={img}
-                      className="h-28 w-full rounded-xl object-cover"
-                      alt=""
-                    />
+                    <div className="relative h-28 w-full overflow-hidden rounded-xl">
+                      <OptimizedImage
+                        src={img}
+                        alt={`Sub image ${i + 1}`}
+                        fill
+                        width={400}
+                        sizes="(max-width: 768px) 50vw, 25vw"
+                        className="object-cover"
+                        unoptimized
+                      />
+                    </div>
 
                     <button
                       type="button"

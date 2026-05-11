@@ -5,6 +5,7 @@ import AdminLayout from "@/components/AdminLayout";
 import { Save, Trash2, ImageIcon, Search, Layers } from "lucide-react";
 import { supabaseServer } from "@/lib/supabaseServer";
 import { useUpload } from "@/Hooks/useUpload";
+import OptimizedImage from "@/components/OptimizedImage";
 
 export default function ServicesDashboard() {
   const { uploadFile } = useUpload();
@@ -197,11 +198,17 @@ export default function ServicesDashboard() {
 
         {(preview || meta.hero_image) && (
           <div className="relative w-fit rounded-2xl border bg-gray-50 p-3">
-            <img
-              src={preview || meta.hero_image}
-              className="w-72 h-44 rounded-xl object-cover"
-              alt=""
-            />
+            <div className="relative h-44 w-72 overflow-hidden rounded-xl">
+              <OptimizedImage
+                src={preview || meta.hero_image}
+                alt="Hero Preview"
+                fill
+                width={700}
+                sizes="288px"
+                className="object-cover"
+                unoptimized={Boolean(preview)}
+              />
+            </div>
 
             {!preview && meta.hero_image && (
               <button

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { supabaseServer } from "@/lib/supabaseServer";
 import AdminLayout from "@/components/AdminLayout";
+import OptimizedImage from "@/components/OptimizedImage";
 import { useUpload } from "@/Hooks/useUpload";
 import {
   Plus,
@@ -14,7 +15,6 @@ import {
   EyeOff,
   ImageIcon,
   Layers,
-  FileText,
   Settings,
   UploadCloud,
 } from "lucide-react";
@@ -109,7 +109,6 @@ export default function PageEditor({ slug }) {
     });
   };
 
-  // ================= CLOUDINARY DELETE HELPERS =================
   const getCloudinaryPublicId = (url) => {
     if (!url) return null;
 
@@ -133,7 +132,6 @@ export default function PageEditor({ slug }) {
     });
   };
 
-  // ================= FETCH =================
   const fetchTypes = async () => {
     const { data, error } = await supabaseServer.from("types").select("*");
 
@@ -169,11 +167,17 @@ export default function PageEditor({ slug }) {
     }
   }, [slug]);
 
-  // ================= ADD SECTION =================
   const resetAddForm = () => {
     setTypeId("");
     setTitle("");
     setText("");
+
+    if (singlePreview) {
+      URL.revokeObjectURL(singlePreview);
+    }
+
+    multiPreviews.forEach((src) => URL.revokeObjectURL(src));
+
     setSingleImage(null);
     setSinglePreview("");
     setMultiImages([]);
@@ -189,6 +193,10 @@ export default function PageEditor({ slug }) {
 
     if (!selected) return;
 
+    if (singlePreview) {
+      URL.revokeObjectURL(singlePreview);
+    }
+
     setSingleImage(selected);
     setSinglePreview(URL.createObjectURL(selected));
   };
@@ -196,17 +204,27 @@ export default function PageEditor({ slug }) {
   const handleMultiImageChange = (e) => {
     const selected = Array.from(e.target.files || []);
 
+    multiPreviews.forEach((src) => URL.revokeObjectURL(src));
+
     setMultiImages(selected);
     setMultiPreviews(selected.map((file) => URL.createObjectURL(file)));
   };
 
   const removeSinglePreview = () => {
+    if (singlePreview) {
+      URL.revokeObjectURL(singlePreview);
+    }
+
     setSingleImage(null);
     setSinglePreview("");
     showModal("success", "Selected single image removed.");
   };
 
   const removeMultiPreview = (index) => {
+    if (multiPreviews[index]) {
+      URL.revokeObjectURL(multiPreviews[index]);
+    }
+
     setMultiImages((prev) => prev.filter((_, i) => i !== index));
     setMultiPreviews((prev) => prev.filter((_, i) => i !== index));
     showModal("success", "Selected image removed.");
@@ -272,7 +290,6 @@ export default function PageEditor({ slug }) {
     }
   };
 
-  // ================= EDIT MODE =================
   const startEdit = (sec) => {
     setEditingId(sec.id);
 
@@ -299,7 +316,6 @@ export default function PageEditor({ slug }) {
     setEditForm(null);
   };
 
-  // ================= UPDATE SECTION =================
   const updateSection = async (sec) => {
     if (!editForm?.type_id) {
       showModal("error", "Please select a section type.");
@@ -347,7 +363,6 @@ export default function PageEditor({ slug }) {
     }
   };
 
-  // ================= REPLACE SINGLE IMAGE =================
   const replaceSingleImage = async (sec, file) => {
     if (!file) return;
 
@@ -372,7 +387,6 @@ export default function PageEditor({ slug }) {
     }
   };
 
-  // ================= ADD MULTIPLE IMAGES IN EDIT =================
   const addMoreImages = async (files) => {
     if (!files?.length) return;
 
@@ -396,7 +410,6 @@ export default function PageEditor({ slug }) {
     }
   };
 
-  // ================= DELETE REQUESTS =================
   const requestDeleteSection = (sec) => {
     setDeleteTarget({
       type: "section",
@@ -461,7 +474,6 @@ export default function PageEditor({ slug }) {
     closeConfirmModal();
   };
 
-  // ================= REMOVE SINGLE IMAGE =================
   const confirmRemoveSingleImage = async () => {
     try {
       setConfirmModal({
@@ -487,7 +499,6 @@ export default function PageEditor({ slug }) {
     }
   };
 
-  // ================= REMOVE ONE MULTI IMAGE =================
   const confirmRemoveMultiImage = async () => {
     try {
       setConfirmModal({
@@ -515,7 +526,6 @@ export default function PageEditor({ slug }) {
     }
   };
 
-  // ================= DELETE SECTION =================
   const confirmDeleteSection = async () => {
     const sec = deleteTarget.section;
 
@@ -564,7 +574,6 @@ export default function PageEditor({ slug }) {
     }
   };
 
-  // ================= TOGGLE VISIBILITY =================
   const toggleVisibility = async (sec) => {
     try {
       setVisibilityLoadingId(sec.id);
@@ -632,7 +641,6 @@ export default function PageEditor({ slug }) {
   return (
     <>
       <div className="mx-auto max-w-6xl space-y-8">
-        {/* HEADER */}
         <div className="relative overflow-hidden rounded-[2rem] border border-border_color bg-gradient-to-br from-white via-background to-primary/10 p-7 shadow-[0_18px_60px_rgba(15,23,42,0.06)]">
           <div className="absolute -right-16 -top-16 h-44 w-44 rounded-full bg-primary/20 blur-3xl" />
           <div className="absolute -left-16 bottom-0 h-44 w-44 rounded-full bg-secondary/10 blur-3xl" />
@@ -665,7 +673,6 @@ export default function PageEditor({ slug }) {
           </div>
         </div>
 
-        {/* ADD SECTION */}
         <div className={cardClass}>
           <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary via-primary_light to-secondary" />
 
@@ -731,11 +738,17 @@ export default function PageEditor({ slug }) {
 
               {singlePreview && (
                 <div className="relative mt-4 w-fit rounded-2xl border bg-white p-2">
-                  <img
-                    src={singlePreview}
-                    className="h-32 w-52 rounded-xl object-cover"
-                    alt="Single Preview"
-                  />
+                  <div className="relative h-32 w-52 overflow-hidden rounded-xl">
+                    <OptimizedImage
+                      src={singlePreview}
+                      alt="Single Preview"
+                      fill
+                      width={400}
+                      sizes="208px"
+                      className="object-cover"
+                      unoptimized
+                    />
+                  </div>
 
                   <button
                     type="button"
@@ -775,11 +788,17 @@ export default function PageEditor({ slug }) {
                       key={i}
                       className="relative rounded-xl border bg-white p-1"
                     >
-                      <img
-                        src={src}
-                        className="h-20 w-24 rounded-lg object-cover"
-                        alt="Gallery Preview"
-                      />
+                      <div className="relative h-20 w-24 overflow-hidden rounded-lg">
+                        <OptimizedImage
+                          src={src}
+                          alt={`Gallery Preview ${i + 1}`}
+                          fill
+                          width={250}
+                          sizes="96px"
+                          className="object-cover"
+                          unoptimized
+                        />
+                      </div>
 
                       <button
                         type="button"
@@ -848,7 +867,6 @@ export default function PageEditor({ slug }) {
           </button>
         </div>
 
-        {/* SECTION LIST */}
         <div className="space-y-5">
           <div>
             <h2 className="text-2xl font-bold text-soft_black">
@@ -908,22 +926,34 @@ export default function PageEditor({ slug }) {
                         )}
 
                         {content.image && (
-                          <img
-                            src={content.image}
-                            className="h-28 w-44 rounded-2xl border object-cover"
-                            alt="Section"
-                          />
+                          <div className="relative h-28 w-44 overflow-hidden rounded-2xl border">
+                            <OptimizedImage
+                              src={content.image}
+                              alt={content.title || "Section"}
+                              fill
+                              width={400}
+                              sizes="176px"
+                              className="object-cover"
+                            />
+                          </div>
                         )}
 
                         {content.images?.length > 0 && (
                           <div className="flex flex-wrap gap-2">
                             {content.images.map((img, i) => (
-                              <img
-                                key={i}
-                                src={img}
-                                className="h-16 w-20 rounded-xl border object-cover"
-                                alt="Gallery"
-                              />
+                              <div
+                                key={`${img}-${i}`}
+                                className="relative h-16 w-20 overflow-hidden rounded-xl border"
+                              >
+                                <OptimizedImage
+                                  src={img}
+                                  alt={`Gallery ${i + 1}`}
+                                  fill
+                                  width={250}
+                                  sizes="80px"
+                                  className="object-cover"
+                                />
+                              </div>
                             ))}
                           </div>
                         )}
@@ -1032,11 +1062,16 @@ export default function PageEditor({ slug }) {
 
                         {editForm.image && (
                           <div className="mb-4 flex flex-wrap items-center gap-3">
-                            <img
-                              src={editForm.image}
-                              className="h-24 w-40 rounded-xl border object-cover"
-                              alt="Single"
-                            />
+                            <div className="relative h-24 w-40 overflow-hidden rounded-xl border">
+                              <OptimizedImage
+                                src={editForm.image}
+                                alt="Single"
+                                fill
+                                width={400}
+                                sizes="160px"
+                                className="object-cover"
+                              />
+                            </div>
 
                             <button
                               type="button"
@@ -1066,12 +1101,17 @@ export default function PageEditor({ slug }) {
                         {editForm.images?.length > 0 && (
                           <div className="mb-4 flex flex-wrap gap-3">
                             {editForm.images.map((img, i) => (
-                              <div key={i} className="relative">
-                                <img
-                                  src={img}
-                                  className="h-20 w-24 rounded-xl border object-cover"
-                                  alt="Gallery"
-                                />
+                              <div key={`${img}-${i}`} className="relative">
+                                <div className="relative h-20 w-24 overflow-hidden rounded-xl border">
+                                  <OptimizedImage
+                                    src={img}
+                                    alt={`Gallery ${i + 1}`}
+                                    fill
+                                    width={250}
+                                    sizes="96px"
+                                    className="object-cover"
+                                  />
+                                </div>
 
                                 <button
                                   type="button"
@@ -1210,7 +1250,6 @@ export default function PageEditor({ slug }) {
   );
 }
 
-// SSR
 export async function getServerSideProps({ params }) {
   return {
     props: {

@@ -7,6 +7,7 @@ import { supabaseServer } from "@/lib/supabaseServer";
 import { useUpload } from "@/Hooks/useUpload";
 import StatusModal from "@/components/StatusModal";
 import ConfirmModal from "@/components/ConfirmModal";
+import OptimizedImage from "@/components/OptimizedImage";
 
 export default function ContactPageDashboard() {
   const { uploadFile } = useUpload();
@@ -281,11 +282,17 @@ export default function ContactPageDashboard() {
 
           {(preview || meta.hero_image) && (
             <div className="relative w-fit rounded-2xl border bg-gray-50 p-2">
-              <img
-                src={preview || meta.hero_image}
-                className="w-72 h-44 object-cover rounded-xl"
-                alt="Contact Hero Preview"
-              />
+              <div className="relative h-44 w-72 overflow-hidden rounded-xl">
+                <OptimizedImage
+                  src={preview || meta.hero_image}
+                  alt="Contact Hero Preview"
+                  fill
+                  width={700}
+                  sizes="288px"
+                  className="object-cover"
+                  unoptimized={Boolean(preview)}
+                />
+              </div>
 
               {!preview && meta.hero_image && (
                 <button

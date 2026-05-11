@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import { supabaseServer } from "@/lib/supabaseServer";
 import StatusModal from "@/components/StatusModal";
 import ConfirmModal from "@/components/ConfirmModal";
+import OptimizedImage from "@/components/OptimizedImage";
 
 const PAGE_SIZE = 10;
 
@@ -223,11 +224,17 @@ export default function ServicesPage() {
 
                       <td className="p-4 text-center">
                         {service.image ? (
-                          <img
-                            src={service.image}
-                            className="mx-auto h-14 w-20 rounded-xl object-cover border"
-                            alt="Service"
-                          />
+                          <div className="relative mx-auto h-14 w-20 overflow-hidden rounded-xl border">
+                            <OptimizedImage
+                              src={service.image}
+                              alt="Service"
+                              fill
+                              width={120}
+                              sizes="80px"
+                              className="object-cover"
+                              unoptimized={service.image.startsWith("blob:")}
+                            />
+                          </div>
                         ) : (
                           <span className="text-gray-400">No image</span>
                         )}

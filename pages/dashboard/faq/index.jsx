@@ -74,7 +74,6 @@ export default function FAQAdmin() {
     setDeleteIndex(null);
   };
 
-  // ================= FETCH =================
   const fetchData = async () => {
     const { data, error } = await supabaseServer
       .from("faq")
@@ -99,7 +98,6 @@ export default function FAQAdmin() {
     fetchData();
   }, []);
 
-  // ================= SAVE =================
   const saveSection = async () => {
     try {
       setSaving(true);
@@ -386,7 +384,6 @@ export default function FAQAdmin() {
           )}
         </div>
 
-        {/* SAVE */}
         <button
           type="button"
           onClick={saveSection}

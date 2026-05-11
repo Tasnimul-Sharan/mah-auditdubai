@@ -5,6 +5,7 @@ import Link from "next/link";
 import { supabaseServer } from "@/lib/supabaseServer";
 import AdminLayout from "@/components/AdminLayout";
 import { Pencil, Trash2, Eye, Plus, Layers, Settings } from "lucide-react";
+import OptimizedImage from "@/components/OptimizedImage";
 
 export default function PagesDashboard() {
   const [pages, setPages] = useState([]);
@@ -97,11 +98,16 @@ export default function PagesDashboard() {
                     <td className="p-4">
                       <div className="flex items-center gap-4">
                         {p.hero_image ? (
-                          <img
-                            src={p.hero_image}
-                            className="h-14 w-14 rounded-2xl border object-cover"
-                            alt=""
-                          />
+                          <div className="relative h-14 w-14 overflow-hidden rounded-2xl border">
+                            <OptimizedImage
+                              src={p.hero_image}
+                              alt={p.hero_title || p.title || "Page image"}
+                              fill
+                              width={120}
+                              sizes="56px"
+                              className="object-cover"
+                            />
+                          </div>
                         ) : (
                           <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
                             <Layers size={20} />

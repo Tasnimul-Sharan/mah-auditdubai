@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import StatusModal from "@/components/StatusModal";
 import ConfirmModal from "@/components/ConfirmModal";
+import OptimizedImage from "@/components/OptimizedImage";
 
 export default function CreatePage() {
   const { uploadFile } = useUpload();
@@ -259,11 +260,17 @@ export default function CreatePage() {
 
           {preview && (
             <div className="relative w-fit overflow-hidden rounded-[1.5rem] border border-border_color bg-background p-2">
-              <img
-                src={preview}
-                className="h-48 w-80 rounded-2xl object-cover"
-                alt="Hero Preview"
-              />
+              <div className="relative h-48 w-80 overflow-hidden rounded-2xl">
+                <OptimizedImage
+                  src={preview}
+                  alt="Hero Preview"
+                  fill
+                  width={700}
+                  sizes="320px"
+                  className="object-cover"
+                  unoptimized
+                />
+              </div>
 
               <button
                 type="button"

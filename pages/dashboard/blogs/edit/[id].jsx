@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import StatusModal from "@/components/StatusModal";
 import ConfirmModal from "@/components/ConfirmModal";
+import OptimizedImage from "@/components/OptimizedImage";
 
 const inputClass =
   "w-full rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition-all duration-500 focus:border-primary focus:shadow-[0_0_0_4px_rgba(0,0,0,0.04)]";
@@ -703,11 +704,17 @@ export default function EditBlogPage() {
 
           {(newMainPreview || form.image) && (
             <div className="relative w-48">
-              <img
-                src={newMainPreview || form.image}
-                className="w-full h-40 object-cover rounded-xl border"
-                alt="Main blog"
-              />
+              <div className="relative h-40 w-full overflow-hidden rounded-xl border">
+                <OptimizedImage
+                  src={newMainPreview || form.image}
+                  alt="Main blog"
+                  fill
+                  width={500}
+                  sizes="192px"
+                  className="object-cover"
+                  unoptimized={Boolean(newMainPreview)}
+                />
+              </div>
 
               <button
                 type="button"
@@ -745,51 +752,80 @@ export default function EditBlogPage() {
             className={inputClass}
           />
 
-          {form.subimages?.length > 0 || newSubPreviews.length > 0 ? (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {form.subimages?.map((img, i) => (
-                <div key={`existing-${img}-${i}`} className="relative">
-                  <img
-                    src={img}
-                    className="w-full h-32 object-cover rounded-xl border"
-                    alt={`Sub image ${i + 1}`}
-                  />
+          {/* SUB IMAGES */}
+          <div className={cardClass}>
+            <h2 className="flex items-center gap-2 text-lg font-bold">
+              <ImageIcon className="text-primary" /> Sub Images
+            </h2>
 
-                  <button
-                    type="button"
-                    onClick={() => requestRemoveExistingSubImage(i, img)}
-                    className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-lg"
-                  >
-                    <Trash2 size={12} />
-                  </button>
-                </div>
-              ))}
+            <input
+              type="file"
+              multiple
+              accept="image/*"
+              onChange={handleSubImagesSelect}
+              disabled={saving}
+              className={inputClass}
+            />
 
-              {newSubPreviews.map((img, i) => (
-                <div key={`new-${img}-${i}`} className="relative">
-                  <img
-                    src={img}
-                    className="w-full h-32 object-cover rounded-xl border"
-                    alt={`New sub image ${i + 1}`}
-                  />
+            {form.subimages?.length > 0 || newSubPreviews.length > 0 ? (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {form.subimages?.map((img, i) => (
+                  <div key={`existing-${img}-${i}`} className="relative">
+                    <div className="relative h-32 w-full overflow-hidden rounded-xl border">
+                      <OptimizedImage
+                        src={img}
+                        alt={`Sub image ${i + 1}`}
+                        fill
+                        width={400}
+                        sizes="(max-width: 768px) 50vw, 25vw"
+                        className="object-cover"
+                      />
+                    </div>
 
-                  <button
-                    type="button"
-                    onClick={() => requestRemoveNewSubPreview(i)}
-                    className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-lg"
-                  >
-                    <Trash2 size={12} />
-                  </button>
+                    <button
+                      type="button"
+                      onClick={() => requestRemoveExistingSubImage(i, img)}
+                      className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-lg"
+                    >
+                      <Trash2 size={12} />
+                    </button>
+                  </div>
+                ))}
 
-                  <p className="mt-1 text-xs font-medium text-primary">
-                    New selected
-                  </p>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-sm text-gray-400">No sub images uploaded yet.</p>
-          )}
+                {newSubPreviews.map((img, i) => (
+                  <div key={`new-${img}-${i}`} className="relative">
+                    <div className="relative h-32 w-full overflow-hidden rounded-xl border">
+                      <OptimizedImage
+                        src={img}
+                        alt={`New sub image ${i + 1}`}
+                        fill
+                        width={400}
+                        sizes="(max-width: 768px) 50vw, 25vw"
+                        className="object-cover"
+                        unoptimized
+                      />
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => requestRemoveNewSubPreview(i)}
+                      className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-lg"
+                    >
+                      <Trash2 size={12} />
+                    </button>
+
+                    <p className="mt-1 text-xs font-medium text-primary">
+                      New selected
+                    </p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-gray-400">
+                No sub images uploaded yet.
+              </p>
+            )}
+          </div>
         </div>
 
         {/* SAVE BUTTON */}

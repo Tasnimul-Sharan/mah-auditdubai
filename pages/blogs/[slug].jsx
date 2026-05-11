@@ -84,7 +84,6 @@ export default function BlogDetailsPage({ blog, blogPage }) {
         }}
       />
 
-      {/* ✅ Pass DB data */}
       <BlogDetails blogsData={blog} />
     </>
   );

@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import StatusModal from "@/components/StatusModal";
 import ConfirmModal from "@/components/ConfirmModal";
+import OptimizedImage from "@/components/OptimizedImage";
 
 export default function AboutAdmin() {
   const { uploadFile } = useUpload();
@@ -629,11 +630,17 @@ export default function AboutAdmin() {
 
               {(preview || form.image) && (
                 <div className="relative overflow-hidden rounded-[1.5rem] border border-border_color bg-background p-2">
-                  <img
-                    src={preview || form.image}
-                    className="h-64 w-full rounded-2xl object-cover"
-                    alt="About Preview"
-                  />
+                  <div className="relative h-64 w-full overflow-hidden rounded-2xl">
+                    <OptimizedImage
+                      src={preview || form.image}
+                      alt="About Preview"
+                      fill
+                      width={700}
+                      sizes="(max-width: 768px) 100vw, 400px"
+                      className="object-cover"
+                      unoptimized={Boolean(preview)}
+                    />
+                  </div>
 
                   {!preview && form.image && (
                     <button

@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import StatusModal from "@/components/StatusModal";
 import ConfirmModal from "@/components/ConfirmModal";
+import OptimizedImage from "@/components/OptimizedImage";
 
 export default function FooterAdmin() {
   const { uploadFile } = useUpload();
@@ -274,58 +275,58 @@ export default function FooterAdmin() {
     });
   };
 
-const addService = () => {
-  setForm({
-    ...form,
-    services: [
-      ...form.services,
-      {
-        label: "",
-        slug: "",
-        link: "",
-      },
-    ],
-  });
-};
+  const addService = () => {
+    setForm({
+      ...form,
+      services: [
+        ...form.services,
+        {
+          label: "",
+          slug: "",
+          link: "",
+        },
+      ],
+    });
+  };
 
- const updateService = (i, field, value) => {
-   const updated = [...form.services];
+  const updateService = (i, field, value) => {
+    const updated = [...form.services];
 
-   const current = updated[i] || {
-     label: "",
-     slug: "",
-     link: "",
-   };
+    const current = updated[i] || {
+      label: "",
+      slug: "",
+      link: "",
+    };
 
-   if (field === "label") {
-     const slug = generateSlug(value);
+    if (field === "label") {
+      const slug = generateSlug(value);
 
-     updated[i] = {
-       ...current,
-       label: value,
-       slug,
-       link: getServiceLink(slug),
-     };
-   } else if (field === "slug") {
-     const slug = generateSlug(value);
+      updated[i] = {
+        ...current,
+        label: value,
+        slug,
+        link: getServiceLink(slug),
+      };
+    } else if (field === "slug") {
+      const slug = generateSlug(value);
 
-     updated[i] = {
-       ...current,
-       slug,
-       link: getServiceLink(slug),
-     };
-   } else {
-     updated[i] = {
-       ...current,
-       [field]: value,
-     };
-   }
+      updated[i] = {
+        ...current,
+        slug,
+        link: getServiceLink(slug),
+      };
+    } else {
+      updated[i] = {
+        ...current,
+        [field]: value,
+      };
+    }
 
-   setForm({
-     ...form,
-     services: updated,
-   });
- };
+    setForm({
+      ...form,
+      services: updated,
+    });
+  };
 
   const handleSave = async () => {
     try {
@@ -434,11 +435,16 @@ const addService = () => {
 
           {form.logo && (
             <div className="relative w-fit rounded-2xl border bg-gray-50 p-4">
-              <img
-                src={form.logo}
-                className="h-24 w-56 object-contain rounded-xl"
-                alt="Footer Logo"
-              />
+              <div className="relative h-24 w-56 overflow-hidden rounded-xl">
+                <OptimizedImage
+                  src={form.logo}
+                  alt="Footer Logo"
+                  fill
+                  width={300}
+                  sizes="224px"
+                  className="object-contain"
+                />
+              </div>
 
               <button
                 type="button"

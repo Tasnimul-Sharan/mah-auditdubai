@@ -16,6 +16,7 @@ import { useUpload } from "@/Hooks/useUpload";
 import { useCrud } from "@/Hooks/useCrud";
 import StatusModal from "@/components/StatusModal";
 import ConfirmModal from "@/components/ConfirmModal";
+import OptimizedImage from "@/components/OptimizedImage";
 
 export default function HeroSlidesAdmin() {
   const { data, loading, createItem, deleteItem, updateItem } =
@@ -344,11 +345,17 @@ export default function HeroSlidesAdmin() {
 
               {preview && (
                 <div className="relative overflow-hidden rounded-[1.5rem] border border-border_color bg-background p-2">
-                  <img
-                    src={preview}
-                    className="h-64 w-full rounded-2xl object-cover"
-                    alt="Hero Slide Preview"
-                  />
+                  <div className="relative h-64 w-full overflow-hidden rounded-2xl">
+                    <OptimizedImage
+                      src={preview}
+                      alt="Hero Slide Preview"
+                      fill
+                      width={900}
+                      sizes="(max-width: 768px) 100vw, 420px"
+                      className="object-cover"
+                      unoptimized={preview.startsWith("blob:")}
+                    />
+                  </div>
                 </div>
               )}
             </div>
@@ -390,11 +397,16 @@ export default function HeroSlidesAdmin() {
                   className="group relative overflow-hidden rounded-[1.5rem] border border-border_color bg-white p-4 shadow-[0_14px_40px_rgba(15,23,42,0.05)] transition-all duration-700 hover:-translate-y-1 hover:shadow-[0_25px_70px_rgba(15,23,42,0.1)]"
                 >
                   <div className="relative overflow-hidden rounded-2xl bg-background">
-                    <img
-                      src={item.image}
-                      className="h-56 w-full object-cover transition duration-700 group-hover:scale-105"
-                      alt={item.title || "Hero Slide"}
-                    />
+                    <div className="relative h-56 w-full overflow-hidden">
+                      <OptimizedImage
+                        src={item.image || "/placeholder.jpg"}
+                        alt={item.title || "Hero Slide"}
+                        fill
+                        width={900}
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                        className="object-cover transition duration-700 group-hover:scale-105"
+                      />
+                    </div>
 
                     <div className="absolute inset-0 bg-gradient-to-t from-secondary/75 via-secondary/10 to-transparent opacity-80" />
 

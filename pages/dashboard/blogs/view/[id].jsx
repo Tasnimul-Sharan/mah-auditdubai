@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import AdminLayout from "@/components/AdminLayout";
 import { supabaseServer } from "@/lib/supabaseServer";
+import OptimizedImage from "@/components/OptimizedImage";
 import {
   ArrowLeft,
   CalendarDays,
@@ -21,6 +22,7 @@ const Field = ({ label, value }) => (
     <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-gray-400">
       {label}
     </p>
+
     <p className="whitespace-pre-line text-sm leading-7 text-gray-700">
       {value || "—"}
     </p>
@@ -42,8 +44,14 @@ export default function ViewBlogPage() {
       .select("*")
       .eq("id", id)
       .single()
-      .then(({ data }) => {
-        setBlog(data);
+      .then(({ data, error }) => {
+        if (error) {
+          console.error("Blog fetch error:", error);
+          setBlog(null);
+        } else {
+          setBlog(data);
+        }
+
         setLoading(false);
       });
   }, [id]);
@@ -51,11 +59,21 @@ export default function ViewBlogPage() {
   const formatDate = (dateStr) => {
     if (!dateStr) return "No date";
 
-    return new Date(dateStr).toLocaleDateString("en-US", {
+    const normalizedDate =
+      typeof dateStr === "string" && /^\d{4}-\d{2}-\d{2}$/.test(dateStr)
+        ? `${dateStr}T00:00:00.000Z`
+        : dateStr;
+
+    const parsedDate = new Date(normalizedDate);
+
+    if (Number.isNaN(parsedDate.getTime())) return "No date";
+
+    return new Intl.DateTimeFormat("en-US", {
       year: "numeric",
       month: "long",
       day: "numeric",
-    });
+      timeZone: "UTC",
+    }).format(parsedDate);
   };
 
   if (loading) {
@@ -67,7 +85,7 @@ export default function ViewBlogPage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8">
+    <div className="mx-auto max-w-6xl space-y-8">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="flex items-center gap-2 text-3xl font-bold text-gray-900">
@@ -103,11 +121,17 @@ export default function ViewBlogPage() {
 
       {blog.image && (
         <div className="relative overflow-hidden rounded-[2rem] border border-gray-100 bg-white shadow-[0_25px_80px_rgba(0,0,0,0.08)]">
-          <img
-            src={blog.image}
-            alt={blog.title || "Blog image"}
-            className="h-[420px] w-full object-cover"
-          />
+          <div className="relative h-[420px] w-full">
+            <OptimizedImage
+              src={blog.image}
+              alt={blog.title || "Blog image"}
+              fill
+              width={1200}
+              sizes="(max-width: 768px) 100vw, 1152px"
+              className="object-cover"
+              priority
+            />
+          </div>
 
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent" />
 
@@ -171,7 +195,7 @@ export default function ViewBlogPage() {
 
       {blog.quote && (
         <div className="relative overflow-hidden rounded-[1.5rem] border border-primary/10 bg-primary/5 p-7">
-          <Quote className="absolute -top-3 -left-3 h-16 w-16 text-primary/15" />
+          <Quote className="absolute -left-3 -top-3 h-16 w-16 text-primary/15" />
 
           <p className="relative whitespace-pre-line text-lg italic leading-8 text-gray-700">
             {blog.quote}
@@ -188,12 +212,19 @@ export default function ViewBlogPage() {
 
           <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
             {blog.subimages.map((img, i) => (
-              <img
-                key={i}
-                src={img}
-                alt=""
-                className="h-36 w-full rounded-2xl border object-cover transition-all duration-500 hover:-translate-y-1 hover:shadow-lg"
-              />
+              <div
+                key={`${img}-${i}`}
+                className="relative h-36 w-full overflow-hidden rounded-2xl border transition-all duration-500 hover:-translate-y-1 hover:shadow-lg"
+              >
+                <OptimizedImage
+                  src={img}
+                  alt={`Sub image ${i + 1}`}
+                  fill
+                  width={400}
+                  sizes="(max-width: 768px) 50vw, 25vw"
+                  className="object-cover"
+                />
+              </div>
             ))}
           </div>
         </div>
@@ -209,7 +240,7 @@ export default function ViewBlogPage() {
           <div className="grid gap-3 md:grid-cols-2">
             {blog.checklist.map((item, i) => (
               <div
-                key={i}
+                key={`${item}-${i}`}
                 className="flex items-start gap-3 rounded-2xl bg-gray-50 p-4 text-sm text-gray-700"
               >
                 <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
@@ -230,12 +261,13 @@ export default function ViewBlogPage() {
           <div className="space-y-3">
             {blog.highlights.map((item, i) => (
               <div
-                key={i}
+                key={`${item}-${i}`}
                 className="flex items-start gap-3 rounded-2xl bg-gray-50 p-4 text-sm text-gray-700"
               >
                 <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
                   {i + 1}
                 </span>
+
                 <span>{item}</span>
               </div>
             ))}
@@ -253,7 +285,7 @@ export default function ViewBlogPage() {
           <div className="flex flex-wrap gap-2">
             {blog.posttags.map((tag, i) => (
               <span
-                key={i}
+                key={`${tag}-${i}`}
                 className="rounded-full bg-primary/10 px-4 py-2 text-sm font-semibold text-primary"
               >
                 {tag}

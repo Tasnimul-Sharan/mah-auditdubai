@@ -1,10 +1,24 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    remotePatterns: [
+     remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "mah-auditdubai.ae",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "www.mah-auditdubai.ae",
+        port: "",
+        pathname: "/**",
+      },
       {
         protocol: "https",
         hostname: "res.cloudinary.com",
+        port: "",
+        pathname: "/**",
       },
     ],
   },

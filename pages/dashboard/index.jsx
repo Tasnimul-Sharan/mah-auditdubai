@@ -78,7 +78,6 @@ function Dashboard() {
 
   return (
     <div className="space-y-10">
-      {/* HEADER */}
       <div className="relative overflow-hidden rounded-[2rem] border border-gray-100 bg-gradient-to-br from-white via-white to-primary/5 p-8 shadow-[0_25px_80px_rgba(0,0,0,0.06)]">
         <div className="absolute -right-20 -top-20 h-56 w-56 rounded-full bg-primary/10 blur-3xl" />
         <div className="absolute -bottom-24 left-20 h-56 w-56 rounded-full bg-secondary/10 blur-3xl" />

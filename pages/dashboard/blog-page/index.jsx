@@ -7,6 +7,7 @@ import { supabaseServer } from "@/lib/supabaseServer";
 import { useUpload } from "@/Hooks/useUpload";
 import StatusModal from "@/components/StatusModal";
 import ConfirmModal from "@/components/ConfirmModal";
+import OptimizedImage from "@/components/OptimizedImage";
 
 export default function BlogPageDashboard() {
   const { uploadFile } = useUpload();
@@ -274,11 +275,17 @@ export default function BlogPageDashboard() {
 
           {(preview || meta.hero_image) && (
             <div className="relative w-fit rounded-2xl border bg-gray-50 p-3">
-              <img
-                src={preview || meta.hero_image}
-                className="w-72 h-44 rounded-xl object-cover"
-                alt="Blog Hero Preview"
-              />
+              <div className="relative h-44 w-72 overflow-hidden rounded-xl">
+                <OptimizedImage
+                  src={preview || meta.hero_image}
+                  alt="Blog Hero Preview"
+                  fill
+                  width={500}
+                  sizes="288px"
+                  className="object-cover"
+                  unoptimized={Boolean(preview)}
+                />
+              </div>
 
               {!preview && meta.hero_image && (
                 <button

@@ -15,6 +15,7 @@ import AdminLayout from "@/components/AdminLayout";
 import { useUpload } from "@/Hooks/useUpload";
 import StatusModal from "@/components/StatusModal";
 import ConfirmModal from "@/components/ConfirmModal";
+import OptimizedImage from "@/components/OptimizedImage";
 
 export default function EditPage() {
   const router = useRouter();
@@ -374,11 +375,17 @@ export default function EditPage() {
 
           {(preview || form.hero_image) && (
             <div className="relative w-fit overflow-hidden rounded-[1.5rem] border border-border_color bg-background p-2">
-              <img
-                src={preview || form.hero_image}
-                className="h-52 w-96 rounded-2xl object-cover"
-                alt="Hero Preview"
-              />
+              <div className="relative h-52 w-96 overflow-hidden rounded-2xl">
+                <OptimizedImage
+                  src={preview || form.hero_image}
+                  alt="Hero Preview"
+                  fill
+                  width={900}
+                  sizes="384px"
+                  className="object-cover"
+                  unoptimized={Boolean(preview)}
+                />
+              </div>
 
               <button
                 type="button"

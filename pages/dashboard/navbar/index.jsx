@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import StatusModal from "@/components/StatusModal";
 import ConfirmModal from "@/components/ConfirmModal";
+import OptimizedImage from "@/components/OptimizedImage";
 
 export default function NavbarAdmin() {
   const { uploadFile } = useUpload();
@@ -344,11 +345,17 @@ export default function NavbarAdmin() {
 
           {(preview || form.logo) && (
             <div className="relative w-fit rounded-2xl border bg-gray-50 p-4">
-              <img
-                src={preview || form.logo}
-                className="h-24 w-56 object-contain rounded-xl"
-                alt="Navbar Logo"
-              />
+              <div className="relative h-24 w-56 overflow-hidden rounded-xl">
+                <OptimizedImage
+                  src={preview || form.logo}
+                  alt="Navbar Logo"
+                  fill
+                  width={300}
+                  sizes="224px"
+                  className="object-contain"
+                  unoptimized={Boolean(preview)}
+                />
+              </div>
 
               {!preview && form.logo && (
                 <button

@@ -36,36 +36,40 @@ export default function Sidebar() {
       title: "Home Content",
       items: [
         { name: "Home Page", href: "/dashboard/home", icon: <FaHome /> },
-        {
-          name: "Hero Slides",
-          href: "/dashboard/hero-slides",
-          icon: <FaBoxOpen />,
-        },
-        { name: "Stats", href: "/dashboard/stats", icon: <FaChartBar /> },
-        {
-          name: "Why Choose Us",
-          href: "/dashboard/why-choose",
-          icon: <FaStar />,
-        },
-        {
-          name: "Industries",
-          href: "/dashboard/industries",
-          icon: <FaIndustry />,
-        },
-        { name: "Clients", href: "/dashboard/clients", icon: <FaUsers /> },
-        {
-          name: "Testimonials",
-          href: "/dashboard/testimonials",
-          icon: <FaQuoteRight />,
-        },
+        // {
+        //   name: "Hero Slides",
+        //   href: "/dashboard/hero-slides",
+        //   icon: <FaBoxOpen />,
+        // },
+        // { name: "Stats", href: "/dashboard/stats", icon: <FaChartBar /> },
+        // {
+        //   name: "Why Choose Us",
+        //   href: "/dashboard/why-choose",
+        //   icon: <FaStar />,
+        // },
+        // {
+        //   name: "Industries",
+        //   href: "/dashboard/industries",
+        //   icon: <FaIndustry />,
+        // },
+        // { name: "Clients", href: "/dashboard/clients", icon: <FaUsers /> },
+        // {
+        //   name: "Testimonials",
+        //   href: "/dashboard/testimonials",
+        //   icon: <FaQuoteRight />,
+        // },
       ],
     },
     {
-  title: "About",
-  items: [
-    { name: "About Page", href: "/dashboard/about", icon: <FaRegFileAlt /> },
-  ],
-},
+      title: "About",
+      items: [
+        {
+          name: "About Page",
+          href: "/dashboard/about",
+          icon: <FaRegFileAlt />,
+        },
+      ],
+    },
     {
       title: "Services",
       items: [

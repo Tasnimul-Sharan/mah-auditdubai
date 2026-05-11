@@ -7,23 +7,15 @@ export default function ViewPagesDashboard({ page, sections }) {
 
   return (
     <>
-      {/* ================= SEO ================= */}
       <Head>
         <title>{page.meta_title || page.title}</title>
-
         <meta name="description" content={page.meta_description || ""} />
-
         <meta name="keywords" content={page.meta_keywords || ""} />
-
         <meta name="author" content={page.meta_author || ""} />
-
-        {/* OPEN GRAPH */}
         <meta property="og:title" content={page.meta_title || page.title} />
         <meta property="og:description" content={page.meta_description || ""} />
         <meta property="og:image" content={page.meta_image || ""} />
         <meta property="og:url" content={page.meta_url || ""} />
-
-        {/* TWITTER */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={page.meta_title || page.title} />
         <meta
@@ -31,15 +23,10 @@ export default function ViewPagesDashboard({ page, sections }) {
           content={page.meta_description || ""}
         />
         <meta name="twitter:image" content={page.meta_image || ""} />
-
-        {/* CANONICAL */}
         <link rel="canonical" href={page.meta_url || ""} />
       </Head>
-
-      {/* ================= PAGE CONTENT ================= */}
       <div>
         <h1>{page.title}</h1>
-
         {sections.map((sec) => {
           switch (sec.type) {
             case "hero":

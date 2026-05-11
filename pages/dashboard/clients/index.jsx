@@ -8,6 +8,7 @@ import { useCrud } from "@/Hooks/useCrud";
 import { supabaseServer } from "@/lib/supabaseServer";
 import StatusModal from "@/components/StatusModal";
 import ConfirmModal from "@/components/ConfirmModal";
+import OptimizedImage from "@/components/OptimizedImage";
 
 export default function ClientsAdmin() {
   const { data, loading, createItem, deleteItem } = useCrud("clients");
@@ -292,12 +293,20 @@ export default function ClientsAdmin() {
           {previews.length > 0 && (
             <div className="flex flex-wrap gap-3">
               {previews.map((src, i) => (
-                <img
+                <div
                   key={i}
-                  src={src}
-                  alt="Client Preview"
-                  className="w-28 h-24 object-contain border rounded-2xl bg-gray-50 p-3"
-                />
+                  className="relative h-24 w-28 overflow-hidden rounded-2xl border bg-gray-50 p-3"
+                >
+                  <OptimizedImage
+                    src={src}
+                    alt={`Client preview ${i + 1}`}
+                    fill
+                    width={180}
+                    sizes="112px"
+                    className="object-contain p-3"
+                    unoptimized
+                  />
+                </div>
               ))}
             </div>
           )}
@@ -313,7 +322,6 @@ export default function ClientsAdmin() {
           </button>
         </div>
 
-        {/* ================= CLIENT GRID ================= */}
         <div>
           <h2 className="mb-4 text-xl font-bold text-gray-900">
             Client Logo List
@@ -336,11 +344,16 @@ export default function ClientsAdmin() {
                     key={item.id}
                     className="group relative flex flex-col items-center rounded-[1.5rem] border border-gray-100 bg-white p-5 shadow-[0_14px_40px_rgba(0,0,0,0.04)] transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_25px_70px_rgba(0,0,0,0.1)]"
                   >
-                    <img
-                      src={item.logo_url}
-                      alt="Client Logo"
-                      className="mb-4 h-20 max-w-[150px] object-contain grayscale transition-all duration-500 group-hover:grayscale-0"
-                    />
+                    <div className="relative mb-4 h-20 w-full max-w-[150px]">
+                      <OptimizedImage
+                        src={item.logo_url}
+                        alt="Client Logo"
+                        fill
+                        width={180}
+                        sizes="150px"
+                        className="object-contain grayscale transition-all duration-500 group-hover:grayscale-0"
+                      />
+                    </div>
 
                     <button
                       type="button"

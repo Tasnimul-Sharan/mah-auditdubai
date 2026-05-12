@@ -10,6 +10,7 @@ import WhyChooseUs from "@/components/WhyChooseUs";
 import ContactSection from "@/components/ContactSection";
 import { supabaseServer } from "@/lib/supabaseServer";
 import IndustrySection from "@/components/IndustrySection";
+import { getLayoutData } from "@/lib/getLayoutData";
 
 export default function Home({
   meta,
@@ -99,6 +100,8 @@ export default function Home({
 }
 
 export async function getServerSideProps() {
+  // const layoutData = await getLayoutData();
+
   const { data: homeData } = await supabaseServer
     .from("home_page")
     .select("*")
@@ -222,6 +225,7 @@ export async function getServerSideProps() {
 
   return {
     props: {
+      // ...layoutData,
       meta: homeData || null,
       heroSlides: heroSlidesData || [],
       about: aboutData || null,

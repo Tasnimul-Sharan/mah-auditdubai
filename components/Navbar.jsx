@@ -1,10 +1,9 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import gsap from "gsap";
-import { supabaseServer } from "@/lib/supabaseServer";
+import OptimizedImage from "@/components/OptimizedImage";
 
 import {
   FaMapMarkerAlt,
@@ -19,36 +18,18 @@ import {
 
 import { HiOutlineMenu, HiOutlineX } from "react-icons/hi";
 
-export default function Navbar() {
+export default function Navbar({ navbarData = null, navLinks = [] }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
-  const [data, setData] = useState(null);
-  const [links, setLinks] = useState([]);
+  const data = navbarData;
+  const links = Array.isArray(navLinks) ? navLinks : [];
 
   const menuRef = useRef(null);
   const drawerRef = useRef(null);
   const navRef = useRef(null);
   const topbarRef = useRef(null);
 
-  // ================= FETCH =================
-  useEffect(() => {
-    const fetchData = async () => {
-      const { data } = await supabaseServer.from("navbar").select("*").single();
-
-      const { data: linksData } = await supabaseServer
-        .from("nav_links")
-        .select("*")
-        .order("order_no", { ascending: true });
-
-      setData(data);
-      setLinks(linksData || []);
-    };
-
-    fetchData();
-  }, []);
-
-  // ================= SCROLL =================
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 100);
@@ -56,11 +37,10 @@ export default function Navbar() {
 
     handleScroll();
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // ================= NAV ANIMATION =================
   useEffect(() => {
     if (!navRef.current) return;
 
@@ -84,7 +64,6 @@ export default function Navbar() {
     return () => window.removeEventListener("resize", handleAnimation);
   }, [isScrolled]);
 
-  // ================= PREMIUM MOBILE MENU =================
   useEffect(() => {
     const menu = menuRef.current;
     const drawer = drawerRef.current;
@@ -156,7 +135,6 @@ export default function Navbar() {
     }
   }, [isMenuOpen]);
 
-  // ================= BODY LOCK =================
   useEffect(() => {
     document.body.style.overflow = isMenuOpen ? "hidden" : "auto";
 
@@ -165,105 +143,112 @@ export default function Navbar() {
     };
   }, [isMenuOpen]);
 
-  if (!data) return null;
+  if (!data) {
+    return (
+      <header className="fixed left-0 top-0 z-50 h-20 w-full bg-white md:h-24" />
+    );
+  }
 
   const menuLinks = links.filter(
-    (item) => item.name.toLowerCase() !== "contact",
+    (item) => item?.name?.toLowerCase() !== "contact",
   );
 
   return (
     <header className="w-full">
-      {/* ================= TOPBAR ================= */}
       <div
         ref={topbarRef}
-        className="hidden lg:block fixed top-0 left-0 w-full z-40 bg-secondary text-white py-6"
+        className="fixed left-0 top-0 z-40 hidden w-full bg-secondary py-6 text-white lg:block"
       >
         <div className="custom-container mx-auto flex items-center justify-between">
           <div className="flex flex-1 items-center gap-6 text-base text-white/75">
-            <p className="flex items-center gap-2 border-r border-white/15 pr-4">
-              <FaMapMarkerAlt className="text-primary" />
-              {data.address}
-            </p>
+            {data.address && (
+              <p className="flex items-center gap-2 border-r border-white/15 pr-4">
+                <FaMapMarkerAlt className="text-primary" />
+                {data.address}
+              </p>
+            )}
 
-            <p className="flex items-center gap-2 border-r border-white/15 pr-4 group cursor-pointer">
-              <FaEnvelope className="transition duration-300 group-hover:text-primary text-primary" />
-              <a
-                href={`mailto:${data.email}`}
-                className="transition duration-300 group-hover:text-primary"
-              >
-                {data.email}
-              </a>
-            </p>
+            {data.email && (
+              <p className="group flex cursor-pointer items-center gap-2 border-r border-white/15 pr-4">
+                <FaEnvelope className="text-primary transition duration-300 group-hover:text-primary" />
+                <a
+                  href={`mailto:${data.email}`}
+                  className="transition duration-300 group-hover:text-primary"
+                >
+                  {data.email}
+                </a>
+              </p>
+            )}
 
-            <p className="flex items-center gap-2 group cursor-pointer">
-              <FaPhoneAlt className="transition duration-300 group-hover:text-primary text-primary" />
-              <a
-                href={`tel:${data.phone}`}
-                className="transition duration-300 group-hover:text-primary"
-              >
-                {data.phone}
-              </a>
-            </p>
+            {data.phone && (
+              <p className="group flex cursor-pointer items-center gap-2">
+                <FaPhoneAlt className="text-primary transition duration-300 group-hover:text-primary" />
+                <a
+                  href={`tel:${data.phone}`}
+                  className="transition duration-300 group-hover:text-primary"
+                >
+                  {data.phone}
+                </a>
+              </p>
+            )}
           </div>
 
           <div className="flex gap-4">
             {data.facebook && (
               <Link href={data.facebook} target="_blank" className="text-base">
-                <FaFacebookF className="transition duration-300 hover:text-primary hover:scale-110" />
+                <FaFacebookF className="transition duration-300 hover:scale-110 hover:text-primary" />
               </Link>
             )}
 
             {data.youtube && (
               <Link href={data.youtube} target="_blank" className="text-base">
-                <FaYoutube className="transition duration-300 hover:text-primary hover:scale-110" />
+                <FaYoutube className="transition duration-300 hover:scale-110 hover:text-primary" />
               </Link>
             )}
 
             {data.linkedin && (
               <Link href={data.linkedin} target="_blank" className="text-base">
-                <FaLinkedinIn className="transition duration-300 hover:text-primary hover:scale-110" />
+                <FaLinkedinIn className="transition duration-300 hover:scale-110 hover:text-primary" />
               </Link>
             )}
 
             {data.instagram && (
               <Link href={data.instagram} target="_blank" className="text-base">
-                <FaInstagram className="transition duration-300 hover:text-primary hover:scale-110" />
+                <FaInstagram className="transition duration-300 hover:scale-110 hover:text-primary" />
               </Link>
             )}
           </div>
         </div>
       </div>
 
-      {/* ================= MAIN NAV ================= */}
       <nav
         ref={navRef}
-        className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
+        className={`fixed left-0 top-0 z-50 w-full transition-all duration-500 ${
           isScrolled
             ? "bg-white/95 shadow-[0_12px_40px_rgba(15,23,42,0.08)] backdrop-blur-xl"
             : "bg-white"
         }`}
       >
-        <div className="custom-container mx-auto h-20 md:h-24 flex items-center justify-between">
-          {/* LOGO */}
+        <div className="custom-container mx-auto flex h-20 items-center justify-between md:h-24">
           <Link href="/" className="relative z-[70] flex items-center">
-            <Image
+            <OptimizedImage
               src={data.logo || "/logo.png"}
               alt="Logo"
-              width={1200}
-              height={1200}
+              width={180}
+              height={125}
+              sizes="180px"
               priority
-              className="h-20 md:h-28 w-auto object-contain"
+              className="h-20 w-auto object-contain md:h-28"
             />
           </Link>
 
-          {/* DESKTOP MENU */}
-          <div className="hidden lg:flex items-center gap-10">
+          <div className="hidden items-center gap-10 lg:flex">
             <ul className="flex items-center gap-8 font-semibold text-Secound_primary">
               {menuLinks.map((item) => (
-                <li key={item.id} className="relative group">
+                <li key={item.id} className="group relative">
                   <Link
                     href={item.path}
-                    className="hover:text-primary transition"
+                    className="transition hover:text-primary"
                   >
                     {item.name}
                   </Link>
@@ -273,20 +258,20 @@ export default function Navbar() {
               ))}
             </ul>
 
-            <Link href="/contact">
-              <button className="rounded-md bg-primary px-6 py-3 font-semibold text-white transition hover:bg-secondary">
-                Contact Us
-              </button>
+            <Link
+              href="/contact"
+              className="rounded-md bg-primary px-6 py-3 font-semibold text-white transition hover:bg-secondary"
+            >
+              Contact Us
             </Link>
           </div>
 
-          {/* PREMIUM MOBILE BUTTON */}
           <button
             type="button"
             aria-label="Toggle navigation menu"
             aria-expanded={isMenuOpen}
             onClick={() => setIsMenuOpen((prev) => !prev)}
-            className={`fixed right-5 top-4 z-[9999] lg:hidden flex h-12 w-12 items-center justify-center rounded-2xl border transition-all duration-300 ${
+            className={`fixed right-5 top-4 z-[9999] flex h-12 w-12 items-center justify-center rounded-2xl border transition-all duration-300 lg:hidden ${
               isMenuOpen
                 ? "border-white/20 bg-primary text-white shadow-[0_10px_30px_rgba(0,0,0,0.25)]"
                 : "border-gray-200 bg-white text-primary shadow-[0_10px_30px_rgba(15,23,42,0.08)]"
@@ -299,12 +284,10 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* ================= PREMIUM MOBILE MENU ================= */}
       <div
         ref={menuRef}
         className="pointer-events-none fixed inset-0 z-[60] opacity-0 lg:hidden"
       >
-        {/* OVERLAY */}
         <button
           type="button"
           aria-label="Close navigation menu"
@@ -312,16 +295,13 @@ export default function Navbar() {
           className="absolute inset-0 bg-secondary/70 backdrop-blur-md"
         />
 
-        {/* DRAWER */}
         <div
           ref={drawerRef}
           className="absolute right-0 top-0 flex h-full w-[88%] max-w-[420px] flex-col overflow-hidden rounded-l-[2rem] border-l border-white/10 bg-secondary text-white shadow-[0_30px_100px_rgba(0,0,0,0.35)]"
         >
-          {/* DECOR */}
           <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-primary/25 blur-3xl" />
           <div className="pointer-events-none absolute -bottom-24 left-10 h-72 w-72 rounded-full bg-white/10 blur-3xl" />
 
-          {/* DRAWER HEADER */}
           <div className="relative z-10 border-b border-white/10 px-6 pb-6 pt-24">
             <p
               data-menu-item
@@ -345,7 +325,6 @@ export default function Navbar() {
             </p>
           </div>
 
-          {/* LINKS */}
           <div className="relative z-10 flex-1 overflow-y-auto px-6 py-6">
             <ul className="space-y-3">
               {menuLinks.map((item, index) => (
@@ -379,7 +358,6 @@ export default function Navbar() {
               </li>
             </ul>
 
-            {/* CONTACT CARD */}
             <div
               data-menu-item
               className="mt-7 rounded-2xl border border-white/10 bg-white/[0.06] p-4"
@@ -426,7 +404,6 @@ export default function Navbar() {
             </div>
           </div>
 
-          {/* SOCIAL FOOTER */}
           <div className="relative z-10 border-t border-white/10 px-6 py-5">
             <div className="flex items-center justify-between">
               <p className="text-xs font-semibold uppercase tracking-[0.22em] text-white/40">

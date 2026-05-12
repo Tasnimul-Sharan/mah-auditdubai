@@ -1,9 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
-import { supabaseServer } from "@/lib/supabaseServer";
+import OptimizedImage from "@/components/OptimizedImage";
 
 import {
   FaFacebookF,
@@ -23,30 +21,40 @@ const iconMap = {
   youtube: FaYoutube,
 };
 
-export default function Footer() {
-  const [data, setData] = useState(null);
+function parseArray(value) {
+  if (!value) return [];
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  if (Array.isArray(value)) return value;
 
-  const fetchData = async () => {
-    const { data, error } = await supabaseServer
-      .from("footer")
-      .select("*")
-      .single();
-
-    if (error) {
-      console.error("Footer Fetch Error:", error.message);
-      return;
+  if (typeof value === "string") {
+    try {
+      const parsed = JSON.parse(value);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
     }
+  }
 
-    setData(data);
-  };
+  return [];
+}
 
+function createSlug(text = "") {
+  return String(text)
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-");
+}
+
+export default function Footer({ data = null }) {
   if (!data) return null;
 
   const year = new Date().getFullYear();
+
+  const socialLinks = parseArray(data.social_links);
+  const quickLinks = parseArray(data.quick_links);
+  const services = parseArray(data.services);
 
   return (
     <footer className="relative overflow-hidden bg-secondary text-white">
@@ -56,12 +64,17 @@ export default function Footer() {
         <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_2fr]">
           <div className="max-w-sm">
             {data.logo && (
-              <Link href="/" className="inline-flex">
-                <Image
+              <Link
+                href="/"
+                className="inline-flex"
+                aria-label="Go to homepage"
+              >
+                <OptimizedImage
                   src={data.logo}
                   alt="MAH Audit Dubai"
-                  width={240}
-                  height={110}
+                  width={220}
+                  height={100}
+                  sizes="220px"
                   className="h-auto w-44 object-contain"
                 />
               </Link>
@@ -165,37 +178,53 @@ after:transition-all after:duration-300 hover:after:w-full"
                 <span className="absolute left-0 -bottom-2 h-[2px] w-10 bg-primary" />
               </h4>
               <ul className="mt-7 space-y-4 text-sm text-white/65">
-                <li className="flex items-start gap-3">
-                  <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                    <FaPhoneAlt size={13} />
-                  </span>
-                  <p className="leading-relaxed">{data.phone}</p>
-                </li>
+                {data.phone && (
+                  <li className="flex items-start gap-3">
+                    <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                      <FaPhoneAlt size={13} />
+                    </span>
 
-                <li className="flex items-start gap-3">
-                  <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                    <FaEnvelope size={13} />
-                  </span>
-                  <p className="leading-relaxed break-all">{data.email}</p>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                    <FaMapMarkerAlt size={13} />
-                  </span>
-                  <p className="leading-relaxed">{data.address}</p>
-                </li>
+                    <a
+                      href={`tel:${data.phone}`}
+                      className="leading-relaxed transition hover:text-primary"
+                    >
+                      {data.phone}
+                    </a>
+                  </li>
+                )}
+
+                {data.email && (
+                  <li className="flex items-start gap-3">
+                    <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                      <FaEnvelope size={13} />
+                    </span>
+
+                    <a
+                      href={`mailto:${data.email}`}
+                      className="break-all leading-relaxed transition hover:text-primary"
+                    >
+                      {data.email}
+                    </a>
+                  </li>
+                )}
+
+                {data.address && (
+                  <li className="flex items-start gap-3">
+                    <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                      <FaMapMarkerAlt size={13} />
+                    </span>
+
+                    <p className="leading-relaxed">{data.address}</p>
+                  </li>
+                )}
               </ul>
             </div>
           </div>
         </div>
-        <div className="mt-12 border-t border-white/10 pt-6 flex flex-col md:flex-row items-center justify-center gap-4 text-sm text-white/50">
+        <div className="mt-12 border-t border-white/10 pt-6 flex flex-col md:flex-row items-center justify-center gap-4 text-sm text-white/60">
           <p>
             © {year} {data.copyright}
           </p>
-
-          {/* <p className="text-white/35">
-            Audit, Tax & Advisory Services in Dubai
-          </p> */}
         </div>
       </div>
     </footer>

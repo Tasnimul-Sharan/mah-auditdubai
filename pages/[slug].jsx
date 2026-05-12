@@ -1,9 +1,14 @@
+import Custom404 from "@/components/Custom404";
 import HeroSection from "@/components/HeroSection";
 import DynamicBlock from "@/components/sections/DynamicBlock";
 import { supabaseServer } from "@/lib/supabaseServer";
 import Head from "next/head";
 
 export default function DynamicPage({ page, sections }) {
+  if (!page) {
+    return <Custom404 />;
+  }
+
   const pageUrl =
     page.meta_url || `https://mah-auditdubai.ae/${page.slug || ""}`;
 
@@ -77,7 +82,7 @@ export default function DynamicPage({ page, sections }) {
   );
 }
 
-export async function getServerSideProps({ params }) {
+export async function getServerSideProps({ params, res }) {
   const slug = Array.isArray(params?.slug)
     ? params.slug.join("/")
     : params?.slug;
@@ -89,8 +94,13 @@ export async function getServerSideProps({ params }) {
     .maybeSingle();
 
   if (pageError || !page) {
+    res.statusCode = 404;
+
     return {
-      notFound: true,
+      props: {
+        page: null,
+        sections: [],
+      },
     };
   }
 

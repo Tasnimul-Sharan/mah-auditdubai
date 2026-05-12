@@ -34,23 +34,23 @@ export default function ServicesSection({
       <div className="absolute inset-x-0 top-0 h-[360px] bg-[#f6f8fb]" />
 
       <div className="relative custom-container mx-auto">
-        <div className="grid items-end gap-8 lg:grid-cols-[0.9fr_1.1fr]">
-          <div>
-            {content?.badge && (
-              <SectionBadge icon={FaPhoenixFramework} className="mb-5">
+        <div className="mx-auto max-w-4xl text-center">
+          {content?.badge && (
+            <div className="mb-5 flex justify-center">
+              <SectionBadge icon={FaPhoenixFramework}>
                 {content.badge}
               </SectionBadge>
-            )}
+            </div>
+          )}
 
-            {content?.title && (
-              <h1 className="text-4xl font-bold leading-tight text-secondary md:text-5xl">
-                {content.title}
-              </h1>
-            )}
-          </div>
+          {content?.title && (
+            <h1 className="text-4xl font-bold leading-tight text-secondary md:text-5xl">
+              {content.title}
+            </h1>
+          )}
 
           {content?.description && (
-            <p className="max-w-2xl text-lg leading-relaxed text-gray-600 lg:ml-auto lg:text-right">
+            <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-gray-600">
               {content.description}
             </p>
           )}

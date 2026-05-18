@@ -13,8 +13,10 @@ export default function ServiceCard({ service, index, buttonText }) {
           src={service.image || "/placeholder.jpg"}
           alt={service.title || "Service Image"}
           fill
-          width={800}
-          sizes="(max-width: 768px) 100vw, 33vw"
+          width={530}
+          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 455px"
+          quality={50}
+          aspectRatio="16:9"
           className="object-cover transition duration-700 group-hover:scale-105"
         />
 

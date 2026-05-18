@@ -20,10 +20,11 @@ export default function PremiumCTA({ data }) {
                 "Partner with our experts and ensure financial clarity and confidence."}
             </p>
 
-            <Link href={data.button_link || "/contact"}>
-              <button className="mt-8 rounded-2xl bg-primary px-8 py-4 font-semibold text-white shadow-lg transition-all duration-500 hover:-translate-y-1 hover:bg-white hover:text-secondary">
-                {data.button_text || "Book Consultation"}
-              </button>
+            <Link
+              href={data.button_link || "/contact"}
+              className="mt-8 inline-flex min-h-11 items-center justify-center rounded-2xl bg-primary px-8 py-4 font-semibold text-white shadow-lg transition-all duration-500 hover:-translate-y-1 hover:bg-white hover:text-secondary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-secondary"
+            >
+              {data.button_text || "Book Consultation"}
             </Link>
           </div>
         </div>

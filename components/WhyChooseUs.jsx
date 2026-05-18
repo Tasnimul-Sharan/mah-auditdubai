@@ -43,7 +43,6 @@ export default function WhyChooseUs({ data, points = [] }) {
                 width={900}
                 sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-cover"
-                priority
               />
 
               <div className="absolute inset-0 bg-gradient-to-t from-secondary/70 via-secondary/10 to-transparent" />
@@ -106,7 +105,7 @@ export default function WhyChooseUs({ data, points = [] }) {
 
           <Link
             href={buttonHref}
-            className="mt-10 inline-flex items-center gap-3 rounded-xl bg-primary px-7 py-3 font-semibold text-white shadow-lg shadow-primary/20 transition duration-300 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-xl"
+            className="mt-10 inline-flex min-h-11 items-center gap-3 rounded-xl bg-primary px-7 py-3 font-semibold text-white shadow-lg shadow-primary/20 transition duration-300 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
           >
             {buttonText}
             <FaArrowRight className="text-sm" />

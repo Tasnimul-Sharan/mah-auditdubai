@@ -190,7 +190,7 @@ export default function ContactPageSection({ contactInfo, formContent }) {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="group relative inline-flex items-center gap-3 overflow-hidden rounded-md bg-primary px-7 py-3.5 font-semibold text-white shadow-[0_14px_35px_rgba(0,0,0,0.18)] transition-all duration-700 hover:-translate-y-1 hover:shadow-[0_20px_55px_rgba(0,0,0,0.25)] disabled:cursor-not-allowed disabled:opacity-70"
+                  className="group relative inline-flex min-h-11 items-center gap-3 overflow-hidden rounded-md bg-primary px-7 py-3.5 font-semibold text-white shadow-[0_14px_35px_rgba(0,0,0,0.18)] transition-all duration-700 hover:-translate-y-1 hover:shadow-[0_20px_55px_rgba(0,0,0,0.25)] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-70"
                 >
                   <span className="absolute inset-0 opacity-0 transition-opacity duration-700 group-hover:opacity-100 bg-gradient-to-r from-primary via-primary/80 to-secondary" />
 
@@ -288,7 +288,7 @@ function AlertBox({ type, title, message }) {
 
         <div>
           {title && (
-            <h4
+            <p
               className={
                 isSuccess
                   ? "text-sm font-bold text-secondary"
@@ -296,7 +296,7 @@ function AlertBox({ type, title, message }) {
               }
             >
               {title}
-            </h4>
+            </p>
           )}
 
           {message && (

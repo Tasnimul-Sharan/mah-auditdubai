@@ -27,7 +27,7 @@ export default function StatsSection({ stats = [] }) {
   if (!Array.isArray(stats) || stats.length === 0) return null;
 
   return (
-    <section className="bg-secondary py-24 text-primary">
+    <section className="bg-secondary py-24 text-primary_light">
       <div className="mx-auto max-w-6xl px-6">
         <div className="grid gap-12 text-center md:grid-cols-4">
           {stats.map((item) => {
@@ -36,17 +36,17 @@ export default function StatsSection({ stats = [] }) {
             return (
               <div key={item.id} className="group">
                 <div className="mb-4 flex justify-center">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-xl border border-primary/10 bg-primary/5 text-2xl text-primary transition-all duration-300 group-hover:scale-110 md:h-20 md:w-20 md:text-3xl">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-xl border border-primary_light/20 bg-primary_light/10 text-2xl text-primary_light transition-all duration-300 group-hover:scale-110 md:h-20 md:w-20 md:text-3xl">
                     <Icon />
                   </div>
                 </div>
 
-                <h3 className="text-4xl font-bold text-primary md:text-5xl">
+                <p className="text-4xl font-bold text-primary_light md:text-5xl">
                   <Counter
                     end={Number(item.value) || 0}
                     suffix={item.suffix || ""}
                   />
-                </h3>
+                </p>
 
                 <p className="mt-3 text-gray-300">{item.label}</p>
               </div>

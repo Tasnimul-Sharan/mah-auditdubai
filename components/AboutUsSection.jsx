@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
 import SectionBadge from "./SectionBadge";
 import OptimizedImage from "./OptimizedImage";
 import { FiArrowRight } from "react-icons/fi";
@@ -22,12 +21,7 @@ export default function AboutUsSection({ data }) {
 
       <div className="relative max-w-7xl mx-auto px-6 py-20 md:py-28">
         <div className="grid lg:grid-cols-[0.95fr_1.05fr] gap-12 lg:gap-20 items-center">
-          <motion.div
-            initial={{ opacity: 0, y: 32 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.65 }}
-          >
+          <div>
             <SectionBadge className="mb-6">{data.badge}</SectionBadge>
 
             <h2 className="max-w-2xl text-4xl md:text-5xl font-bold leading-tight text-secondary">
@@ -66,7 +60,7 @@ export default function AboutUsSection({ data }) {
             <div className="mt-10 flex flex-wrap gap-4">
               <Link
                 href={data.button_primary_link}
-                className="group inline-flex items-center gap-3 rounded-lg bg-primary px-7 py-4 text-sm font-semibold text-white shadow-[0_14px_34px_rgba(56,182,255,0.28)] transition hover:bg-secondary hover:shadow-[0_18px_40px_rgba(15,23,42,0.18)]"
+                className="group inline-flex min-h-11 items-center gap-3 rounded-lg bg-primary px-7 py-4 text-sm font-semibold text-white shadow-[0_14px_34px_rgba(56,182,255,0.28)] transition hover:bg-secondary hover:shadow-[0_18px_40px_rgba(15,23,42,0.18)] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
               >
                 {data.button_primary_text}
                 <FiArrowRight className="text-base transition group-hover:translate-x-1" />
@@ -74,20 +68,14 @@ export default function AboutUsSection({ data }) {
 
               <Link
                 href={data.button_secondary_link}
-                className="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-7 py-4 text-sm font-semibold text-secondary transition hover:border-secondary hover:bg-secondary hover:text-white"
+                className="inline-flex min-h-11 items-center justify-center rounded-lg border border-gray-200 bg-white px-7 py-4 text-sm font-semibold text-secondary transition hover:border-secondary hover:bg-secondary hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
               >
                 {data.button_secondary_text}
               </Link>
             </div>
-          </motion.div>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 32 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.65, delay: 0.08 }}
-            className="relative"
-          >
+          <div className="relative">
             <div className="relative overflow-hidden rounded-2xl border border-gray-200 bg-secondary p-3 shadow-[0_30px_90px_rgba(15,23,42,0.14)]">
               <div className="relative h-[420px] md:h-[560px] overflow-hidden rounded-xl">
                 <OptimizedImage
@@ -105,7 +93,7 @@ export default function AboutUsSection({ data }) {
               <div className="absolute bottom-8 left-8 right-8 rounded-xl border border-white/15 bg-white/10 p-5 text-white backdrop-blur-md">
                 <p className="text-sm text-white/65">{data.stats_title}</p>
 
-                <p className="mt-2 text-3xl md:text-4xl font-bold text-primary">
+                <p className="mt-2 text-3xl md:text-4xl font-bold text-primary_light">
                   {data.stats_value}
                 </p>
 
@@ -114,7 +102,7 @@ export default function AboutUsSection({ data }) {
                 </p>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>

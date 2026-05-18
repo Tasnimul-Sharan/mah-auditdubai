@@ -83,17 +83,21 @@ export default function Footer({ data = null }) {
               {data.about}
             </p>
             <div className="mt-7 flex items-center gap-3">
-              {data.social_links?.map((item, i) => {
+              {socialLinks.map((item, i) => {
                 const Icon = iconMap[item.type];
                 if (!Icon) return null;
+
+                const platform =
+                  item.type?.charAt(0).toUpperCase() + item.type?.slice(1);
+
                 return (
                   <a
                     key={i}
                     href={item.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    aria-label={item.type}
-                    className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 transition hover:border-primary hover:bg-primary hover:text-secondary"
+                    aria-label={`Visit MAH Audit Dubai on ${platform}`}
+                    className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 transition hover:border-primary_light hover:bg-primary hover:text-white"
                   >
                     <Icon size={14} />
                   </a>
@@ -103,16 +107,16 @@ export default function Footer({ data = null }) {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
             <div>
-              <h4 className="relative inline-block text-base font-bold text-white">
+              <p className="relative inline-block text-base font-bold text-white">
                 Quick Links
                 <span className="absolute left-0 -bottom-2 h-[2px] w-10 bg-primary" />
-              </h4>
+              </p>
               <ul className="mt-7 space-y-3">
-                {data.quick_links?.map((item, i) => (
+                {quickLinks.map((item, i) => (
                   <li key={i}>
                     <Link
                       href={item.link}
-                      className="relative inline-block text-sm text-white/65 transition hover:text-primary
+                      className="relative inline-block text-sm text-white/65 transition hover:text-primary_light
           after:absolute after:left-0 after:-bottom-1 after:h-[1px] after:w-0 after:bg-primary
           after:transition-all after:duration-300 hover:after:w-full"
                     >
@@ -123,13 +127,13 @@ export default function Footer({ data = null }) {
               </ul>
             </div>
             <div>
-              <h4 className="relative inline-block text-base font-bold text-white">
+              <p className="relative inline-block text-base font-bold text-white">
                 Services
                 <span className="absolute left-0 -bottom-2 h-[2px] w-10 bg-primary" />
-              </h4>
+              </p>
 
               <ul className="mt-7 space-y-3">
-                {data.services?.map((service, i) => {
+                {services.map((service, i) => {
                   const label =
                     typeof service === "string"
                       ? service
@@ -156,7 +160,7 @@ export default function Footer({ data = null }) {
                     <li key={i}>
                       <Link
                         href={href}
-                        className="group relative inline-flex items-center gap-2 text-sm text-white/65 transition hover:text-primary
+                        className="group relative inline-flex items-center gap-2 text-sm text-white/65 transition hover:text-primary_light
 after:absolute after:left-0 after:-bottom-1 after:h-[1px] after:w-0 after:bg-primary
 after:transition-all after:duration-300 hover:after:w-full"
                       >
@@ -173,20 +177,20 @@ after:transition-all after:duration-300 hover:after:w-full"
               </ul>
             </div>
             <div>
-              <h4 className="relative inline-block text-base font-bold text-white">
+              <p className="relative inline-block text-base font-bold text-white">
                 Contact
                 <span className="absolute left-0 -bottom-2 h-[2px] w-10 bg-primary" />
-              </h4>
+              </p>
               <ul className="mt-7 space-y-4 text-sm text-white/65">
                 {data.phone && (
                   <li className="flex items-start gap-3">
-                    <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary_light/10 text-primary_light">
                       <FaPhoneAlt size={13} />
                     </span>
 
                     <a
                       href={`tel:${data.phone}`}
-                      className="leading-relaxed transition hover:text-primary"
+                      className="leading-relaxed transition hover:text-primary_light"
                     >
                       {data.phone}
                     </a>
@@ -195,13 +199,13 @@ after:transition-all after:duration-300 hover:after:w-full"
 
                 {data.email && (
                   <li className="flex items-start gap-3">
-                    <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary_light/10 text-primary_light">
                       <FaEnvelope size={13} />
                     </span>
 
                     <a
                       href={`mailto:${data.email}`}
-                      className="break-all leading-relaxed transition hover:text-primary"
+                      className="break-all leading-relaxed transition hover:text-primary_light"
                     >
                       {data.email}
                     </a>
@@ -210,7 +214,7 @@ after:transition-all after:duration-300 hover:after:w-full"
 
                 {data.address && (
                   <li className="flex items-start gap-3">
-                    <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary_light/10 text-primary_light">
                       <FaMapMarkerAlt size={13} />
                     </span>
 

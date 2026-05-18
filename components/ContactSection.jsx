@@ -79,9 +79,9 @@ export default function ContactSection({ data }) {
           )}
 
           {hero?.title && (
-            <h1 className="text-4xl md:text-5xl font-bold text-slate-900">
+            <h2 className="text-4xl md:text-5xl font-bold text-slate-900">
               {hero.title}
-            </h1>
+            </h2>
           )}
 
           {hero?.description && (
@@ -213,7 +213,7 @@ export default function ContactSection({ data }) {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="group flex items-center gap-3 bg-primary text-white px-6 py-3 rounded-2xl font-semibold shadow-lg transition-all duration-500 hover:-translate-y-1 hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-70"
+                  className="group flex min-h-11 items-center gap-3 rounded-2xl bg-primary px-6 py-3 font-semibold text-white shadow-lg transition-all duration-500 hover:-translate-y-1 hover:bg-secondary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-70"
                 >
                   {isSubmitting
                     ? formContent?.submitting_text
@@ -369,7 +369,7 @@ function AlertBox({ type, title, message }) {
 
         <div>
           {title && (
-            <h4
+            <p
               className={
                 isSuccess
                   ? "text-sm font-bold text-secondary"
@@ -377,7 +377,7 @@ function AlertBox({ type, title, message }) {
               }
             >
               {title}
-            </h4>
+            </p>
           )}
 
           {message && (

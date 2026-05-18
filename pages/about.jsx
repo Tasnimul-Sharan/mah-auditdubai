@@ -26,47 +26,129 @@ export default function AboutPage({
   visionMission,
   faqData,
 }) {
+  const siteName = "MAH Audit Dubai";
+  const siteUrl = "https://mah-auditdubai.ae";
+
+  const pageTitle =
+    data?.meta_title || "About MAH Audit Dubai | Leading Audit Firm in UAE";
+
+  const pageDescription =
+    data?.meta_description ||
+    "Learn more about MAH Audit Dubai, a trusted audit, VAT, and accounting firm helping businesses grow across the UAE.";
+
+  const pageUrl = data?.meta_url?.trim() || `${siteUrl}/about`;
+  const pageImage = data?.meta_image?.trim() || `${siteUrl}/og-about.jpg`;
+
+  const pageKeywords =
+    data?.meta_keywords ||
+    "about audit firm dubai, MAH Audit UAE, accounting firm dubai";
+
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "AccountingService",
+    name: siteName,
+    url: siteUrl,
+    logo: `${siteUrl}/logo.png`,
+    image: pageImage,
+    description: pageDescription,
+    areaServed: {
+      "@type": "Place",
+      name: "Dubai, UAE",
+    },
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Dubai",
+      addressCountry: "AE",
+    },
+  };
+
+  const webPageSchema = {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    name: pageTitle,
+    url: pageUrl,
+    description: pageDescription,
+    isPartOf: {
+      "@type": "WebSite",
+      name: siteName,
+      url: siteUrl,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: siteName,
+      logo: {
+        "@type": "ImageObject",
+        url: `${siteUrl}/logo.png`,
+      },
+    },
+  };
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: siteUrl,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "About",
+        item: pageUrl,
+      },
+    ],
+  };
+
   return (
     <div className="w-full relative">
       <Head>
-        <title>{data?.meta_title}</title>
-        <meta name="description" content={data?.meta_description} />
-        <meta name="keywords" content={data?.meta_keywords} />
-        <meta name="author" content={data?.meta_author} />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="canonical" href={data?.meta_url} />
-        <meta property="og:title" content={data?.meta_title} />
-        <meta property="og:description" content={data?.meta_description} />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content={data?.meta_url} />
-        <meta property="og:image" content={data?.meta_image} />
-        <meta property="og:site_name" content="MAH Audit Dubai" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={data?.meta_title} />
-        <meta name="twitter:description" content={data?.meta_description} />
-        <meta name="twitter:image" content={data?.meta_image} />
+        <title>{pageTitle}</title>
+
+        <meta name="description" content={pageDescription} />
+        <meta name="keywords" content={pageKeywords} />
+        <meta name="author" content={data?.meta_author || siteName} />
         <meta name="robots" content="index, follow" />
+
+        <link rel="canonical" href={pageUrl} />
+
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDescription} />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={pageUrl} />
+        <meta property="og:image" content={pageImage} />
+        <meta property="og:site_name" content={siteName} />
         <meta property="og:locale" content="en_US" />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={pageTitle} />
+        <meta name="twitter:description" content={pageDescription} />
+        <meta name="twitter:image" content={pageImage} />
+
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Organization",
-              name: "MAH Audit Dubai",
-              url: data?.meta_url,
-              logo: "https://mah-auditdubai.ae/logo.png",
-              image: data?.meta_image,
-              description: data?.meta_description,
-              areaServed: "Dubai, UAE",
-              sameAs: [
-                "https://www.facebook.com/",
-                "https://www.linkedin.com/",
-              ],
-            }),
+            __html: JSON.stringify(organizationSchema),
+          }}
+        />
+
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(webPageSchema),
+          }}
+        />
+
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(breadcrumbSchema),
           }}
         />
       </Head>
+
       <HeroSection
         hero={{
           title: data?.hero_title || "About Us",

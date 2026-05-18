@@ -19,11 +19,18 @@
 // export default MyApp;
 
 import App from "next/app";
+import { Poppins } from "next/font/google";
 import "../styles/index.css";
 import { useLenis } from "../Hooks/useLenis";
 import { Analytics } from "@vercel/analytics/react";
 import Layout from "@/components/Layout";
 import { getLayoutData } from "@/lib/getLayoutData";
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  display: "swap",
+});
 
 function MyApp({ Component, pageProps }) {
   useLenis();
@@ -41,10 +48,10 @@ function MyApp({ Component, pageProps }) {
     ));
 
   return (
-    <>
+    <div className={poppins.className}>
       {getLayout(<Component {...pageProps} />)}
       <Analytics />
-    </>
+    </div>
   );
 }
 

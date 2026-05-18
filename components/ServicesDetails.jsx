@@ -79,8 +79,8 @@ export default function ServicesDetails({ service }) {
 
           <div className="relative z-10 grid min-h-[520px] items-center gap-8 p-6 md:p-10 lg:grid-cols-[1.05fr_0.95fr] lg:p-14">
             <div className="max-w-3xl text-white">
-              <div className="flex items-center gap-3 text-sm font-bold uppercase tracking-[0.25em] text-primary">
-                <span className="h-px w-12 bg-primary" />
+              <div className="flex items-center gap-3 text-sm font-bold uppercase tracking-[0.25em] text-primary_light">
+                <span className="h-px w-12 bg-primary_light" />
                 {hero?.eyebrow || "Dubai Audit & Advisory"}
               </div>
 
@@ -114,7 +114,7 @@ export default function ServicesDetails({ service }) {
                         key={`${label}-${index}`}
                         className="flex items-center gap-3 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-semibold text-white backdrop-blur"
                       >
-                        <Icon className="text-primary" />
+                        <Icon className="text-primary_light" />
                         {label}
                       </div>
                     );
@@ -125,7 +125,7 @@ export default function ServicesDetails({ service }) {
 
             {/* Snapshot Card */}
             <aside className="rounded-[1.5rem] border border-white/15 bg-white/10 p-5 text-white shadow-2xl backdrop-blur-xl md:p-6">
-              <p className="text-sm font-bold uppercase tracking-[0.2em] text-primary">
+              <p className="text-sm font-bold uppercase tracking-[0.2em] text-primary_light">
                 {snapshot?.label || "Service Snapshot"}
               </p>
 
@@ -175,7 +175,7 @@ export default function ServicesDetails({ service }) {
 
               <Link
                 href={cta?.buttonLink || "/contact"}
-                className="mt-6 inline-flex w-full items-center justify-center gap-3 rounded-xl bg-primary px-6 py-4 font-semibold text-white transition hover:bg-primary_light"
+                className="mt-6 inline-flex min-h-11 w-full items-center justify-center gap-3 rounded-xl bg-primary px-6 py-4 font-semibold text-white transition hover:bg-secondary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-secondary"
               >
                 <FaPhoneAlt />
                 {cta?.buttonText || "Request Consultation"}
@@ -192,7 +192,7 @@ export default function ServicesDetails({ service }) {
           {/* Sticky Sidebar */}
           <aside className="h-fit rounded-[1.5rem] border border-gray-200 bg-white p-5 shadow-[0_18px_60px_rgba(15,23,42,0.07)] lg:sticky lg:top-24">
             <div className="rounded-2xl bg-secondary p-5 text-white">
-              <p className="text-sm font-bold uppercase tracking-wide text-primary">
+              <p className="text-sm font-bold uppercase tracking-wide text-primary_light">
                 {hero?.sidebar_label || "Audit Coverage"}
               </p>
 
@@ -340,7 +340,7 @@ export default function ServicesDetails({ service }) {
 
                 <Link
                   href={cta?.buttonLink || "/contact"}
-                  className="mt-6 inline-flex w-full items-center justify-center gap-3 rounded-xl bg-primary px-6 py-4 font-semibold text-white transition hover:bg-primary_light"
+                  className="mt-6 inline-flex min-h-11 w-full items-center justify-center gap-3 rounded-xl bg-primary px-6 py-4 font-semibold text-white transition hover:bg-secondary_two focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-secondary"
                 >
                   <FaPhoneAlt />
                   {cta?.buttonText || "Request Consultation"}

@@ -44,9 +44,9 @@ export default function ServicesSection({
           )}
 
           {content?.title && (
-            <h1 className="text-4xl font-bold leading-tight text-secondary md:text-5xl">
+            <h2 className="text-4xl font-bold leading-tight text-secondary md:text-5xl">
               {content.title}
-            </h1>
+            </h2>
           )}
 
           {content?.description && (

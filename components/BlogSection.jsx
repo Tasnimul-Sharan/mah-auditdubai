@@ -1,21 +1,11 @@
 "use client";
 
 import { FaRegCalendarAlt, FaRegUser, FaBookOpen } from "react-icons/fa";
-import { motion } from "framer-motion";
 import Link from "next/link";
 import Button from "./Button";
 import SectionBadge from "./SectionBadge";
 import { FiArrowRight } from "react-icons/fi";
 import OptimizedImage from "@/components/OptimizedImage";
-
-const cardVariants = {
-  hidden: { opacity: 0, y: 40 },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, ease: "easeOut" },
-  },
-};
 
 const defaultSectionData = {
   badge: "Insights & Resources",
@@ -71,21 +61,18 @@ export default function BlogSection({
           </div>
 
           <Link href="/blogs">
-            <Button variant="primary">{section.buttonText}</Button>
+            <Button as="span" variant="primary">
+              {section.buttonText}
+            </Button>
           </Link>
         </div>
 
         {blogs.length === 0 ? (
           <p className="text-center text-gray-500">No blogs found</p>
         ) : (
-          <motion.div
-            className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3"
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true }}
-          >
+          <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3">
             {blogs.slice(0, 3).map((blog) => (
-              <motion.article key={blog.id} variants={cardVariants}>
+              <article key={blog.id}>
                 <Link
                   href={`/blogs/${blog.slug}`}
                   className="group/card block overflow-hidden rounded-xl border bg-white transition-all duration-500 hover:-translate-y-2 hover:shadow-xl"
@@ -137,9 +124,9 @@ export default function BlogSection({
                     </div>
                   </div>
                 </Link>
-              </motion.article>
+              </article>
             ))}
-          </motion.div>
+          </div>
         )}
       </div>
     </section>

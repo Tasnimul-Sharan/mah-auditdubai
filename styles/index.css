@@ -1,4 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
@@ -49,36 +48,26 @@ h3 {
   }
 }
 
-.slick-dots {
-  position: absolute;
-  top: 50%;
-  right: 0;
-  transform: translateY(50%);
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-  list-style: none;
+@keyframes heroFade {
+  from {
+    opacity: 0.92;
+    transform: scale(1.025);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
-.slick-dots li {
-  margin: 0;
-}
-
-.slick-dots li button::before {
-  display: none;
-}
-
-.slick-dots li span {
-  color: white;
-  font-size: 18px;
-  font-weight: bold;
-  opacity: 0.6;
-  transition: opacity 0.3s;
-}
-
-.slick-dots li.slick-active span {
-  opacity: 1;
-  color: #c7993b;
+@keyframes heroContent {
+  from {
+    opacity: 0.96;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .menu-item {
@@ -144,14 +133,8 @@ h3 {
   outline: 2px solid #c7993b !important;
 }
 
-.slick-dots li.slick-active .custom-dot {
-  background-color: #c7993b !important;
-  outline: 2px solid #c7993b !important;
-  outline-offset: 5px !important;
-}
-
 .font-outline {
-  font-family: "Poppins", sans-serif;
+  font-family: inherit;
   -webkit-text-stroke: 1.5px #000000;
   color: transparent;
   transition:
@@ -160,17 +143,12 @@ h3 {
 }
 
 .font-outline-work-process {
-  font-family: "Poppins", sans-serif;
+  font-family: inherit;
   -webkit-text-stroke: 1.5px white;
   color: transparent;
   transition:
     -webkit-text-stroke 0.3s ease,
     color 0.3s ease;
-}
-
-.slick-slide > div {
-  padding-top: 4rem;
-  padding-bottom: 2rem;
 }
 
 .service-item:hover .font-outline {

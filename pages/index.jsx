@@ -1,16 +1,24 @@
 import Head from "next/head";
-import AboutUsSection from "@/components/AboutUsSection";
-import BlogSection from "@/components/BlogSection";
+import dynamic from "next/dynamic";
 import LandingPage from "@/components/home/LandingPage";
-import StatsSection from "@/components/StatsSection";
-import ClientsSection from "@/components/home/ClientsSection";
-import TestimonialsSection from "@/components/home/TestimonialsSection";
-import ServicesSection from "@/components/home/ServicesSection";
-import WhyChooseUs from "@/components/WhyChooseUs";
-import ContactSection from "@/components/ContactSection";
 import { supabaseServer } from "@/lib/supabaseServer";
-import IndustrySection from "@/components/IndustrySection";
 import { getLayoutData } from "@/lib/getLayoutData";
+
+const AboutUsSection = dynamic(() => import("@/components/AboutUsSection"));
+const BlogSection = dynamic(() => import("@/components/BlogSection"));
+const StatsSection = dynamic(() => import("@/components/StatsSection"));
+const ClientsSection = dynamic(
+  () => import("@/components/home/ClientsSection"),
+);
+const TestimonialsSection = dynamic(
+  () => import("@/components/home/TestimonialsSection"),
+);
+const ServicesSection = dynamic(
+  () => import("@/components/home/ServicesSection"),
+);
+const WhyChooseUs = dynamic(() => import("@/components/WhyChooseUs"));
+const ContactSection = dynamic(() => import("@/components/ContactSection"));
+const IndustrySection = dynamic(() => import("@/components/IndustrySection"));
 
 export default function Home({
   meta,
@@ -109,7 +117,9 @@ export async function getServerSideProps() {
 
   const { data: heroSlidesData } = await supabaseServer
     .from("hero_slides")
-    .select("id, subtitle, title, description, image, public_id, created_at")
+    .select(
+      "id, subtitle, title, description, button_text, primary_button_text, primary_button_link, secondary_button_text, secondary_button_link, image, public_id, created_at",
+    )
     .order("created_at", { ascending: true });
 
   const { data: aboutData } = await supabaseServer

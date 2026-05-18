@@ -56,7 +56,7 @@ export default function IndustrySection({
           {buttonText && buttonLink && (
             <Link
               href={buttonLink}
-              className="mt-10 inline-flex rounded-xl bg-primary px-8 py-3 font-semibold text-white shadow-lg shadow-primary/20 transition-all duration-300 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-xl"
+              className="mt-10 inline-flex min-h-11 items-center rounded-xl bg-primary px-8 py-3 font-semibold text-white shadow-lg shadow-primary/20 transition-all duration-300 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
             >
               {buttonText}
             </Link>
@@ -75,7 +75,6 @@ export default function IndustrySection({
               width={900}
               sizes="(max-width: 1024px) 100vw, 50vw"
               className="object-cover"
-              priority
             />
 
             <div className="absolute inset-0 bg-gradient-to-t from-secondary/70 via-secondary/10 to-transparent" />

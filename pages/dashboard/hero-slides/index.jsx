@@ -10,6 +10,8 @@ import {
   Save,
   X,
   LayoutDashboard,
+  ArrowUpRight,
+  MousePointerClick,
 } from "lucide-react";
 import AdminLayout from "@/components/AdminLayout";
 import { useUpload } from "@/Hooks/useUpload";
@@ -28,6 +30,10 @@ export default function HeroSlidesAdmin() {
     subtitle: "",
     title: "",
     description: "",
+    primary_button_text: "",
+    primary_button_link: "",
+    secondary_button_text: "",
+    secondary_button_link: "",
   });
 
   const [editingId, setEditingId] = useState(null);
@@ -78,12 +84,15 @@ export default function HeroSlidesAdmin() {
       subtitle: "",
       title: "",
       description: "",
+      primary_button_text: "",
+      primary_button_link: "",
+      secondary_button_text: "",
+      secondary_button_link: "",
     });
     setFile(null);
     setPreview("");
   };
 
-  // ================= ADD / UPDATE =================
   const handleSubmit = async () => {
     if (!form.title.trim()) {
       showModal("error", "Please write a slide title first.");
@@ -110,6 +119,7 @@ export default function HeroSlidesAdmin() {
       if (editingId) {
         await updateItem(editingId, {
           ...form,
+          button_text: form.secondary_button_text,
           ...(imageUrl && { image: imageUrl }),
           ...(publicId && { public_id: publicId }),
         });
@@ -118,6 +128,7 @@ export default function HeroSlidesAdmin() {
       } else {
         await createItem({
           ...form,
+          button_text: form.secondary_button_text,
           image: imageUrl,
           public_id: publicId,
         });
@@ -140,6 +151,10 @@ export default function HeroSlidesAdmin() {
       subtitle: item.subtitle || "",
       title: item.title || "",
       description: item.description || "",
+      primary_button_text: item.primary_button_text || "",
+      primary_button_link: item.primary_button_link || "",
+      secondary_button_text: item.secondary_button_text || item.button_text || "",
+      secondary_button_link: item.secondary_button_link || "",
     });
 
     setPreview(item.image || "");
@@ -317,6 +332,56 @@ export default function HeroSlidesAdmin() {
                 }
                 className={textareaClass}
               />
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <input
+                  placeholder="Primary Button Text"
+                  value={form.primary_button_text}
+                  onChange={(e) =>
+                    setForm({
+                      ...form,
+                      primary_button_text: e.target.value,
+                    })
+                  }
+                  className={inputClass}
+                />
+
+                <input
+                  placeholder="Primary Button Link"
+                  value={form.primary_button_link}
+                  onChange={(e) =>
+                    setForm({
+                      ...form,
+                      primary_button_link: e.target.value,
+                    })
+                  }
+                  className={inputClass}
+                />
+
+                <input
+                  placeholder="Secondary Button Text"
+                  value={form.secondary_button_text}
+                  onChange={(e) =>
+                    setForm({
+                      ...form,
+                      secondary_button_text: e.target.value,
+                    })
+                  }
+                  className={inputClass}
+                />
+
+                <input
+                  placeholder="Secondary Button Link"
+                  value={form.secondary_button_link}
+                  onChange={(e) =>
+                    setForm({
+                      ...form,
+                      secondary_button_link: e.target.value,
+                    })
+                  }
+                  className={inputClass}
+                />
+              </div>
             </div>
 
             <div className="space-y-4">
@@ -372,7 +437,6 @@ export default function HeroSlidesAdmin() {
           </button>
         </div>
 
-        {/* LIST */}
         <div>
           <div className="mb-5 flex items-center justify-between">
             <div>
@@ -391,65 +455,119 @@ export default function HeroSlidesAdmin() {
             </div>
           ) : data?.length > 0 ? (
             <div className="grid gap-5 md:grid-cols-2">
-              {data.map((item) => (
-                <div
-                  key={item.id}
-                  className="group relative overflow-hidden rounded-[1.5rem] border border-border_color bg-white p-4 shadow-[0_14px_40px_rgba(15,23,42,0.05)] transition-all duration-700 hover:-translate-y-1 hover:shadow-[0_25px_70px_rgba(15,23,42,0.1)]"
-                >
-                  <div className="relative overflow-hidden rounded-2xl bg-background">
-                    <div className="relative h-56 w-full overflow-hidden">
-                      <OptimizedImage
-                        src={item.image || "/placeholder.jpg"}
-                        alt={item.title || "Hero Slide"}
-                        fill
-                        width={900}
-                        sizes="(max-width: 768px) 100vw, 50vw"
-                        className="object-cover transition duration-700 group-hover:scale-105"
-                      />
+              {data.map((item) => {
+                const ctaItems = [
+                  {
+                    label: "Primary CTA",
+                    text: item.primary_button_text,
+                    link: item.primary_button_link,
+                    className:
+                      "border-primary/15 bg-primary/5 text-primary",
+                  },
+                  {
+                    label: "Secondary CTA",
+                    text: item.secondary_button_text || item.button_text,
+                    link: item.secondary_button_link,
+                    className:
+                      "border-secondary/15 bg-secondary/5 text-secondary",
+                  },
+                ].filter((cta) => cta.text || cta.link);
+
+                return (
+                  <div
+                    key={item.id}
+                    className="group relative overflow-hidden rounded-[1.5rem] border border-border_color bg-white p-4 shadow-[0_14px_40px_rgba(15,23,42,0.05)] transition-all duration-700 hover:-translate-y-1 hover:shadow-[0_25px_70px_rgba(15,23,42,0.1)]"
+                  >
+                    <div className="relative overflow-hidden rounded-2xl bg-background">
+                      <div className="relative h-56 w-full overflow-hidden">
+                        <OptimizedImage
+                          src={item.image || "/placeholder.jpg"}
+                          alt={item.title || "Hero Slide"}
+                          fill
+                          width={900}
+                          sizes="(max-width: 768px) 100vw, 50vw"
+                          className="object-cover transition duration-700 group-hover:scale-105"
+                        />
+                      </div>
+
+                      <div className="absolute inset-0 bg-gradient-to-t from-secondary/75 via-secondary/10 to-transparent opacity-80" />
+
+                      <div className="absolute bottom-4 left-4 right-4">
+                        {item.subtitle && (
+                          <p className="mb-1 text-xs font-semibold uppercase tracking-[0.18em] text-primary_light">
+                            {item.subtitle}
+                          </p>
+                        )}
+
+                        <h3 className="line-clamp-2 text-xl font-bold text-white">
+                          {item.title}
+                        </h3>
+                      </div>
                     </div>
 
-                    <div className="absolute inset-0 bg-gradient-to-t from-secondary/75 via-secondary/10 to-transparent opacity-80" />
+                    {item.description && (
+                      <p className="mt-4 line-clamp-2 text-sm leading-6 text-gray-500">
+                        {item.description}
+                      </p>
+                    )}
 
-                    <div className="absolute bottom-4 left-4 right-4">
-                      {item.subtitle && (
-                        <p className="mb-1 text-xs font-semibold uppercase tracking-[0.18em] text-primary_light">
-                          {item.subtitle}
-                        </p>
-                      )}
+                    {ctaItems.length > 0 ? (
+                      <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                        {ctaItems.map((cta) => (
+                          <div
+                            key={cta.label}
+                            className={`rounded-2xl border p-3 ${cta.className}`}
+                          >
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.16em] opacity-70">
+                                <MousePointerClick size={13} />
+                                {cta.label}
+                              </span>
+                              <ArrowUpRight size={15} />
+                            </div>
 
-                      <h3 className="line-clamp-2 text-xl font-bold text-white">
-                        {item.title}
-                      </h3>
+                            {cta.text && (
+                              <p className="mt-2 truncate text-sm font-extrabold">
+                                {cta.text}
+                              </p>
+                            )}
+
+                            {cta.link && (
+                              <p className="mt-1 truncate text-xs font-semibold opacity-60">
+                                {cta.link}
+                              </p>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="mt-4 rounded-2xl border border-dashed border-gray-200 bg-gray-50 p-4 text-sm font-semibold text-gray-400">
+                        No CTA buttons configured
+                      </div>
+                    )}
+
+                    <div className="mt-5 grid grid-cols-2 gap-3 border-t border-gray-100 pt-4">
+                      <button
+                        type="button"
+                        onClick={() => handleEdit(item)}
+                        className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-secondary px-4 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-secondary_two"
+                      >
+                        <Pencil size={15} />
+                        Edit
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => requestDeleteSlide(item)}
+                        className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-red-100 bg-white px-4 text-sm font-semibold text-red-500 shadow-sm transition hover:-translate-y-0.5 hover:bg-red-500 hover:text-white"
+                      >
+                        <Trash2 size={15} />
+                        Delete
+                      </button>
                     </div>
                   </div>
-
-                  {item.description && (
-                    <p className="mt-4 line-clamp-2 text-sm leading-6 text-gray-500">
-                      {item.description}
-                    </p>
-                  )}
-
-                  <div className="mt-4 flex gap-2">
-                    <button
-                      type="button"
-                      onClick={() => handleEdit(item)}
-                      className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-primary/10 px-4 py-3 text-sm font-semibold text-primary transition hover:bg-primary hover:text-white"
-                    >
-                      <Pencil size={16} />
-                      Edit
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => requestDeleteSlide(item)}
-                      className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-red-50 px-4 py-3 text-sm font-semibold text-red-500 transition hover:bg-red-500 hover:text-white"
-                    >
-                      <Trash2 size={16} />
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           ) : (
             <div className="rounded-[1.5rem] border border-dashed border-border_color bg-background p-8 text-center">

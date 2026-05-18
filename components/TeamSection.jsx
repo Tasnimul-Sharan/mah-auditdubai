@@ -104,7 +104,7 @@ export default function TeamSection({ section, members = [] }) {
                         <div className="mt-5 flex items-center justify-between gap-4">
                           <div className="flex gap-3">
                             {socials.map((s, i) => (
-                              <SocialIcon key={i} href={s.url}>
+                              <SocialIcon key={i} href={s.url} type={s.type}>
                                 {getSocialIcon(s.type)}
                               </SocialIcon>
                             ))}
@@ -259,13 +259,13 @@ function TeamModal({ member, socials, getSocialIcon, onClose }) {
 
           {socials.length > 0 && (
             <div className="mt-9 border-t border-slate-200 pt-7">
-              <h4 className="mb-4 text-sm font-bold uppercase tracking-[0.18em] text-slate-500">
+              <p className="mb-4 text-sm font-bold uppercase tracking-[0.18em] text-slate-500">
                 Connect
-              </h4>
+              </p>
 
               <div className="flex flex-wrap gap-3">
                 {socials.map((s, i) => (
-                  <SocialIcon key={i} href={s.url}>
+                  <SocialIcon key={i} href={s.url} type={s.type}>
                     {getSocialIcon(s.type)}
                   </SocialIcon>
                 ))}
@@ -285,14 +285,17 @@ function formatBio(text = "") {
     .filter(Boolean);
 }
 
-function SocialIcon({ href, children }) {
+function SocialIcon({ href, type, children }) {
   if (!href || !children) return null;
+
+  const platform = String(type || "social profile").trim();
 
   return (
     <a
       href={href}
       target="_blank"
       rel="noopener noreferrer"
+      aria-label={`Visit team member ${platform} profile`}
       className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary transition-all duration-500 hover:-translate-y-1 hover:bg-primary hover:text-white"
     >
       {children}

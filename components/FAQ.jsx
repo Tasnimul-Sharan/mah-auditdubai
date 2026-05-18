@@ -1,9 +1,7 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
-import { motion } from "framer-motion";
-import gsap from "gsap";
 
 export default function FAQ({ faqData = null }) {
   const [activeIndex, setActiveIndex] = useState(null);
@@ -13,69 +11,10 @@ export default function FAQ({ faqData = null }) {
     faqs: Array.isArray(faqData?.faqs) ? faqData.faqs : [],
   };
 
-  const answerRefs = useRef([]);
-
   if (!data.faqs.length) return null;
 
-  const expand = (index) => {
-    const el = answerRefs.current[index];
-    if (!el) return;
-
-    gsap.killTweensOf(el);
-    el.style.display = "block";
-
-    gsap.fromTo(
-      el,
-      { height: 0, opacity: 0, y: -6 },
-      {
-        height: el.scrollHeight,
-        opacity: 1,
-        y: 0,
-        duration: 0.42,
-        ease: "power2.out",
-        onComplete: () => {
-          el.style.height = "auto";
-        },
-      },
-    );
-  };
-
-  const collapse = (index, cb) => {
-    const el = answerRefs.current[index];
-    if (!el) return;
-
-    gsap.killTweensOf(el);
-
-    gsap.to(el, {
-      height: 0,
-      opacity: 0,
-      y: -6,
-      duration: 0.3,
-      ease: "power2.inOut",
-      onComplete: () => {
-        el.style.display = "none";
-        if (cb) cb();
-      },
-    });
-  };
-
   const toggleFAQ = (index) => {
-    if (activeIndex === index) {
-      collapse(index);
-      setActiveIndex(null);
-      return;
-    }
-
-    if (activeIndex !== null) {
-      collapse(activeIndex, () => {
-        expand(index);
-        setActiveIndex(index);
-      });
-      return;
-    }
-
-    expand(index);
-    setActiveIndex(index);
+    setActiveIndex((current) => (current === index ? null : index));
   };
 
   return (
@@ -84,14 +23,9 @@ export default function FAQ({ faqData = null }) {
 
       <div className="relative mx-auto max-w-7xl px-6">
         <div className="grid items-start gap-8 lg:grid-cols-[0.85fr_1.15fr]">
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="rounded-2xl bg-secondary p-6 text-white shadow-xl md:p-8 lg:sticky lg:top-24"
-          >
-            <div className="flex items-center gap-3 text-sm font-bold uppercase tracking-wide text-primary">
-              <span className="h-px w-10 bg-primary" />
+          <div className="rounded-2xl bg-secondary p-6 text-white shadow-xl md:p-8 lg:sticky lg:top-24">
+            <div className="flex items-center gap-3 text-sm font-bold uppercase tracking-wide text-primary_light">
+              <span className="h-px w-10 bg-primary_light" />
               FAQ
             </div>
 
@@ -115,19 +49,15 @@ export default function FAQ({ faqData = null }) {
               Find quick answers about our audit, advisory, compliance, and
               reporting process in Dubai.
             </p>
-          </motion.div>
+          </div>
 
           <div className="space-y-4">
             {data.faqs.map((faq, index) => {
               const isActive = activeIndex === index;
 
               return (
-                <motion.div
+                <div
                   key={`${faq.question}-${index}`}
-                  initial={{ opacity: 0, y: 22 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.35, delay: index * 0.04 }}
                   className={`overflow-hidden rounded-2xl border bg-white shadow-sm transition-all duration-300 ${
                     isActive
                       ? "border-primary/40 shadow-[0_18px_50px_rgba(15,23,42,0.08)]"
@@ -178,9 +108,11 @@ export default function FAQ({ faqData = null }) {
 
                   <div
                     id={`faq-answer-${index}`}
-                    ref={(el) => (answerRefs.current[index] = el)}
-                    className="hidden h-0 overflow-hidden px-5 md:px-6"
-                    style={{ opacity: 0 }}
+                    className="overflow-hidden px-5 transition-all duration-300 md:px-6"
+                    style={{
+                      maxHeight: isActive ? "320px" : "0px",
+                      opacity: isActive ? 1 : 0,
+                    }}
                   >
                     <div className="border-t border-gray-100 pb-6 pt-4 md:ml-[60px]">
                       <p className="text-sm leading-relaxed text-gray-600 md:text-base">
@@ -188,7 +120,7 @@ export default function FAQ({ faqData = null }) {
                       </p>
                     </div>
                   </div>
-                </motion.div>
+                </div>
               );
             })}
           </div>

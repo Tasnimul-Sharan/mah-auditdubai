@@ -1,8 +1,6 @@
-import { motion } from "framer-motion";
 import { FaShieldAlt, FaChartLine, FaUserTie, FaGlobe } from "react-icons/fa";
 import { FaShield } from "react-icons/fa6";
 import SectionBadge from "./SectionBadge";
-import { fadeUp } from "@/Hooks/animations";
 
 const iconMap = {
   FaShieldAlt: FaShieldAlt,
@@ -56,12 +54,8 @@ export default function WhyUs({ whyUs }) {
               iconMap[item?.icon] || defaultIcons[i % defaultIcons.length];
 
             return (
-              <motion.div
+              <div
                 key={i}
-                variants={fadeUp}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
                 className="group rounded-2xl border border-gray-100 bg-white/80 p-6 shadow-sm backdrop-blur-xl transition-all duration-500 hover:-translate-y-2 hover:shadow-xl"
               >
                 <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-xl bg-primary/10 text-xl text-primary group-hover:bg-primary group-hover:text-white transition-all transform duration-500">
@@ -79,7 +73,7 @@ export default function WhyUs({ whyUs }) {
                     {item.desc}
                   </p>
                 )}
-              </motion.div>
+              </div>
             );
           })}
         </div>

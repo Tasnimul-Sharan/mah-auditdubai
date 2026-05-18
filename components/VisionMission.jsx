@@ -1,8 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { FaEye, FaBullseye, FaCheckCircle } from "react-icons/fa";
-import { fadeUp } from "@/Hooks/animations";
 
 export default function VisionMission({ sections = [] }) {
   if (!Array.isArray(sections) || sections.length === 0) return null;
@@ -27,13 +25,8 @@ export default function VisionMission({ sections = [] }) {
               : [];
 
             return (
-              <motion.article
+              <article
                 key={section.id}
-                variants={fadeUp}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.08 }}
                 className="group relative overflow-hidden rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition-all duration-500 hover:-translate-y-1 hover:border-primary/35 hover:shadow-[0_26px_80px_rgba(15,23,42,0.12)] md:p-8"
               >
                 <div className="absolute right-0 top-0 h-32 w-32 bg-primary/10 blur-3xl transition group-hover:bg-primary/20" />
@@ -81,7 +74,7 @@ export default function VisionMission({ sections = [] }) {
                     </>
                   )}
                 </div>
-              </motion.article>
+              </article>
             );
           })}
         </div>

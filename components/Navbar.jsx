@@ -152,7 +152,11 @@ export default function Navbar({ navbarData = null, navLinks = [] }) {
         }`}
       >
         <div className="custom-container mx-auto flex h-20 items-center justify-between md:h-24">
-          <Link href="/" className="relative z-[70] flex items-center">
+          <Link
+            href="/"
+            prefetch={false}
+            className="relative z-[70] flex items-center"
+          >
             <OptimizedImage
               src={data.logo || "/logo.png"}
               alt="MAH Audit Dubai"
@@ -170,6 +174,7 @@ export default function Navbar({ navbarData = null, navLinks = [] }) {
                 <li key={item.id} className="group relative">
                   <Link
                     href={item.path}
+                    prefetch={false}
                     className="transition hover:text-primary"
                   >
                     {item.name}
@@ -182,7 +187,8 @@ export default function Navbar({ navbarData = null, navLinks = [] }) {
 
             <Link
               href="/contact"
-              className="rounded-md bg-primary px-6 py-3 font-semibold text-white transition hover:bg-secondary"
+              prefetch={false}
+              className="rounded-md bg-primary px-6 py-3 font-semibold text-white transition-all transform-cpu hover:bg-secondary"
             >
               Contact Us
             </Link>
@@ -259,6 +265,7 @@ export default function Navbar({ navbarData = null, navLinks = [] }) {
                 <li key={item.id} data-menu-item>
                   <Link
                     href={item.path}
+                    prefetch={false}
                     onClick={() => setIsMenuOpen(false)}
                     className="group flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.06] px-5 py-4 text-lg font-semibold text-white transition hover:border-primary_light/50 hover:bg-primary hover:text-white"
                   >
@@ -277,6 +284,7 @@ export default function Navbar({ navbarData = null, navLinks = [] }) {
               <li data-menu-item>
                 <Link
                   href="/contact"
+                  prefetch={false}
                   onClick={() => setIsMenuOpen(false)}
                   className="mt-2 flex items-center justify-center gap-3 rounded-2xl bg-primary px-5 py-4 text-lg font-bold text-white shadow-[0_16px_40px_rgba(0,0,0,0.18)] transition hover:bg-secondary_two"
                 >

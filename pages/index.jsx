@@ -58,6 +58,8 @@ export default function Home({
         <meta name="twitter:title" content={meta?.meta_title} />
         <meta name="twitter:description" content={meta?.meta_description} />
         <meta name="twitter:image" content={meta?.meta_image} />
+        <link rel="preconnect" href="https://res.cloudinary.com" />
+        <link rel="dns-prefetch" href="https://res.cloudinary.com" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -108,7 +110,7 @@ export default function Home({
 }
 
 export async function getServerSideProps() {
-  // const layoutData = await getLayoutData();
+  const layoutDataPromise = getLayoutData();
 
   const { data: homeData } = await supabaseServer
     .from("home_page")
@@ -233,9 +235,11 @@ export async function getServerSideProps() {
       "Trusted by businesses for delivering reliable audit, compliance, and financial advisory services.",
   };
 
+  const layoutData = await layoutDataPromise;
+
   return {
     props: {
-      // ...layoutData,
+      ...layoutData,
       meta: homeData || null,
       heroSlides: heroSlidesData || [],
       about: aboutData || null,

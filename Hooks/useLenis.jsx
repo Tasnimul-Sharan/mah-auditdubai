@@ -1,17 +1,22 @@
 "use client";
 
 import { useEffect } from "react";
-import Lenis from "lenis";
-import "lenis/dist/lenis.css";
 
 export const useLenis = () => {
   useEffect(() => {
     let lenis;
     let rafId;
-    let idleId;
-    let timeoutId;
+    let cancelled = false;
+    let started = false;
 
-    const startLenis = () => {
+    const startLenis = async () => {
+      if (started) return;
+      started = true;
+
+      const Lenis = (await import("lenis")).default;
+
+      if (cancelled) return;
+
       lenis = new Lenis({
         duration: 1.2,
         easing: (t) => 1 - Math.pow(1 - t, 3),
@@ -30,20 +35,26 @@ export const useLenis = () => {
       rafId = requestAnimationFrame(raf);
     };
 
-    if ("requestIdleCallback" in window) {
-      idleId = window.requestIdleCallback(startLenis, { timeout: 1600 });
-    } else {
-      timeoutId = window.setTimeout(startLenis, 900);
-    }
+    const startOnIntent = () => {
+      startLenis();
+    };
+
+    window.addEventListener("wheel", startOnIntent, {
+      once: true,
+      passive: true,
+    });
+    window.addEventListener("touchstart", startOnIntent, {
+      once: true,
+      passive: true,
+    });
+    window.addEventListener("keydown", startOnIntent, { once: true });
 
     return () => {
-      if (idleId) {
-        window.cancelIdleCallback(idleId);
-      }
+      cancelled = true;
 
-      if (timeoutId) {
-        window.clearTimeout(timeoutId);
-      }
+      window.removeEventListener("wheel", startOnIntent);
+      window.removeEventListener("touchstart", startOnIntent);
+      window.removeEventListener("keydown", startOnIntent);
 
       if (rafId) {
         cancelAnimationFrame(rafId);

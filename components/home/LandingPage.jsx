@@ -6,6 +6,9 @@ import Link from "next/link";
 import Button from "../Button";
 import OptimizedImage from "@/components/OptimizedImage";
 
+const HERO_AUTOPLAY_DELAY_MS = 12000;
+const HERO_AUTOPLAY_INTERVAL_MS = 6000;
+
 function normalizeHref(value, fallback = "") {
   const href = typeof value === "string" ? value.trim() : "";
 
@@ -54,9 +57,18 @@ export default function LandingPage({ slides = [] }) {
   useEffect(() => {
     if (!hasMultipleSlides) return undefined;
 
-    const intervalId = window.setInterval(nextSlide, 5000);
+    let intervalId;
+    const delayId = window.setTimeout(() => {
+      intervalId = window.setInterval(nextSlide, HERO_AUTOPLAY_INTERVAL_MS);
+    }, HERO_AUTOPLAY_DELAY_MS);
 
-    return () => window.clearInterval(intervalId);
+    return () => {
+      window.clearTimeout(delayId);
+
+      if (intervalId) {
+        window.clearInterval(intervalId);
+      }
+    };
   }, [hasMultipleSlides, nextSlide]);
 
   const activeSlide = sliderData[currentSlide];
@@ -70,17 +82,26 @@ export default function LandingPage({ slides = [] }) {
   const primaryButtonText = activeSlide.primary_button_text?.trim();
   const primaryButtonLink = normalizeHref(activeSlide.primary_button_link);
   const secondaryButtonText =
-    activeSlide.secondary_button_text?.trim() || activeSlide.button_text?.trim();
+    activeSlide.secondary_button_text?.trim() ||
+    activeSlide.button_text?.trim();
   const secondaryButtonLink = normalizeHref(activeSlide.secondary_button_link);
 
   const hasPrimaryButton = primaryButtonText && primaryButtonLink;
   const hasSecondaryButton = secondaryButtonText && secondaryButtonLink;
+  const slideKey = activeSlide.id || `${activeSlide.title}-${currentSlide}`;
+  const shouldAnimateSlide = currentSlide > 0;
+  const imageAnimationClass = shouldAnimateSlide
+    ? "animate-[heroFade_900ms_ease-out] will-change-transform"
+    : "";
+  const contentAnimationClass = shouldAnimateSlide
+    ? "animate-[heroContent_650ms_ease-out] will-change-transform"
+    : "";
 
   return (
     <section className="relative h-screen w-full overflow-hidden bg-secondary group">
       <div
-        key={`bg-${activeSlide.id || currentSlide}`}
-        className="absolute inset-0"
+        key={`bg-${slideKey}`}
+        className={`absolute inset-0 ${imageAnimationClass}`}
       >
         {activeSlide.image && (
           <OptimizedImage
@@ -88,10 +109,11 @@ export default function LandingPage({ slides = [] }) {
             alt={activeSlide.title || "Hero slide image"}
             fill
             width={1440}
-            priority={currentSlide === 0}
-            loading={currentSlide === 0 ? undefined : "lazy"}
+            preload={currentSlide === 0}
+            fetchPriority={currentSlide === 0 ? "high" : "auto"}
+            loading={currentSlide === 0 ? "eager" : "lazy"}
             sizes="100vw"
-            quality={55}
+            quality={45}
             aspectRatio="3:2"
             className="object-cover object-center"
           />
@@ -104,16 +126,16 @@ export default function LandingPage({ slides = [] }) {
 
       <div className="relative z-10 flex h-full items-center custom-container mx-auto px-4">
         <div
-          key={`content-${activeSlide.id || currentSlide}`}
-          className="mx-auto flex max-w-3xl flex-col items-center text-center"
+          key={`content-${slideKey}`}
+          className={`mx-auto flex max-w-3xl flex-col items-center text-center ${contentAnimationClass}`}
         >
           {activeSlide.subtitle && (
-            <div className="mb-5 flex items-center gap-3 rounded-full border border-white/15 bg-white/10 px-4 py-2 backdrop-blur-md">
-              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary_light/20 text-primary_light">
+            <div className="mb-5 flex max-w-full items-center justify-center gap-3 rounded-2xl border border-white/15 bg-white/10 px-4 py-2 backdrop-blur-md sm:rounded-full">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary_light/20 text-primary_light">
                 <FaBalanceScale className="text-sm" />
               </span>
 
-              <span className="text-xs font-medium uppercase tracking-[0.28em] text-primary_light">
+              <span className="min-w-0 max-w-[82vw] text-center text-[10px] font-medium uppercase leading-5 tracking-[0.16em] text-primary_light sm:max-w-[720px] sm:text-xs sm:tracking-[0.22em] xl:tracking-[0.28em]">
                 {activeSlide.subtitle}
               </span>
             </div>
@@ -137,6 +159,7 @@ export default function LandingPage({ slides = [] }) {
               {hasPrimaryButton && (
                 <Link
                   href={primaryButtonLink}
+                  prefetch={false}
                   aria-label={`${primaryButtonText} - MAH Audit Dubai`}
                 >
                   <Button as="span" variant="primary">
@@ -148,6 +171,7 @@ export default function LandingPage({ slides = [] }) {
               {hasSecondaryButton && (
                 <Link
                   href={secondaryButtonLink}
+                  prefetch={false}
                   aria-label={`${secondaryButtonText} - MAH Audit Dubai`}
                 >
                   <Button

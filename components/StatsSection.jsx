@@ -1,6 +1,3 @@
-"use client";
-
-import Counter from "./Counter";
 import {
   FaBriefcase,
   FaGlobe,
@@ -23,6 +20,11 @@ const iconMap = {
   FaChartLine: FaChartLine,
 };
 
+function formatStatValue(value, suffix = "") {
+  const numericValue = Number(value) || 0;
+  return `${numericValue.toLocaleString()}${suffix || ""}`;
+}
+
 export default function StatsSection({ stats = [] }) {
   if (!Array.isArray(stats) || stats.length === 0) return null;
 
@@ -42,10 +44,7 @@ export default function StatsSection({ stats = [] }) {
                 </div>
 
                 <p className="text-4xl font-bold text-primary_light md:text-5xl">
-                  <Counter
-                    end={Number(item.value) || 0}
-                    suffix={item.suffix || ""}
-                  />
+                  {formatStatValue(item.value, item.suffix)}
                 </p>
 
                 <p className="mt-3 text-gray-300">{item.label}</p>

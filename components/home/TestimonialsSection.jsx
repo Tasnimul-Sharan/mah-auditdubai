@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   FaArrowLeft,
   FaArrowRight,
@@ -55,7 +55,9 @@ export default function TestimonialsSection({
   sectionData = null,
 }) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [slidesPerView, setSlidesPerView] = useState(3);
+  const [slidesPerView, setSlidesPerView] = useState(1);
+  const [isSectionVisible, setIsSectionVisible] = useState(false);
+  const sectionRef = useRef(null);
 
   const section = {
     ...defaultSectionData,
@@ -74,6 +76,8 @@ export default function TestimonialsSection({
   }, [maxIndex]);
 
   useEffect(() => {
+    if (!isSectionVisible) return undefined;
+
     const updateSlidesPerView = () => {
       setSlidesPerView(getSlidesPerView());
     };
@@ -82,19 +86,47 @@ export default function TestimonialsSection({
     window.addEventListener("resize", updateSlidesPerView);
 
     return () => window.removeEventListener("resize", updateSlidesPerView);
-  }, []);
+  }, [isSectionVisible]);
 
   useEffect(() => {
     setCurrentIndex((prev) => Math.min(prev, maxIndex));
   }, [maxIndex]);
 
   useEffect(() => {
-    if (!canSlide) return undefined;
+    if (!canSlide) {
+      setIsSectionVisible(false);
+      return undefined;
+    }
+
+    const section = sectionRef.current;
+
+    if (!section || !("IntersectionObserver" in window)) {
+      setIsSectionVisible(true);
+      return undefined;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsSectionVisible(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "240px 0px" },
+    );
+
+    observer.observe(section);
+
+    return () => observer.disconnect();
+  }, [canSlide]);
+
+  useEffect(() => {
+    if (!canSlide || !isSectionVisible) return undefined;
 
     const intervalId = window.setInterval(goNext, 3500);
 
     return () => window.clearInterval(intervalId);
-  }, [canSlide, goNext]);
+  }, [canSlide, goNext, isSectionVisible]);
 
   const dots = useMemo(
     () => Array.from({ length: maxIndex + 1 }, (_, index) => index),
@@ -108,7 +140,10 @@ export default function TestimonialsSection({
   };
 
   return (
-    <section className="bg-gradient-to-b from-white to-gray-50 py-28">
+    <section
+      ref={sectionRef}
+      className="bg-gradient-to-b from-white to-gray-50 py-28"
+    >
       <div className="mx-auto max-w-7xl px-6">
         <div className="text-center">
           <div className="mb-4 flex justify-center">

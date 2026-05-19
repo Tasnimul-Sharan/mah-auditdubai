@@ -48,6 +48,7 @@ export default function OptimizedImage({
   sizes,
   className = "",
   priority = false,
+  preload = false,
   quality,
   aspectRatio,
   unoptimized = false,
@@ -62,6 +63,8 @@ export default function OptimizedImage({
 
   const shouldUseCloudinaryLoader = isCloudinaryUrl(src) && !unoptimized;
   const shouldUnoptimize = unoptimized || isBlobUrl(src);
+  const shouldPreload = Boolean(preload);
+  const shouldPrioritize = Boolean(priority) && !shouldPreload;
   const loader = shouldUseCloudinaryLoader
     ? ({ src: loaderSrc, width: loaderWidth }) =>
         optimizeCloudinaryUrl(loaderSrc, loaderWidth, quality, aspectRatio)
@@ -75,7 +78,8 @@ export default function OptimizedImage({
         fill
         loader={loader}
         sizes={sizes || "100vw"}
-        priority={priority}
+        priority={shouldPrioritize}
+        preload={shouldPreload}
         quality={quality}
         unoptimized={shouldUnoptimize}
         className={className}
@@ -92,7 +96,8 @@ export default function OptimizedImage({
       height={height}
       loader={loader}
       sizes={sizes || "(max-width: 768px) 100vw, 50vw"}
-      priority={priority}
+      priority={shouldPrioritize}
+      preload={shouldPreload}
       quality={quality}
       unoptimized={shouldUnoptimize}
       className={className}

@@ -1,37 +1,45 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Footer from "./Footer";
 import Navbar from "./Navbar";
 import ScrollToTopButton from "./ScrollToTopButton";
+
+const EMPTY_NAV_LINKS = [];
 
 export default function Layout({
   children,
   footerData = null,
   navbarData = null,
-  navLinks = [],
+  navLinks = EMPTY_NAV_LINKS,
 }) {
-  const initialLayoutData = useMemo(
-    () => ({
+  const [layoutData, setLayoutData] = useState(() => ({
+    footerData,
+    navbarData,
+    navLinks: Array.isArray(navLinks) ? navLinks : EMPTY_NAV_LINKS,
+  }));
+
+  const fetchedRef = useRef(false);
+
+  const hasLayoutData =
+    Boolean(navbarData) ||
+    Boolean(footerData) ||
+    (Array.isArray(navLinks) && navLinks.length > 0);
+
+  useEffect(() => {
+    if (!hasLayoutData) return;
+
+    setLayoutData({
       footerData,
       navbarData,
-      navLinks: Array.isArray(navLinks) ? navLinks : [],
-    }),
-    [footerData, navbarData, navLinks],
-  );
-
-  const [layoutData, setLayoutData] = useState(initialLayoutData);
-  const hasLayoutData =
-    Boolean(initialLayoutData.navbarData) ||
-    Boolean(initialLayoutData.footerData) ||
-    initialLayoutData.navLinks.length > 0;
+      navLinks: Array.isArray(navLinks) ? navLinks : EMPTY_NAV_LINKS,
+    });
+  }, [hasLayoutData, footerData, navbarData, navLinks]);
 
   useEffect(() => {
-    setLayoutData(initialLayoutData);
-  }, [initialLayoutData]);
+    if (hasLayoutData || fetchedRef.current) return;
 
-  useEffect(() => {
-    if (hasLayoutData) return undefined;
+    fetchedRef.current = true;
 
     let cancelled = false;
     let idleId;
@@ -40,13 +48,20 @@ export default function Layout({
     const loadLayoutData = async () => {
       try {
         const response = await fetch("/api/layout-data");
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch layout data");
+        }
+
         const data = await response.json();
 
         if (!cancelled) {
           setLayoutData({
-            footerData: data.footerData || null,
-            navbarData: data.navbarData || null,
-            navLinks: Array.isArray(data.navLinks) ? data.navLinks : [],
+            footerData: data?.footerData || null,
+            navbarData: data?.navbarData || null,
+            navLinks: Array.isArray(data?.navLinks)
+              ? data.navLinks
+              : EMPTY_NAV_LINKS,
           });
         }
       } catch (error) {
@@ -54,7 +69,7 @@ export default function Layout({
       }
     };
 
-    if ("requestIdleCallback" in window) {
+    if (typeof window !== "undefined" && "requestIdleCallback" in window) {
       idleId = window.requestIdleCallback(loadLayoutData, { timeout: 2500 });
     } else {
       timeoutId = window.setTimeout(loadLayoutData, 1200);

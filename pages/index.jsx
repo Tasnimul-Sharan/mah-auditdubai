@@ -110,7 +110,7 @@ export default function Home({
 }
 
 export async function getServerSideProps() {
-  const layoutDataPromise = getLayoutData();
+  // const layoutDataPromise = getLayoutData();
 
   const { data: homeData } = await supabaseServer
     .from("home_page")
@@ -235,11 +235,11 @@ export async function getServerSideProps() {
       "Trusted by businesses for delivering reliable audit, compliance, and financial advisory services.",
   };
 
-  const layoutData = await layoutDataPromise;
+  // const layoutData = await layoutDataPromise;
 
   return {
     props: {
-      ...layoutData,
+      // ...layoutData,
       meta: homeData || null,
       heroSlides: heroSlidesData || [],
       about: aboutData || null,

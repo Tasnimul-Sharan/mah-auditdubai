@@ -23,7 +23,7 @@ export const NextArrow = ({ onClick }) => {
       type="button"
       aria-label="Next testimonial"
       onClick={onClick}
-      className="absolute -right-6 top-1/2 z-10 hidden h-12 w-12 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-primary bg-white text-primary shadow-lg transition-all duration-500 hover:bg-primary hover:text-white md:flex"
+      className="absolute -right-6 top-1/2 z-20 hidden h-12 w-12 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-primary bg-white text-primary shadow-lg transition-all duration-500 hover:bg-primary hover:text-white md:flex"
     >
       <FaArrowRight />
     </button>
@@ -36,7 +36,7 @@ export const PrevArrow = ({ onClick }) => {
       type="button"
       aria-label="Previous testimonial"
       onClick={onClick}
-      className="absolute -left-6 top-1/2 z-10 hidden h-12 w-12 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-primary bg-white text-primary shadow-lg transition-all duration-500 hover:bg-primary hover:text-white md:flex"
+      className="absolute -left-6 top-1/2 z-20 hidden h-12 w-12 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-primary bg-white text-primary shadow-lg transition-all duration-500 hover:bg-primary hover:text-white md:flex"
     >
       <FaArrowLeft />
     </button>
@@ -55,8 +55,10 @@ export default function TestimonialsSection({
   sectionData = null,
 }) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [slidesPerView, setSlidesPerView] = useState(1);
+  const [slidesPerView, setSlidesPerView] = useState(3);
   const [isSectionVisible, setIsSectionVisible] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+
   const sectionRef = useRef(null);
 
   const section = {
@@ -76,8 +78,6 @@ export default function TestimonialsSection({
   }, [maxIndex]);
 
   useEffect(() => {
-    if (!isSectionVisible) return undefined;
-
     const updateSlidesPerView = () => {
       setSlidesPerView(getSlidesPerView());
     };
@@ -86,7 +86,7 @@ export default function TestimonialsSection({
     window.addEventListener("resize", updateSlidesPerView);
 
     return () => window.removeEventListener("resize", updateSlidesPerView);
-  }, [isSectionVisible]);
+  }, []);
 
   useEffect(() => {
     setCurrentIndex((prev) => Math.min(prev, maxIndex));
@@ -98,9 +98,9 @@ export default function TestimonialsSection({
       return undefined;
     }
 
-    const section = sectionRef.current;
+    const sectionEl = sectionRef.current;
 
-    if (!section || !("IntersectionObserver" in window)) {
+    if (!sectionEl || !("IntersectionObserver" in window)) {
       setIsSectionVisible(true);
       return undefined;
     }
@@ -115,18 +115,18 @@ export default function TestimonialsSection({
       { rootMargin: "240px 0px" },
     );
 
-    observer.observe(section);
+    observer.observe(sectionEl);
 
     return () => observer.disconnect();
   }, [canSlide]);
 
   useEffect(() => {
-    if (!canSlide || !isSectionVisible) return undefined;
+    if (!canSlide || !isSectionVisible || isPaused) return undefined;
 
     const intervalId = window.setInterval(goNext, 3500);
 
     return () => window.clearInterval(intervalId);
-  }, [canSlide, goNext, isSectionVisible]);
+  }, [canSlide, goNext, isSectionVisible, isPaused]);
 
   const dots = useMemo(
     () => Array.from({ length: maxIndex + 1 }, (_, index) => index),
@@ -142,7 +142,7 @@ export default function TestimonialsSection({
   return (
     <section
       ref={sectionRef}
-      className="bg-gradient-to-b from-white to-gray-50 py-28"
+      className="overflow-hidden bg-gradient-to-b from-white to-gray-50 py-24 md:py-28"
     >
       <div className="mx-auto max-w-7xl px-6">
         <div className="text-center">
@@ -166,11 +166,17 @@ export default function TestimonialsSection({
             No testimonials found.
           </div>
         ) : (
-          <div className="relative mt-16">
+          <div
+            className="relative mt-14 md:mt-16"
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
+            onFocusCapture={() => setIsPaused(true)}
+            onBlurCapture={() => setIsPaused(false)}
+          >
             {canSlide && <PrevArrow onClick={goPrev} />}
             {canSlide && <NextArrow onClick={goNext} />}
 
-            <div className="overflow-hidden">
+            <div className="overflow-hidden px-0 py-8">
               <div
                 className="flex transition-transform duration-700 ease-out"
                 style={{
@@ -182,36 +188,36 @@ export default function TestimonialsSection({
                 {testimonials.map((item) => (
                   <div
                     key={item.id}
-                    className="shrink-0 px-4"
+                    className="shrink-0 px-3 md:px-4"
                     style={{ flexBasis: `${100 / slidesPerView}%` }}
                   >
-                    <div className="group relative h-full rounded-3xl border border-gray-100 bg-white p-8 shadow-[0_10px_30px_rgba(0,0,0,0.05)] transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_25px_60px_rgba(0,0,0,0.12)]">
-                      <div className="mb-6 flex justify-between">
-                        <div className="flex gap-1 text-[#C8A951]">
-                          {renderStars(item.rating)}
-                        </div>
+                    <article className="group relative flex h-[430px] flex-col rounded-3xl border border-gray-100 bg-white p-7 shadow-[0_10px_30px_rgba(0,0,0,0.05)] transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_25px_60px_rgba(0,0,0,0.12)] md:p-8">
+                      <FaQuoteRight className="pointer-events-none absolute -top-5 right-6 text-5xl text-primary/80 transition-all duration-500 group-hover:opacity-90 md:text-6xl" />
 
-                        <FaQuoteRight className="absolute -top-6 right-6 text-4xl text-primary/80 transition-all duration-500 group-hover:opacity-90 md:text-6xl" />
+                      <div className="mb-6 flex gap-1 pt-3 text-[#C8A951]">
+                        {renderStars(item.rating)}
                       </div>
 
-                      <p className="mb-8 leading-relaxed text-gray-600">
-                        "{item.text}"
-                      </p>
+                      <div className="min-h-0 flex-1 overflow-y-auto pr-2 [scrollbar-width:thin] [scrollbar-color:rgba(0,114,188,0.55)_transparent]">
+                        <p className="text-sm leading-7 text-gray-600 md:text-[15px]">
+                          “{item.text}”
+                        </p>
+                      </div>
 
-                      <div className="flex items-center gap-4">
-                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-primary to-primary font-semibold text-white">
+                      <div className="mt-6 flex items-center gap-4 border-t border-gray-100 pt-5">
+                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary font-semibold text-white">
                           {item.name?.charAt(0) || "U"}
                         </div>
 
-                        <div>
-                          <p className="font-semibold text-secondary">
+                        <div className="min-w-0">
+                          <p className="truncate font-semibold text-secondary">
                             {item.name}
                           </p>
 
                           <p className="text-sm text-gray-500">{item.role}</p>
                         </div>
                       </div>
-                    </div>
+                    </article>
                   </div>
                 ))}
               </div>

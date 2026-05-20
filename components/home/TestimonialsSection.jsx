@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   FaArrowLeft,
   FaArrowRight,
@@ -128,11 +128,6 @@ export default function TestimonialsSection({
     return () => window.clearInterval(intervalId);
   }, [canSlide, goNext, isSectionVisible, isPaused]);
 
-  const dots = useMemo(
-    () => Array.from({ length: maxIndex + 1 }, (_, index) => index),
-    [maxIndex],
-  );
-
   const renderStars = (rating) => {
     const total = Math.min(Math.max(Number(rating) || 5, 1), 5);
 
@@ -223,27 +218,6 @@ export default function TestimonialsSection({
               </div>
             </div>
 
-            {canSlide && (
-              <div className="custom-dots">
-                {dots.map((index) => (
-                  <button
-                    key={index}
-                    type="button"
-                    aria-label={`Go to testimonial ${index + 1}`}
-                    onClick={() => setCurrentIndex(index)}
-                    className="custom-dot-container"
-                  >
-                    <span
-                      className={`custom-dot ${
-                        currentIndex === index
-                          ? "bg-primary outline outline-2 outline-primary outline-offset-[5px]"
-                          : ""
-                      }`}
-                    />
-                  </button>
-                ))}
-              </div>
-            )}
           </div>
         )}
       </div>

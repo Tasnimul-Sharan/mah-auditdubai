@@ -124,7 +124,7 @@ export default function LandingPage({ slides = [] }) {
       <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/70" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.08),transparent_55%)]" />
 
-      <div className="relative z-10 flex h-full items-center custom-container mx-auto px-4">
+      <div className="relative z-10 flex h-full items-center custom-container mx-auto px-4 max-[1400px]:pt-36 max-[768px]:pt-24">
         <div
           key={`content-${slideKey}`}
           className={`mx-auto flex max-w-3xl flex-col items-center text-center ${contentAnimationClass}`}
@@ -135,7 +135,7 @@ export default function LandingPage({ slides = [] }) {
                 <FaBalanceScale className="text-sm" />
               </span>
 
-              <span className="min-w-0 max-w-[82vw] text-center text-[10px] font-medium uppercase leading-5 tracking-[0.16em] text-primary_light sm:max-w-[720px] sm:text-xs sm:tracking-[0.22em] xl:tracking-[0.28em]">
+              <span className="min-w-0 max-w-[82vw] text-center text-[10px] font-semibold uppercase leading-5 tracking-[0.16em] text-primary_light sm:max-w-[720px] sm:text-xs sm:tracking-[0.22em] xl:tracking-[0.28em]">
                 {activeSlide.subtitle}
               </span>
             </div>

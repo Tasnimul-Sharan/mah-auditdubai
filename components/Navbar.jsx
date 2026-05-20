@@ -194,23 +194,26 @@ export default function Navbar({ navbarData = null, navLinks = [] }) {
             </Link>
           </div>
 
-          <button
-            type="button"
-            aria-label="Toggle navigation menu"
-            aria-expanded={isMenuOpen}
-            onClick={() => setIsMenuOpen((prev) => !prev)}
-            className={`fixed right-5 top-4 z-[9999] flex h-12 w-12 items-center justify-center rounded-2xl border transition-all duration-300 lg:hidden ${
-              isMenuOpen
-                ? "border-white/20 bg-primary text-white shadow-[0_10px_30px_rgba(0,0,0,0.25)]"
-                : "border-gray-200 bg-white text-primary shadow-[0_10px_30px_rgba(15,23,42,0.08)]"
-            }`}
-          >
-            <span className="relative z-10 flex items-center justify-center text-3xl">
-              {isMenuOpen ? <HiOutlineX /> : <HiOutlineMenu />}
-            </span>
-          </button>
         </div>
       </nav>
+
+      <button
+        type="button"
+        aria-label={isMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+        aria-expanded={isMenuOpen}
+        onClick={() => setIsMenuOpen((prev) => !prev)}
+        className={`fixed right-5 top-4 z-[90] flex h-12 w-12 items-center justify-center rounded-2xl border transition-all duration-300 lg:hidden ${
+          isMenuOpen
+            ? "border-white/20 bg-primary text-white shadow-[0_10px_30px_rgba(0,0,0,0.25)]"
+            : "border-gray-200 bg-white text-primary shadow-[0_10px_30px_rgba(15,23,42,0.08)]"
+        }`}
+      >
+        {isMenuOpen ? (
+          <HiOutlineX className="h-7 w-7" aria-hidden="true" />
+        ) : (
+          <HiOutlineMenu className="h-7 w-7" aria-hidden="true" />
+        )}
+      </button>
 
       <div
         className={`fixed inset-0 z-[60] transition-opacity duration-300 lg:hidden ${

@@ -77,29 +77,60 @@ export default function ServicesPage({ data, services }) {
   );
 }
 
-export async function getServerSideProps() {
-  const { data: pageData, error: pageError } = await supabaseServer
-    .from("services_page")
-    .select("*")
-    .single();
+// export async function getServerSideProps() {
+//   const { data: pageData, error: pageError } = await supabaseServer
+//     .from("services_page")
+//     .select("*")
+//     .single();
 
-  if (pageError) {
-    console.error("Services page fetch error:", pageError);
+//   if (pageError) {
+//     console.error("Services page fetch error:", pageError);
+//   }
+
+//   const { data: servicesData, error: servicesError } = await supabaseServer
+//     .from("services")
+//     .select("*")
+//     .order("created_at", { ascending: true });
+
+//   if (servicesError) {
+//     console.error("Services fetch error:", servicesError);
+//   }
+
+//   return {
+//     props: {
+//       data: pageData || null,
+//       services: servicesData || [],
+//     },
+//   };
+// }
+
+export async function getServerSideProps({ res }) {
+  res.setHeader(
+    "Cache-Control",
+    "public, s-maxage=300, stale-while-revalidate=3600",
+  );
+
+  const [pageRes, servicesRes] = await Promise.all([
+    supabaseServer.from("services_page").select("*").single(),
+
+    supabaseServer
+      .from("services")
+      .select("*")
+      .order("created_at", { ascending: true }),
+  ]);
+
+  if (pageRes.error) {
+    console.error("Services page fetch error:", pageRes.error);
   }
 
-  const { data: servicesData, error: servicesError } = await supabaseServer
-    .from("services")
-    .select("*")
-    .order("created_at", { ascending: true });
-
-  if (servicesError) {
-    console.error("Services fetch error:", servicesError);
+  if (servicesRes.error) {
+    console.error("Services fetch error:", servicesRes.error);
   }
 
   return {
     props: {
-      data: pageData || null,
-      services: servicesData || [],
+      data: pageRes.data || null,
+      services: servicesRes.data || [],
     },
   };
 }

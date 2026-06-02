@@ -57,19 +57,13 @@ export default function BlogsPage({ data, blogs, blogSectionData }) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="canonical" href={pageUrl} />
         <meta property="og:title" content={pageTitle} />
-        <meta
-          property="og:description"
-          content={pageDescription}
-        />
+        <meta property="og:description" content={pageDescription} />
         <meta property="og:url" content={pageUrl} />
         <meta property="og:image" content={pageImage} />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={pageTitle} />
-        <meta
-          name="twitter:description"
-          content={pageDescription}
-        />
+        <meta name="twitter:description" content={pageDescription} />
         <meta name="twitter:image" content={pageImage} />
         <meta name="robots" content="index, follow" />
       </Head>
@@ -85,19 +79,70 @@ export default function BlogsPage({ data, blogs, blogSectionData }) {
   );
 }
 
-export async function getServerSideProps() {
-  const { data } = await supabaseServer.from("blog_page").select("*").single();
+// export async function getServerSideProps() {
+//   const { data } = await supabaseServer.from("blog_page").select("*").single();
 
-  const { data: blogsData, error: blogsError } = await supabaseServer
-    .from("blogs")
-    .select("*")
-    .order("date", { ascending: false });
+//   const { data: blogsData, error: blogsError } = await supabaseServer
+//     .from("blogs")
+//     .select("*")
+//     .order("date", { ascending: false });
 
-  if (blogsError) {
-    console.error("Blogs fetch error:", blogsError);
+//   if (blogsError) {
+//     console.error("Blogs fetch error:", blogsError);
+//   }
+
+//   const firstBlog = blogsData?.[0] || null;
+
+//   const blogSectionData = {
+//     badge: firstBlog?.badge || "Insights & Resources",
+//     title: firstBlog?.section_title || "Latest Blogs",
+//     subtitle:
+//       firstBlog?.section_subtitle ||
+//       "Stay updated with our latest insights and resources.",
+//     buttonText: firstBlog?.button_text || "Read More",
+//   };
+
+//   return {
+//     props: {
+//       data: data || null,
+//       blogs: blogsData || [],
+//       blogSectionData,
+//     },
+//   };
+// }
+
+export async function getServerSideProps({ res }) {
+  res.setHeader(
+    "Cache-Control",
+    "public, s-maxage=300, stale-while-revalidate=3600",
+  );
+
+  const [pageRes, blogsRes] = await Promise.all([
+    supabaseServer
+      .from("blog_page")
+      .select(
+        "id, meta_title, meta_description, meta_keywords, meta_author, meta_url, meta_image, hero_title, hero_image",
+      )
+      .single(),
+
+    supabaseServer
+      .from("blogs")
+      .select(
+        "id, title, slug, image, description, date, created_at, badge, section_title, section_subtitle, button_text",
+      )
+      .order("date", { ascending: false }),
+  ]);
+
+  if (pageRes.error) {
+    console.error("Blog page fetch error:", pageRes.error);
   }
 
-  const firstBlog = blogsData?.[0] || null;
+  if (blogsRes.error) {
+    console.error("Blogs fetch error:", blogsRes.error);
+  }
+
+  const blogsData = blogsRes.data || [];
+  const firstBlog = blogsData[0] || null;
 
   const blogSectionData = {
     badge: firstBlog?.badge || "Insights & Resources",
@@ -110,8 +155,8 @@ export async function getServerSideProps() {
 
   return {
     props: {
-      data: data || null,
-      blogs: blogsData || [],
+      data: pageRes.data || null,
+      blogs: blogsData,
       blogSectionData,
     },
   };

@@ -49,18 +49,12 @@ export default function ContactPage({ data }) {
         <meta name="author" content={data?.meta_author || SITE_NAME} />
         <link rel="canonical" href={pageUrl} />
         <meta property="og:title" content={pageTitle} />
-        <meta
-          property="og:description"
-          content={pageDescription}
-        />
+        <meta property="og:description" content={pageDescription} />
         <meta property="og:url" content={pageUrl} />
         <meta property="og:image" content={pageImage} />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={pageTitle} />
-        <meta
-          name="twitter:description"
-          content={pageDescription}
-        />
+        <meta name="twitter:description" content={pageDescription} />
         <meta name="twitter:image" content={pageImage} />
         <meta name="robots" content="index, follow" />
       </Head>
@@ -81,10 +75,34 @@ export default function ContactPage({ data }) {
   );
 }
 
-export async function getServerSideProps() {
+// export async function getServerSideProps() {
+//   const { data, error } = await supabaseServer
+//     .from("contact_page")
+//     .select("*")
+//     .single();
+
+//   if (error) {
+//     console.error("Contact page fetch error:", error);
+//   }
+
+//   return {
+//     props: {
+//       data: data || null,
+//     },
+//   };
+// }
+
+export async function getServerSideProps({ res }) {
+  res.setHeader(
+    "Cache-Control",
+    "public, s-maxage=300, stale-while-revalidate=3600",
+  );
+
   const { data, error } = await supabaseServer
     .from("contact_page")
-    .select("*")
+    .select(
+      "id, meta_title, meta_description, meta_keywords, meta_author, meta_url, meta_image, hero_title, hero_image, hero, stats, contact_info, form_content, map_url",
+    )
     .single();
 
   if (error) {

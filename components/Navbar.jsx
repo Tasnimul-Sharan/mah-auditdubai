@@ -52,6 +52,7 @@ export default function Navbar({ navbarData = null, navLinks = [] }) {
   const menuLinks = links.filter(
     (item) => item?.name?.toLowerCase() !== "contact",
   );
+  const shouldPrefetchLink = (path) => path === "/about";
 
   return (
     <header className="w-full">
@@ -174,7 +175,7 @@ export default function Navbar({ navbarData = null, navLinks = [] }) {
                 <li key={item.id} className="group relative">
                   <Link
                     href={item.path}
-                    prefetch={false}
+                    prefetch={shouldPrefetchLink(item.path)}
                     className="transition hover:text-primary"
                   >
                     {item.name}
@@ -268,7 +269,7 @@ export default function Navbar({ navbarData = null, navLinks = [] }) {
                 <li key={item.id} data-menu-item>
                   <Link
                     href={item.path}
-                    prefetch={false}
+                    prefetch={shouldPrefetchLink(item.path)}
                     onClick={() => setIsMenuOpen(false)}
                     className="group flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.06] px-5 py-4 text-lg font-semibold text-white transition hover:border-primary_light/50 hover:bg-primary hover:text-white"
                   >

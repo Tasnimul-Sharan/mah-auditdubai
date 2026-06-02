@@ -1,8 +1,15 @@
 import Head from "next/head";
 import dynamic from "next/dynamic";
 import LandingPage from "@/components/home/LandingPage";
+import JsonLd from "@/components/JsonLd";
 import { supabaseServer } from "@/lib/supabaseServer";
 import { getLayoutData } from "@/lib/getLayoutData";
+import {
+  SITE_NAME,
+  SITE_URL,
+  createBreadcrumbSchema,
+  createBusinessSchema,
+} from "@/lib/structuredData";
 
 const AboutUsSection = dynamic(() => import("@/components/AboutUsSection"));
 const BlogSection = dynamic(() => import("@/components/BlogSection"));
@@ -39,6 +46,34 @@ export default function Home({
   testimonialsSectionData,
   stats,
 }) {
+  const pageUrl = meta?.meta_url || SITE_URL;
+  const pageDescription =
+    meta?.meta_description ||
+    "Professional audit, VAT, accounting and financial advisory services in Dubai, UAE.";
+
+  const businessSchema = createBusinessSchema({
+    url: pageUrl,
+    image: meta?.meta_image,
+    description: pageDescription,
+    contactPage,
+    services,
+    testimonials,
+  });
+
+  const webSiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: SITE_NAME,
+    url: SITE_URL,
+    publisher: {
+      "@id": `${SITE_URL}/#business`,
+    },
+  };
+
+  const breadcrumbSchema = createBreadcrumbSchema([
+    { name: "Home", url: SITE_URL },
+  ]);
+
   return (
     <div>
       <Head>
@@ -47,11 +82,11 @@ export default function Home({
         <meta name="keywords" content={meta?.meta_keywords} />
         <meta name="author" content={meta?.meta_author} />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="canonical" href={meta?.meta_url} />
+        <link rel="canonical" href={pageUrl} />
         <meta property="og:title" content={meta?.meta_title} />
         <meta property="og:description" content={meta?.meta_description} />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content={meta?.meta_url} />
+        <meta property="og:url" content={pageUrl} />
         <meta property="og:image" content={meta?.meta_image} />
         <meta property="og:site_name" content="MAH Audit Dubai" />
         <meta name="twitter:card" content="summary_large_image" />
@@ -60,32 +95,8 @@ export default function Home({
         <meta name="twitter:image" content={meta?.meta_image} />
         <link rel="preconnect" href="https://res.cloudinary.com" />
         <link rel="dns-prefetch" href="https://res.cloudinary.com" />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "AccountingService",
-              name: "MAH Audit Dubai",
-              url: meta?.meta_url,
-              logo: "https://mah-auditdubai.ae/logo.png",
-              image: meta?.meta_image,
-              description: meta?.meta_description,
-              areaServed: "Dubai, UAE",
-              serviceType: [
-                "Audit Services",
-                "VAT Consultancy",
-                "Accounting",
-                "Financial Advisory",
-              ],
-              sameAs: [
-                "https://www.facebook.com/",
-                "https://www.linkedin.com/",
-              ],
-            }),
-          }}
-        />
       </Head>
+      <JsonLd data={[businessSchema, webSiteSchema, breadcrumbSchema]} />
       <LandingPage slides={heroSlides} />
       <AboutUsSection data={about} />
       <ServicesSection

@@ -8,7 +8,7 @@ import { FaCheckCircle, FaQuoteLeft, FaRegCheckCircle } from "react-icons/fa";
 export default function BlogDetails({ blogsData }) {
   const blogPost = blogsData;
 
-  const currentUrl = `https://mah-auditdubai.ae/blog/${blogsData.slug}`;
+  const currentUrl = `https://mah-auditdubai.ae/blogs/${blogsData.slug}`;
   const socialTypes = ["facebook", "twitter", "linkedin", "whatsapp"];
 
   // const formatDate = (date) => {

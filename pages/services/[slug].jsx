@@ -1,10 +1,18 @@
 import Head from "next/head";
 import HeroSection from "@/components/HeroSection";
 import ServicesDetails from "@/components/ServicesDetails";
+import JsonLd from "@/components/JsonLd";
 import { supabaseServer } from "@/lib/supabaseServer";
+import {
+  SITE_NAME,
+  SITE_URL,
+  createBreadcrumbSchema,
+  createBusinessSchema,
+  createServiceSchema,
+} from "@/lib/structuredData";
 
 export default function ServicesDetailsPage({ service, slug, pageData }) {
-  const siteUrl = "https://mah-auditdubai.ae";
+  const siteUrl = SITE_URL;
   const pageUrl = `${siteUrl}/services/${slug}`;
 
   const heroBackgroundImage =
@@ -29,6 +37,26 @@ export default function ServicesDetailsPage({ service, slug, pageData }) {
     image: ogImage,
   };
 
+  const businessSchema = createBusinessSchema({
+    url: siteUrl,
+    image: ogImage,
+    description: meta.description,
+    services: [service],
+  });
+
+  const serviceSchema = createServiceSchema({
+    service,
+    url: pageUrl,
+    image: ogImage,
+    description: meta.description,
+  });
+
+  const breadcrumbSchema = createBreadcrumbSchema([
+    { name: "Home", url: SITE_URL },
+    { name: "Services", url: `${SITE_URL}/services` },
+    { name: service.hero?.title || service.title, url: pageUrl },
+  ]);
+
   return (
     <div>
       <Head>
@@ -44,7 +72,7 @@ export default function ServicesDetailsPage({ service, slug, pageData }) {
         <meta property="og:title" content={meta.title} />
         <meta property="og:description" content={meta.description} />
         <meta property="og:url" content={meta.url} />
-        <meta property="og:site_name" content="MAH Audit Dubai" />
+        <meta property="og:site_name" content={SITE_NAME} />
         <meta property="og:image" content={meta.image} />
         <meta property="og:image:alt" content={meta.title} />
 
@@ -52,7 +80,9 @@ export default function ServicesDetailsPage({ service, slug, pageData }) {
         <meta name="twitter:title" content={meta.title} />
         <meta name="twitter:description" content={meta.description} />
         <meta name="twitter:image" content={meta.image} />
+
       </Head>
+      <JsonLd data={[businessSchema, serviceSchema, breadcrumbSchema]} />
 
       <HeroSection
         hero={{

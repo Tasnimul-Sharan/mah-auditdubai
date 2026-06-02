@@ -1,15 +1,30 @@
 import Head from "next/head";
-import AboutUsSection from "@/components/AboutUsSection";
+import dynamic from "next/dynamic";
 import HeroSection from "@/components/HeroSection";
-import FAQ from "@/components/FAQ";
-import VisionMission from "@/components/VisionMission";
-import PremiumCTA from "@/components/PremiumCTA";
-import WhyUs from "@/components/WhyUs";
-import StatsSection from "@/components/StatsSection";
-import ClientsSection from "@/components/home/ClientsSection";
-import TestimonialsSection from "@/components/home/TestimonialsSection";
+import JsonLd from "@/components/JsonLd";
 import { supabaseServer } from "@/lib/supabaseServer";
-import TeamSection from "@/components/TeamSection";
+import {
+  SITE_NAME,
+  SITE_URL,
+  createBreadcrumbSchema,
+  createBusinessSchema,
+  createFAQPageSchema,
+  createWebPageSchema,
+} from "@/lib/structuredData";
+
+const AboutUsSection = dynamic(() => import("@/components/AboutUsSection"));
+const FAQ = dynamic(() => import("@/components/FAQ"));
+const VisionMission = dynamic(() => import("@/components/VisionMission"));
+const PremiumCTA = dynamic(() => import("@/components/PremiumCTA"));
+const WhyUs = dynamic(() => import("@/components/WhyUs"));
+const StatsSection = dynamic(() => import("@/components/StatsSection"));
+const ClientsSection = dynamic(
+  () => import("@/components/home/ClientsSection"),
+);
+const TestimonialsSection = dynamic(
+  () => import("@/components/home/TestimonialsSection"),
+);
+const TeamSection = dynamic(() => import("@/components/TeamSection"));
 
 export default function AboutPage({
   data,
@@ -26,8 +41,8 @@ export default function AboutPage({
   visionMission,
   faqData,
 }) {
-  const siteName = "MAH Audit Dubai";
-  const siteUrl = "https://mah-auditdubai.ae";
+  const siteName = SITE_NAME;
+  const siteUrl = SITE_URL;
 
   const pageTitle =
     data?.meta_title || "About MAH Audit Dubai | Leading Audit Firm in UAE";
@@ -43,64 +58,26 @@ export default function AboutPage({
     data?.meta_keywords ||
     "about audit firm dubai, MAH Audit UAE, accounting firm dubai";
 
-  const organizationSchema = {
-    "@context": "https://schema.org",
-    "@type": "AccountingService",
-    name: siteName,
-    url: siteUrl,
-    logo: `${siteUrl}/logo.png`,
+  const organizationSchema = createBusinessSchema({
+    url: pageUrl,
     image: pageImage,
     description: pageDescription,
-    areaServed: {
-      "@type": "Place",
-      name: "Dubai, UAE",
-    },
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: "Dubai",
-      addressCountry: "AE",
-    },
-  };
+    testimonials,
+  });
 
-  const webPageSchema = {
-    "@context": "https://schema.org",
-    "@type": "AboutPage",
-    name: pageTitle,
+  const webPageSchema = createWebPageSchema({
+    type: "AboutPage",
+    title: pageTitle,
     url: pageUrl,
     description: pageDescription,
-    isPartOf: {
-      "@type": "WebSite",
-      name: siteName,
-      url: siteUrl,
-    },
-    publisher: {
-      "@type": "Organization",
-      name: siteName,
-      logo: {
-        "@type": "ImageObject",
-        url: `${siteUrl}/logo.png`,
-      },
-    },
-  };
+  });
 
-  const breadcrumbSchema = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: "Home",
-        item: siteUrl,
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: "About",
-        item: pageUrl,
-      },
-    ],
-  };
+  const breadcrumbSchema = createBreadcrumbSchema([
+    { name: "Home", url: siteUrl },
+    { name: "About", url: pageUrl },
+  ]);
+
+  const faqSchema = createFAQPageSchema(faqData?.faqs);
 
   return (
     <div className="w-full relative">
@@ -127,27 +104,10 @@ export default function AboutPage({
         <meta name="twitter:description" content={pageDescription} />
         <meta name="twitter:image" content={pageImage} />
 
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(organizationSchema),
-          }}
-        />
-
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(webPageSchema),
-          }}
-        />
-
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(breadcrumbSchema),
-          }}
-        />
       </Head>
+      <JsonLd
+        data={[organizationSchema, webPageSchema, breadcrumbSchema, faqSchema]}
+      />
 
       <HeroSection
         hero={{
@@ -171,55 +131,55 @@ export default function AboutPage({
   );
 }
 
-export async function getServerSideProps() {
-  const { data: pageData } = await supabaseServer
-    .from("about_page")
-    .select("*")
-    .single();
+export async function getServerSideProps({ res }) {
+  res.setHeader(
+    "Cache-Control",
+    "public, s-maxage=300, stale-while-revalidate=3600",
+  );
 
-  const { data: aboutData } = await supabaseServer
-    .from("about_section")
-    .select("*")
-    .single();
-
-  const { data: visionMissionData } = await supabaseServer
-    .from("vision_mission")
-    .select(
-      `
+  const [
+    { data: pageData },
+    { data: aboutData },
+    { data: visionMissionData },
+    { data: teamSection },
+    { data: faqData },
+    { data: teamMembers },
+    { data: whyUs },
+    { data: premiumCTA },
+    { data: testimonialsData },
+    { data: statsData },
+    { data: clientsData },
+  ] = await Promise.all([
+    supabaseServer.from("about_page").select("*").single(),
+    supabaseServer.from("about_section").select("*").single(),
+    supabaseServer
+      .from("vision_mission")
+      .select(
+        `
     *,
     vision_mission_points(*)
   `,
-    )
-    .order("id", { ascending: true });
-
-  const { data: teamSection } = await supabaseServer
-    .from("team_section")
-    .select("*")
-    .single();
-
-  const { data: faqData } = await supabaseServer
-    .from("faq")
-    .select("*")
-    .single();
-
-  const { data: teamMembers } = await supabaseServer
-    .from("team_members")
-    .select("*")
-    .order("created_at", { ascending: true });
-
-  const { data: whyUs } = await supabaseServer
-    .from("why_us")
-    .select("*")
-    .single();
-  const { data: premiumCTA } = await supabaseServer
-    .from("premium_cta")
-    .select("*")
-    .single();
-
-  const { data: testimonialsData } = await supabaseServer
-    .from("testimonials")
-    .select("*")
-    .order("created_at", { ascending: false });
+      )
+      .order("id", { ascending: true }),
+    supabaseServer.from("team_section").select("*").single(),
+    supabaseServer.from("faq").select("*").single(),
+    supabaseServer
+      .from("team_members")
+      .select("*")
+      .order("created_at", { ascending: true }),
+    supabaseServer.from("why_us").select("*").single(),
+    supabaseServer.from("premium_cta").select("*").single(),
+    supabaseServer
+      .from("testimonials")
+      .select("*")
+      .order("created_at", { ascending: false }),
+    supabaseServer.from("stats").select("*").order("created_at", {
+      ascending: true,
+    }),
+    supabaseServer.from("clients").select("*").order("created_at", {
+      ascending: true,
+    }),
+  ]);
 
   const firstTestimonial = testimonialsData?.[0] || null;
 
@@ -230,16 +190,6 @@ export async function getServerSideProps() {
       firstTestimonial?.section_subtitle ||
       "Trusted by businesses for delivering reliable audit, compliance, and financial advisory services.",
   };
-
-  const { data: statsData } = await supabaseServer
-    .from("stats")
-    .select("*")
-    .order("created_at", { ascending: true });
-
-  const { data: clientsData } = await supabaseServer
-    .from("clients")
-    .select("*")
-    .order("created_at", { ascending: true });
 
   const firstClient = clientsData?.[0] || null;
 

@@ -1,8 +1,15 @@
 import Head from "next/head";
 import HeroSection from "@/components/HeroSection";
 import BlogDetails from "@/components/BlogDetails";
+import JsonLd from "@/components/JsonLd";
 import { supabaseServer } from "@/lib/supabaseServer";
 import { RiLoader2Fill } from "react-icons/ri";
+import {
+  SITE_NAME,
+  SITE_URL,
+  createBlogPostingSchema,
+  createBreadcrumbSchema,
+} from "@/lib/structuredData";
 
 export default function BlogDetailsPage({ blog, blogPage }) {
   if (blog === undefined) {
@@ -27,9 +34,20 @@ export default function BlogDetailsPage({ blog, blogPage }) {
     description: blog.description,
     keywords: blog.posttags?.join(", "),
     author: blog.author,
-    url: `https://mah-auditdubai.ae/blog/${blog.slug}`,
+    url: `https://mah-auditdubai.ae/blogs/${blog.slug}`,
     image: blog.image,
   };
+
+  const blogPostingSchema = createBlogPostingSchema({
+    blog,
+    url: meta.url,
+  });
+
+  const breadcrumbSchema = createBreadcrumbSchema([
+    { name: "Home", url: SITE_URL },
+    { name: "Blogs", url: `${SITE_URL}/blogs` },
+    { name: blog.title, url: meta.url },
+  ]);
 
   return (
     <>
@@ -45,37 +63,14 @@ export default function BlogDetailsPage({ blog, blogPage }) {
         <meta property="og:type" content="article" />
         <meta property="og:url" content={meta.url} />
         <meta property="og:image" content={meta.image} />
+        <meta property="og:site_name" content={SITE_NAME} />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={meta.title} />
         <meta name="twitter:description" content={meta.description} />
         <meta name="twitter:image" content={meta.image} />
 
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Article",
-              headline: blog.title,
-              description: blog.description,
-              image: blog.image,
-              author: {
-                "@type": "Person",
-                name: blog.author,
-              },
-              publisher: {
-                "@type": "Organization",
-                name: "MAH Audit Dubai",
-                logo: {
-                  "@type": "ImageObject",
-                  url: "https://mah-auditdubai.ae/logo.png",
-                },
-              },
-              datePublished: blog.date,
-            }),
-          }}
-        />
       </Head>
+      <JsonLd data={[blogPostingSchema, breadcrumbSchema]} />
 
       <HeroSection
         hero={{

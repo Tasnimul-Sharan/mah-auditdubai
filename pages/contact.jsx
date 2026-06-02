@@ -3,52 +3,68 @@ import HeroSection from "@/components/HeroSection";
 import ContactHero from "@/components/ContactHero";
 import ContactPageSection from "@/components/ContactPageSection";
 import EventMap from "@/components/EventMap";
+import JsonLd from "@/components/JsonLd";
 import { supabaseServer } from "@/lib/supabaseServer";
+import {
+  SITE_NAME,
+  SITE_URL,
+  createBreadcrumbSchema,
+  createBusinessSchema,
+  createWebPageSchema,
+} from "@/lib/structuredData";
 
 export default function ContactPage({ data }) {
+  const pageUrl = data?.meta_url || `${SITE_URL}/contact`;
+  const pageTitle = data?.meta_title || "Contact | MAH Audit Dubai";
+  const pageDescription =
+    data?.meta_description ||
+    "Contact MAH Audit Dubai for audit, accounting, VAT and advisory support in Dubai, UAE.";
+  const pageImage = data?.meta_image || `${SITE_URL}/og-contact.jpg`;
+
+  const businessSchema = createBusinessSchema({
+    url: pageUrl,
+    image: pageImage,
+    description: pageDescription,
+    contactPage: data,
+  });
+
+  const contactPageSchema = createWebPageSchema({
+    type: "ContactPage",
+    title: pageTitle,
+    url: pageUrl,
+    description: pageDescription,
+  });
+
+  const breadcrumbSchema = createBreadcrumbSchema([
+    { name: "Home", url: SITE_URL },
+    { name: "Contact", url: pageUrl },
+  ]);
+
   return (
     <div className="w-full relative">
       <Head>
-        <title>{data?.meta_title || "Contact | MAH Audit Dubai"}</title>
-        <meta name="description" content={data?.meta_description || ""} />
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDescription} />
         <meta name="keywords" content={data?.meta_keywords || ""} />
-        <meta name="author" content={data?.meta_author || ""} />
-        <link rel="canonical" href={data?.meta_url || ""} />
-        <meta property="og:title" content={data?.meta_title || ""} />
+        <meta name="author" content={data?.meta_author || SITE_NAME} />
+        <link rel="canonical" href={pageUrl} />
+        <meta property="og:title" content={pageTitle} />
         <meta
           property="og:description"
-          content={data?.meta_description || ""}
+          content={pageDescription}
         />
-        <meta property="og:url" content={data?.meta_url || ""} />
-        <meta property="og:image" content={data?.meta_image || ""} />
+        <meta property="og:url" content={pageUrl} />
+        <meta property="og:image" content={pageImage} />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={data?.meta_title || ""} />
+        <meta name="twitter:title" content={pageTitle} />
         <meta
           name="twitter:description"
-          content={data?.meta_description || ""}
+          content={pageDescription}
         />
-        <meta name="twitter:image" content={data?.meta_image || ""} />
+        <meta name="twitter:image" content={pageImage} />
         <meta name="robots" content="index, follow" />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Organization",
-              name: "MAH Audit Dubai",
-              url: data?.meta_url,
-              logo: "https://mah-auditdubai.ae/logo.png",
-              image: data?.meta_image,
-              description: data?.meta_description,
-              areaServed: "Dubai, UAE",
-              sameAs: [
-                "https://www.facebook.com/",
-                "https://www.linkedin.com/",
-              ],
-            }),
-          }}
-        />
       </Head>
+      <JsonLd data={[businessSchema, contactPageSchema, breadcrumbSchema]} />
       <HeroSection
         hero={{
           title: data?.hero_title || "Contact",

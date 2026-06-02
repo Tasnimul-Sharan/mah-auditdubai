@@ -80,7 +80,6 @@ export default function ServicesDetailsPage({ service, slug, pageData }) {
         <meta name="twitter:title" content={meta.title} />
         <meta name="twitter:description" content={meta.description} />
         <meta name="twitter:image" content={meta.image} />
-
       </Head>
       <JsonLd data={[businessSchema, serviceSchema, breadcrumbSchema]} />
 
@@ -96,25 +95,74 @@ export default function ServicesDetailsPage({ service, slug, pageData }) {
   );
 }
 
-export async function getServerSideProps({ params }) {
+// export async function getServerSideProps({ params }) {
+//   const slug = params?.slug;
+
+//   const { data, error } = await supabaseServer
+//     .from("services")
+//     .select("slug, title, description, image, hero, sections, footer_note, cta")
+//     .eq("slug", slug)
+//     .single();
+
+//   const { data: pageData } = await supabaseServer
+//     .from("services_page")
+//     .select("*")
+//     .single();
+
+//   if (error || !data) {
+//     return {
+//       notFound: true,
+//     };
+//   }
+
+//   const service = {
+//     ...data,
+//     hero: data.hero || {
+//       title: data.title || "",
+//       description1: data.description || "",
+//       description2: "",
+//     },
+//     sections: data.sections || [],
+//     footerNote: data.footer_note || "",
+//     cta: data.cta || {},
+//   };
+
+//   return {
+//     props: {
+//       slug,
+//       service,
+//       pageData: pageData || null,
+//     },
+//   };
+// }
+
+export async function getServerSideProps({ params, res }) {
+  res.setHeader(
+    "Cache-Control",
+    "public, s-maxage=300, stale-while-revalidate=3600",
+  );
+
   const slug = params?.slug;
 
-  const { data, error } = await supabaseServer
-    .from("services")
-    .select("slug, title, description, image, hero, sections, footer_note, cta")
-    .eq("slug", slug)
-    .single();
+  const [serviceRes, pageRes] = await Promise.all([
+    supabaseServer
+      .from("services")
+      .select(
+        "slug, title, description, image, hero, sections, footer_note, cta",
+      )
+      .eq("slug", slug)
+      .single(),
 
-  const { data: pageData } = await supabaseServer
-    .from("services_page")
-    .select("*")
-    .single();
+    supabaseServer.from("services_page").select("hero_image").single(),
+  ]);
 
-  if (error || !data) {
+  if (serviceRes.error || !serviceRes.data) {
     return {
       notFound: true,
     };
   }
+
+  const data = serviceRes.data;
 
   const service = {
     ...data,
@@ -132,7 +180,7 @@ export async function getServerSideProps({ params }) {
     props: {
       slug,
       service,
-      pageData: pageData || null,
+      pageData: pageRes.data || null,
     },
   };
 }

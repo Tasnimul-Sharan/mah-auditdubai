@@ -32,7 +32,9 @@ export default function BlogDetailsPage({ blog, blogPage }) {
   const meta = {
     title: `${blog.title} | MAH Audit Dubai`,
     description: blog.description,
-    keywords: blog.posttags?.join(", "),
+    keywords: Array.isArray(blog.posttags)
+      ? blog.posttags.join(", ")
+      : blog.posttags || "",
     author: blog.author,
     url: `https://mah-auditdubai.ae/blogs/${blog.slug}`,
     image: blog.image,
@@ -68,7 +70,6 @@ export default function BlogDetailsPage({ blog, blogPage }) {
         <meta name="twitter:title" content={meta.title} />
         <meta name="twitter:description" content={meta.description} />
         <meta name="twitter:image" content={meta.image} />
-
       </Head>
       <JsonLd data={[blogPostingSchema, breadcrumbSchema]} />
 
@@ -84,23 +85,51 @@ export default function BlogDetailsPage({ blog, blogPage }) {
   );
 }
 
-export async function getServerSideProps({ params }) {
-  const { slug } = params;
-  const { data: blog } = await supabaseServer
-    .from("blogs")
-    .select("*")
-    .eq("slug", slug)
-    .single();
+// export async function getServerSideProps({ params }) {
+//   const { slug } = params;
+//   const { data: blog } = await supabaseServer
+//     .from("blogs")
+//     .select("*")
+//     .eq("slug", slug)
+//     .single();
 
-  const { data: blogPage } = await supabaseServer
-    .from("blog_page")
-    .select("*")
-    .single();
+//   const { data: blogPage } = await supabaseServer
+//     .from("blog_page")
+//     .select("*")
+//     .single();
+
+//   return {
+//     props: {
+//       blog: blog || null,
+//       blogPage: blogPage || null,
+//     },
+//   };
+// }
+
+export async function getServerSideProps({ params, res }) {
+  res.setHeader(
+    "Cache-Control",
+    "public, s-maxage=300, stale-while-revalidate=3600",
+  );
+
+  const { slug } = params;
+
+  const [blogRes, blogPageRes] = await Promise.all([
+    supabaseServer.from("blogs").select("*").eq("slug", slug).single(),
+
+    supabaseServer.from("blog_page").select("hero_image").single(),
+  ]);
+
+  if (blogRes.error || !blogRes.data) {
+    return {
+      notFound: true,
+    };
+  }
 
   return {
     props: {
-      blog: blog || null,
-      blogPage: blogPage || null,
+      blog: blogRes.data,
+      blogPage: blogPageRes.data || null,
     },
   };
 }

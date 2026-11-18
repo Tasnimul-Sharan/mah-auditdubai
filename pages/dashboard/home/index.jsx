@@ -113,7 +113,7 @@ export default function HomeDashboard() {
     { name: "About Us", link: "/dashboard/about-section" },
     { name: "Services", link: "/dashboard/services" },
     { name: "Stats", link: "/dashboard/stats" },
-    { name: "Why Choose Us", link: "/dashboard/why-us" },
+    { name: "Why Choose Us", link: "/dashboard/why-choose" },
     { name: "Industries", link: "/dashboard/industries" },
     { name: "Clients", link: "/dashboard/clients" },
     { name: "Testimonials", link: "/dashboard/testimonials" },
